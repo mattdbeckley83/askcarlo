@@ -1,9 +1,9 @@
 const pageMeta = {
-    title: 'Ecme - The Ultimate Next & TypeScript Web Template',
+    title: 'Yonderlust',
     description:
-        'Admin Template and Starter Kit with React, Tailwind Components and Next.js',
+        'AI-powered backpacking trip planning',
     icons: {
-        icon: '/favicon.ico',
+        icon: '/img/logo/treemap-favicon.png',
     },
 }
 

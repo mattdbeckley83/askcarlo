@@ -1,8 +1,12 @@
-import appConfig from '@/configs/app.config'
+import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 
-const Page = () => {
-    redirect(appConfig.authenticatedEntryPath)
-}
+export default async function RootPage() {
+    const { userId } = await auth()
 
-export default Page
+    if (userId) {
+        redirect('/home')
+    } else {
+        redirect('/sign-in')
+    }
+}

@@ -56,6 +56,10 @@ const config = {
 		},
 		extend: {
 			colors: {
+				'cream': '#fcf5f0',
+				'cream-dark': '#f5ebe3',
+				'orange-accent': '#fe7f2d',
+				'orange-accent-dark': '#e56d1f',
 				'primary': 'var(--primary)',
 				'primary-deep': 'var(--primary-deep)',
 				'primary-mild': 'var(--primary-mild)',

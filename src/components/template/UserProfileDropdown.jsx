@@ -5,20 +5,28 @@ import withHeaderItem from '@/utils/hoc/withHeaderItem'
 import Link from 'next/link'
 import { useClerk } from '@clerk/nextjs'
 import useCurrentSession from '@/utils/hooks/useCurrentSession'
-import { PiUserDuotone, PiSignOutDuotone } from 'react-icons/pi'
+import { PiUserDuotone, PiSignOutDuotone, PiUserCircleDuotone } from 'react-icons/pi'
 
-const dropdownItemList = []
+const dropdownItemList = [
+    {
+        label: 'Profile',
+        path: '/profile',
+        icon: <PiUserCircleDuotone />,
+    },
+]
 
 const _UserDropdown = () => {
-    const { session } = useCurrentSession()
+    const { session, isLoaded } = useCurrentSession()
     const { signOut } = useClerk()
 
     const handleSignOut = async () => {
         await signOut({ redirectUrl: '/sign-in' })
     }
 
+    // Always render icon on server/initial load to prevent hydration mismatch
+    // Only use image after client has loaded
     const avatarProps = {
-        ...(session?.user?.image
+        ...(isLoaded && session?.user?.image
             ? { src: session?.user?.image }
             : { icon: <PiUserDuotone /> }),
     }
@@ -39,10 +47,10 @@ const _UserDropdown = () => {
                     <Avatar {...avatarProps} />
                     <div>
                         <div className="font-bold text-gray-900 dark:text-gray-100">
-                            {session?.user?.name || 'Anonymous'}
+                            {isLoaded ? (session?.user?.name || 'Anonymous') : '\u00A0'}
                         </div>
                         <div className="text-xs">
-                            {session?.user?.email || 'No email available'}
+                            {isLoaded ? (session?.user?.email || 'No email available') : '\u00A0'}
                         </div>
                     </div>
                 </div>

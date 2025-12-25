@@ -1,19 +1,19 @@
 import {
     PiHouseLineDuotone,
-    PiArrowsInDuotone,
-    PiBookOpenUserDuotone,
-    PiBookBookmarkDuotone,
-    PiAcornDuotone,
-    PiBagSimpleDuotone,
+    PiBackpackDuotone,
+    PiMapPinLineDuotone,
+    PiChatCircleDuotone,
+    PiUserCircleDuotone,
+    PiUploadSimpleDuotone,
 } from 'react-icons/pi'
 
 const navigationIcon = {
     home: <PiHouseLineDuotone />,
-    singleMenu: <PiAcornDuotone />,
-    collapseMenu: <PiArrowsInDuotone />,
-    groupSingleMenu: <PiBookOpenUserDuotone />,
-    groupCollapseMenu: <PiBookBookmarkDuotone />,
-    groupMenu: <PiBagSimpleDuotone />,
+    items: <PiBackpackDuotone />,
+    import: <PiUploadSimpleDuotone />,
+    trips: <PiMapPinLineDuotone />,
+    carlo: <PiChatCircleDuotone />,
+    profile: <PiUserCircleDuotone />,
 }
 
 export default navigationIcon
