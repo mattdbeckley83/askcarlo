@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import Table from '@/components/ui/Table'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
@@ -52,11 +53,22 @@ const SortableHeader = ({ label, sortKey, currentSort, onSort }) => {
 }
 
 const ItemList = ({ items = [], categories = [], itemTypes = [] }) => {
+    const searchParams = useSearchParams()
+    const router = useRouter()
     const [searchQuery, setSearchQuery] = useState('')
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
     const [sort, setSort] = useState({ key: 'name', direction: 'asc' })
+
+    // Open add modal if action=add is in URL
+    useEffect(() => {
+        if (searchParams.get('action') === 'add') {
+            setIsAddModalOpen(true)
+            // Clear the URL param
+            router.replace('/items', { scroll: false })
+        }
+    }, [searchParams, router])
 
     const categoryMap = useMemo(() => {
         return categories.reduce((acc, cat) => {
@@ -169,10 +181,11 @@ const ItemList = ({ items = [], categories = [], itemTypes = [] }) => {
                 </Button>
             </div>
 
-            <Card>
-                <Table>
-                    <THead>
-                        <Tr>
+            <Card bodyClass="!p-0" bordered={false} className="border border-gray-200 dark:border-gray-700 rounded-xl">
+                <div className="overflow-auto max-h-[70vh] rounded-xl">
+                    <Table overflow={false} className="[&>thead]:border-0 [&>tbody]:border-t-0">
+                        <THead className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-800/95 backdrop-blur-sm">
+                            <Tr>
                             <Th>
                                 <SortableHeader
                                     label="Type"
@@ -295,7 +308,8 @@ const ItemList = ({ items = [], categories = [], itemTypes = [] }) => {
                             })
                         )}
                     </TBody>
-                </Table>
+                    </Table>
+                </div>
             </Card>
 
             <AddItemModal

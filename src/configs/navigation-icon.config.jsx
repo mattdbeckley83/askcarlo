@@ -1,18 +1,18 @@
-import {
-    PiHouseLineDuotone,
-    PiBackpackDuotone,
-    PiMapPinLineDuotone,
-    PiChatCircleDuotone,
-    PiUserCircleDuotone,
-    PiUploadSimpleDuotone,
-} from 'react-icons/pi'
+import { PiUserCircleDuotone } from 'react-icons/pi'
+
+const NavIcon = ({ src, alt }) => (
+    <img
+        src={src}
+        alt={alt}
+        className="w-5 h-5 dark:invert"
+    />
+)
 
 const navigationIcon = {
-    home: <PiHouseLineDuotone />,
-    items: <PiBackpackDuotone />,
-    import: <PiUploadSimpleDuotone />,
-    trips: <PiMapPinLineDuotone />,
-    carlo: <PiChatCircleDuotone />,
+    home: <NavIcon src="/img/logo/dashboard.png" alt="Home" />,
+    items: <NavIcon src="/img/logo/backpack.png" alt="My Items" />,
+    trips: <NavIcon src="/img/logo/trips.png" alt="My Trips" />,
+    carlo: <NavIcon src="/img/logo/carlo.png" alt="Carlo" />,
     profile: <PiUserCircleDuotone />,
 }
 

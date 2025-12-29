@@ -238,11 +238,11 @@ export function getWeightByCategory(tripItems, categoryMap, waterVolumeLiters = 
         })
     }
 
-    // Add water weight if present
+    // Add carried water weight if present (separate from "Water" gear category)
     const waterWeight = getWaterWeightInGrams(waterVolumeLiters)
     if (waterWeight > 0) {
         totalWeight += waterWeight
-        categoryWeights['water'] = waterWeight
+        categoryWeights['carried-water'] = waterWeight
     }
 
     if (totalWeight === 0) return []
@@ -250,11 +250,11 @@ export function getWeightByCategory(tripItems, categoryMap, waterVolumeLiters = 
     // Convert to array with category info
     return Object.entries(categoryWeights)
         .map(([categoryId, weight]) => {
-            // Special handling for water category
-            if (categoryId === 'water') {
+            // Special handling for carried water (distinct from "Water" gear category)
+            if (categoryId === 'carried-water') {
                 return {
-                    id: 'water',
-                    category: 'Water',
+                    id: 'carried-water',
+                    category: 'Carried Water',
                     color: WATER_CATEGORY_COLOR,
                     weight,
                     percentage: (weight / totalWeight) * 100,

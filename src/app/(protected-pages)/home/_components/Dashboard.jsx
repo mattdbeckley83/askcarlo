@@ -30,6 +30,11 @@ export default function Dashboard({
                 </p>
             </div>
 
+            {/* Getting Started Checklist - only show if not complete */}
+            {!isOnboardingComplete && (
+                <OnboardingChecklist onboardingStatus={onboardingStatus} />
+            )}
+
             {/* Stats and Upcoming Trips Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1">
@@ -42,11 +47,6 @@ export default function Dashboard({
 
             {/* Quick Actions */}
             <QuickActions />
-
-            {/* Onboarding Checklist - only show if not complete */}
-            {!isOnboardingComplete && (
-                <OnboardingChecklist onboardingStatus={onboardingStatus} />
-            )}
         </div>
     )
 }

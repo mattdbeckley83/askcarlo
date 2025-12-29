@@ -36,7 +36,7 @@ export default function OnboardingChecklist({ onboardingStatus }) {
             label: 'Complete your profile',
             description: 'Add your name and preferences',
             completed: onboardingStatus.hasCompletedProfile,
-            href: '/settings',
+            href: '/profile',
             icon: PiUser,
         },
     ]

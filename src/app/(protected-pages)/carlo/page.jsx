@@ -105,16 +105,32 @@ async function getActivities() {
     return activities || []
 }
 
+async function getUserActivities(userId) {
+    const { data: userActivities, error } = await supabaseAdmin
+        .from('user_activities')
+        .select('activity_id, activities(name)')
+        .eq('user_id', userId)
+
+    if (error) {
+        console.error('Error fetching user activities:', error)
+        return []
+    }
+
+    // Extract activity names
+    return userActivities?.map((ua) => ua.activities?.name).filter(Boolean) || []
+}
+
 export default async function CarloPage({ searchParams }) {
     const { userId } = await auth()
 
-    const [conversations, items, trips, tripItems, categories, activities] = await Promise.all([
+    const [conversations, items, trips, tripItems, categories, activities, userActivityNames] = await Promise.all([
         getConversations(userId),
         getItems(userId),
         getTrips(userId),
         getTripItems(userId),
         getCategories(userId),
         getActivities(),
+        getUserActivities(userId),
     ])
 
     const params = await searchParams
@@ -143,6 +159,7 @@ export default async function CarloPage({ searchParams }) {
                         tripItems={tripItems}
                         categories={categories}
                         activities={activities}
+                        userActivityNames={userActivityNames}
                     />
                 </div>
             </div>

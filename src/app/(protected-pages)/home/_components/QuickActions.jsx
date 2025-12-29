@@ -1,8 +1,15 @@
 'use client'
 
 import Card from '@/components/ui/Card'
-import { PiPlus, PiMapTrifold, PiRobot } from 'react-icons/pi'
 import Link from 'next/link'
+
+const ActionIcon = ({ src, alt }) => (
+    <img
+        src={src}
+        alt={alt}
+        className="w-5 h-5 dark:invert"
+    />
+)
 
 export default function QuickActions() {
     const actions = [
@@ -10,25 +17,22 @@ export default function QuickActions() {
             label: 'Add Gear',
             description: 'Add new items to your gear list',
             href: '/items?action=add',
-            icon: PiPlus,
+            iconSrc: '/img/logo/backpack.png',
             iconBg: 'bg-indigo-100 dark:bg-indigo-900/50',
-            iconColor: 'text-indigo-600 dark:text-indigo-400',
         },
         {
             label: 'Plan a Trip',
             description: 'Create a new trip and pack your gear',
             href: '/trips?action=add',
-            icon: PiMapTrifold,
+            iconSrc: '/img/logo/trips.png',
             iconBg: 'bg-green-100 dark:bg-green-900/50',
-            iconColor: 'text-green-600 dark:text-green-400',
         },
         {
             label: 'Chat with Carlo',
             description: 'Get personalized gear recommendations',
             href: '/carlo',
-            icon: PiRobot,
+            iconSrc: '/img/logo/carlo.png',
             iconBg: 'bg-purple-100 dark:bg-purple-900/50',
-            iconColor: 'text-purple-600 dark:text-purple-400',
         },
     ]
 
@@ -45,7 +49,7 @@ export default function QuickActions() {
                                 <div
                                     className={`flex-shrink-0 w-10 h-10 rounded-lg ${action.iconBg} flex items-center justify-center`}
                                 >
-                                    <action.icon className={`w-5 h-5 ${action.iconColor}`} />
+                                    <ActionIcon src={action.iconSrc} alt={action.label} />
                                 </div>
                                 <div>
                                     <p className="font-medium text-gray-900 dark:text-white">

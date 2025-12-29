@@ -125,30 +125,32 @@ const TripItemList = ({ tripItems, tripId, categoryMap }) => {
     }
 
     return (
-        <Table>
-            <THead>
-                <Tr>
-                    <Th className="w-[140px]">Category</Th>
-                    <Th className="w-[180px]">Item Name</Th>
-                    <Th>Description</Th>
-                    <Th className="w-[80px] text-right">Weight</Th>
-                    <Th className="w-[70px] text-right">Qty</Th>
-                    <Th className="w-[80px] text-center">Worn</Th>
-                    <Th className="w-[80px] text-center">Cons.</Th>
-                    <Th className="w-[50px]"></Th>
-                </Tr>
-            </THead>
-            <TBody>
-                {tripItems.map((tripItem) => (
-                    <TripItemRow
-                        key={tripItem.id}
-                        tripItem={tripItem}
-                        tripId={tripId}
-                        categoryMap={categoryMap}
-                    />
-                ))}
-            </TBody>
-        </Table>
+        <div className="overflow-auto max-h-[50vh] rounded-lg">
+            <Table overflow={false} className="[&>thead]:border-0 [&>tbody]:border-t-0">
+                <THead className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-800/95 border-b border-gray-200 dark:border-gray-700">
+                    <Tr>
+                        <Th className="w-[140px]">Category</Th>
+                        <Th className="w-[180px]">Item Name</Th>
+                        <Th>Description</Th>
+                        <Th className="w-[80px] text-right">Weight</Th>
+                        <Th className="w-[70px] text-right">Qty</Th>
+                        <Th className="w-[80px] text-center">Worn</Th>
+                        <Th className="w-[80px] text-center">Cons.</Th>
+                        <Th className="w-[50px]"></Th>
+                    </Tr>
+                </THead>
+                <TBody>
+                    {tripItems.map((tripItem) => (
+                        <TripItemRow
+                            key={tripItem.id}
+                            tripItem={tripItem}
+                            tripId={tripId}
+                            categoryMap={categoryMap}
+                        />
+                    ))}
+                </TBody>
+            </Table>
+        </div>
     )
 }
 

@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useMemo, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Table from '@/components/ui/Table'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
@@ -30,8 +30,18 @@ const formatDateRange = (startDate, endDate) => {
 
 const TripList = ({ trips = [], activities = [] }) => {
     const router = useRouter()
+    const searchParams = useSearchParams()
     const [searchQuery, setSearchQuery] = useState('')
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+
+    // Open add modal if action=add is in URL
+    useEffect(() => {
+        if (searchParams.get('action') === 'add') {
+            setIsAddModalOpen(true)
+            // Clear the URL param
+            router.replace('/trips', { scroll: false })
+        }
+    }, [searchParams, router])
 
     const activityMap = useMemo(() => {
         return activities.reduce((acc, activity) => {

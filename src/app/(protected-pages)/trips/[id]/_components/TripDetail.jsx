@@ -38,7 +38,8 @@ const TripDetail = ({
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const [chartView, setChartView] = useState('treemap')
-    const [isAnalyticsExpanded, setIsAnalyticsExpanded] = useState(true)
+    const [isAnalyticsExpanded, setIsAnalyticsExpanded] = useState(false)
+    const [hoveredCategory, setHoveredCategory] = useState(null)
 
     // Water state - initialize from trip data
     const [waterVolume, setWaterVolume] = useState(trip.water_volume || 0)
@@ -83,26 +84,10 @@ const TripDetail = ({
     return (
         <div className="flex flex-col gap-6">
             {/* Header */}
-            <div className="flex justify-between items-start">
-                <div>
+            <div className="flex flex-col gap-2">
+                {/* Row 1: Trip name + Edit/Delete */}
+                <div className="flex justify-between items-start">
                     <h1 className="text-2xl font-bold">{trip.name}</h1>
-                    <div className="flex flex-wrap gap-4 mt-2 text-gray-500">
-                        {activity && <span>{activity.name}</span>}
-                        {(trip.start_date || trip.end_date) && (
-                            <span>
-                                {formatDate(trip.start_date)}
-                                {trip.start_date && trip.end_date && ' - '}
-                                {trip.end_date && formatDate(trip.end_date)}
-                            </span>
-                        )}
-                    </div>
-                    {trip.notes && (
-                        <p className="mt-2 text-gray-600 dark:text-gray-400">
-                            {trip.notes}
-                        </p>
-                    )}
-                </div>
-                <div className="flex flex-col items-end gap-2">
                     <div className="flex gap-2">
                         <Button
                             variant="plain"
@@ -120,80 +105,102 @@ const TripDetail = ({
                             Delete
                         </Button>
                     </div>
-                    <button
-                        onClick={() => setIsAnalyticsExpanded(!isAnalyticsExpanded)}
-                        className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors text-sm"
-                    >
-                        {isAnalyticsExpanded ? <PiCaretUp size={16} /> : <PiCaretDown size={16} />}
-                        <span>{isAnalyticsExpanded ? 'Hide Analytics' : 'Show Analytics'}</span>
-                    </button>
                 </div>
+                {/* Row 2: Activity/dates + Analytics toggle */}
+                <div className="flex justify-between items-center">
+                    <div className="flex flex-wrap gap-4 text-gray-500">
+                        {activity && <span>{activity.name}</span>}
+                        {(trip.start_date || trip.end_date) && (
+                            <span>
+                                {formatDate(trip.start_date)}
+                                {trip.start_date && trip.end_date && ' - '}
+                                {trip.end_date && formatDate(trip.end_date)}
+                            </span>
+                        )}
+                    </div>
+                    {hasAnalyticsData && (
+                        <button
+                            onClick={() => setIsAnalyticsExpanded(!isAnalyticsExpanded)}
+                            className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors text-sm"
+                        >
+                            {isAnalyticsExpanded ? <PiCaretUp size={16} /> : <PiCaretDown size={16} />}
+                            <span>{isAnalyticsExpanded ? 'Hide Analytics' : 'Show Analytics'}</span>
+                        </button>
+                    )}
+                </div>
+                {/* Notes */}
+                {trip.notes && (
+                    <p className="text-gray-600 dark:text-gray-400">
+                        {trip.notes}
+                    </p>
+                )}
             </div>
 
-            {/* Analytics Section - Collapsible */}
-            {isAnalyticsExpanded && (
-                <div className="flex flex-col gap-6">
-                    {/* Weight Summary */}
-                    <WeightSummary
-                        tripItems={tripItems}
-                        tripId={trip.id}
-                        waterVolume={waterVolume}
-                        waterUnit={waterUnit}
-                        onWaterUpdate={handleWaterUpdate}
-                    />
-
-                    {/* Analytics Charts */}
-                    {hasAnalyticsData && (
-                        <Card>
-                            <div className="flex flex-col lg:flex-row gap-6">
-                                <div className="lg:w-[70%] flex flex-col gap-4">
-                                    <Segment
-                                        value={chartView}
-                                        onChange={(val) => setChartView(val)}
-                                        size="sm"
-                                        className="self-start"
-                                    >
-                                        <Segment.Item value="treemap">
-                                            <span className="flex items-center gap-1">
-                                                <PiSquaresFour />
-                                                <span className="hidden sm:inline">Treemap</span>
-                                            </span>
-                                        </Segment.Item>
-                                        <Segment.Item value="pie">
-                                            <span className="flex items-center gap-1">
-                                                <PiChartPie />
-                                                <span className="hidden sm:inline">Donut</span>
-                                            </span>
-                                        </Segment.Item>
-                                    </Segment>
-                                    <div className="flex-1">
-                                        {chartView === 'treemap' ? (
-                                            <WeightTreemap
-                                                tripItems={tripItems}
-                                                categoryMap={categoryMap}
-                                                waterVolume={waterVolume}
-                                            />
-                                        ) : (
-                                            <WeightPieChart
-                                                tripItems={tripItems}
-                                                categoryMap={categoryMap}
-                                                waterVolume={waterVolume}
-                                            />
-                                        )}
-                                    </div>
-                                </div>
-                                <div className="lg:w-[30%]">
-                                    <CategoryBreakdown
+            {/* Analytics Charts - Collapsible */}
+            {isAnalyticsExpanded && hasAnalyticsData && (
+                <Card>
+                    <div className="flex flex-col lg:flex-row gap-6">
+                        <div className="lg:w-[70%] flex flex-col gap-4">
+                            <Segment
+                                value={chartView}
+                                onChange={(val) => setChartView(val)}
+                                size="sm"
+                                className="self-start"
+                            >
+                                <Segment.Item value="treemap">
+                                    <span className="flex items-center gap-1">
+                                        <PiSquaresFour />
+                                        <span className="hidden sm:inline">Treemap</span>
+                                    </span>
+                                </Segment.Item>
+                                <Segment.Item value="pie">
+                                    <span className="flex items-center gap-1">
+                                        <PiChartPie />
+                                        <span className="hidden sm:inline">Donut</span>
+                                    </span>
+                                </Segment.Item>
+                            </Segment>
+                            <div className="flex-1 min-h-[320px]">
+                                {chartView === 'treemap' ? (
+                                    <WeightTreemap
                                         tripItems={tripItems}
                                         categoryMap={categoryMap}
                                         waterVolume={waterVolume}
+                                        hoveredCategory={hoveredCategory}
+                                        onCategoryHover={setHoveredCategory}
                                     />
-                                </div>
+                                ) : (
+                                    <WeightPieChart
+                                        tripItems={tripItems}
+                                        categoryMap={categoryMap}
+                                        waterVolume={waterVolume}
+                                        hoveredCategory={hoveredCategory}
+                                        onCategoryHover={setHoveredCategory}
+                                    />
+                                )}
                             </div>
-                        </Card>
-                    )}
-                </div>
+                        </div>
+                        <div className="lg:w-[30%]">
+                            <CategoryBreakdown
+                                tripItems={tripItems}
+                                categoryMap={categoryMap}
+                                waterVolume={waterVolume}
+                                hoveredCategory={hoveredCategory}
+                                onCategoryHover={setHoveredCategory}
+                            />
+                        </div>
+                    </div>
+                </Card>
             )}
+
+            {/* Weight Summary - Always visible */}
+            <WeightSummary
+                tripItems={tripItems}
+                tripId={trip.id}
+                waterVolume={waterVolume}
+                waterUnit={waterUnit}
+                onWaterUpdate={handleWaterUpdate}
+            />
 
             {/* Items Section */}
             <Card>
