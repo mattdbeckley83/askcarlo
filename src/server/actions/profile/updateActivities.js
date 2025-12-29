@@ -15,8 +15,6 @@ export async function updateActivities(activityIds) {
         return { error: 'Invalid activity IDs' }
     }
 
-    console.log('[updateActivities] Called with', activityIds.length, 'activities:', activityIds)
-
     try {
         // Delete all existing user activities
         const { error: deleteError } = await supabaseAdmin
@@ -46,34 +44,20 @@ export async function updateActivities(activityIds) {
             }
 
             // Update milestone flag if this is user's first time completing profile
-            console.log('[updateActivities] Checking has_completed_profile for user:', userId)
-
-            const { data: user, error: userError } = await supabaseAdmin
+            const { data: user } = await supabaseAdmin
                 .from('users')
                 .select('has_completed_profile')
                 .eq('id', userId)
                 .single()
 
-            console.log('[updateActivities] User data:', user, 'Error:', userError)
-
             if (user && !user.has_completed_profile) {
-                console.log('[updateActivities] Setting has_completed_profile to true')
-
-                const { error: updateError } = await supabaseAdmin
+                await supabaseAdmin
                     .from('users')
                     .update({
                         has_completed_profile: true,
                         profile_completed_at: new Date().toISOString(),
                     })
                     .eq('id', userId)
-
-                if (updateError) {
-                    console.error('[updateActivities] Error updating has_completed_profile:', updateError)
-                } else {
-                    console.log('[updateActivities] Successfully set has_completed_profile to true')
-                }
-            } else {
-                console.log('[updateActivities] Skipped update - user:', !!user, 'has_completed_profile:', user?.has_completed_profile)
             }
         }
 
