@@ -191,7 +191,7 @@ const EditItemModal = ({ isOpen, onClose, item, categories = [], itemTypes = [] 
 
     if (showDeleteConfirm) {
         return (
-            <Dialog isOpen={isOpen} onClose={handleClose} width={400}>
+            <Dialog isOpen={isOpen} onClose={handleClose} width={400} closable={false}>
                 <div className="flex flex-col items-center text-center gap-4">
                     <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
                         <PiWarning className="w-6 h-6 text-red-600 dark:text-red-400" />
@@ -234,7 +234,7 @@ const EditItemModal = ({ isOpen, onClose, item, categories = [], itemTypes = [] 
     }
 
     return (
-        <Dialog isOpen={isOpen} onClose={handleClose} width={520}>
+        <Dialog isOpen={isOpen} onClose={handleClose} width={520} closable={false}>
             <div className="flex justify-between items-start mb-3">
                 <h4 className="text-lg font-semibold">Edit Item</h4>
                 <button
