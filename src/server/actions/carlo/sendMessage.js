@@ -169,6 +169,12 @@ async function getSelectedContext(userId, context = {}) {
                 notes,
                 water_volume,
                 water_unit,
+                distance_miles,
+                total_ascent_ft,
+                total_descent_ft,
+                max_elevation_ft,
+                min_elevation_ft,
+                trail_url,
                 activities (name),
                 trip_items (
                     quantity,
@@ -198,6 +204,17 @@ async function getSelectedContext(userId, context = {}) {
                     ? `${trip.start_date}${trip.end_date ? ' to ' + trip.end_date : ''}`
                     : 'no dates set'
                 tripsContext += `\n${trip.name} (${activity}, ${dates}):\n`
+
+                // Trail metrics
+                const trailStats = []
+                if (trip.distance_miles) trailStats.push(`${trip.distance_miles} mi`)
+                if (trip.total_ascent_ft) trailStats.push(`${trip.total_ascent_ft.toLocaleString()} ft elevation gain`)
+                if (trip.total_descent_ft) trailStats.push(`${trip.total_descent_ft.toLocaleString()} ft elevation loss`)
+                if (trip.max_elevation_ft) trailStats.push(`max elevation ${trip.max_elevation_ft.toLocaleString()} ft`)
+                if (trip.min_elevation_ft) trailStats.push(`min elevation ${trip.min_elevation_ft.toLocaleString()} ft`)
+                if (trailStats.length > 0) {
+                    tripsContext += `  Trail: ${trailStats.join(', ')}\n`
+                }
 
                 if (trip.notes) {
                     tripsContext += `  Notes: ${trip.notes}\n`

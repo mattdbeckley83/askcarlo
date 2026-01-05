@@ -52,8 +52,8 @@ export async function createCheckoutSession(priceType = 'monthly') {
                 .eq('id', userId)
         }
 
-        // Get the base URL
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+        // Get the base URL and ensure no trailing slash
+        const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '')
 
         // Create checkout session with 7-day free trial
         const session = await stripe.checkout.sessions.create({

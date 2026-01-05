@@ -29,8 +29,8 @@ export async function createPortalSession() {
 
         const stripe = getStripe()
 
-        // Get the base URL
-        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+        // Get the base URL and ensure no trailing slash
+        const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '')
 
         // Create billing portal session
         const session = await stripe.billingPortal.sessions.create({

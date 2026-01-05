@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import Segment from '@/components/ui/Segment'
-import { PiPlus, PiTrash, PiPencil, PiChartPie, PiSquaresFour, PiCaretDown, PiCaretUp } from 'react-icons/pi'
+import { PiPlus, PiTrash, PiPencil, PiChartPie, PiSquaresFour, PiCaretDown, PiCaretUp, PiArrowSquareOut } from 'react-icons/pi'
 import TripItemList from './TripItemList'
 import AddItemToTripModal from './AddItemToTripModal'
 import EditTripModal from './EditTripModal'
@@ -23,6 +23,11 @@ const formatDate = (dateString) => {
         day: 'numeric',
         year: 'numeric',
     })
+}
+
+const formatNumber = (num) => {
+    if (num === null || num === undefined) return null
+    return num.toLocaleString()
 }
 
 const TripDetail = ({
@@ -133,6 +138,36 @@ const TripDetail = ({
                     <p className="text-gray-600 dark:text-gray-400">
                         {trip.notes}
                     </p>
+                )}
+                {/* Trail Metrics */}
+                {(trip.distance_miles || trip.total_ascent_ft || trip.total_descent_ft || trip.max_elevation_ft || trip.min_elevation_ft || trip.trail_url) && (
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
+                        {trip.distance_miles && (
+                            <span>{trip.distance_miles} mi</span>
+                        )}
+                        {trip.total_ascent_ft && (
+                            <span>{formatNumber(trip.total_ascent_ft)} ft ↑</span>
+                        )}
+                        {trip.total_descent_ft && (
+                            <span>{formatNumber(trip.total_descent_ft)} ft ↓</span>
+                        )}
+                        {trip.max_elevation_ft && (
+                            <span>{formatNumber(trip.max_elevation_ft)}' max</span>
+                        )}
+                        {trip.min_elevation_ft && (
+                            <span>{formatNumber(trip.min_elevation_ft)}' min</span>
+                        )}
+                        {trip.trail_url && (
+                            <a
+                                href={trip.trail_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:underline"
+                            >
+                                Trail Link <PiArrowSquareOut size={14} />
+                            </a>
+                        )}
+                    </div>
                 )}
             </div>
 

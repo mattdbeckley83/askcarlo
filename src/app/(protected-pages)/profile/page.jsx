@@ -1,5 +1,7 @@
+import { Suspense } from 'react'
 import { getProfile } from '@/server/actions/profile/getProfile'
 import ProfileForm from './_components/ProfileForm'
+import SubscriptionToast from './_components/SubscriptionToast'
 
 export const metadata = {
     title: 'Profile | Yonderlust',
@@ -23,6 +25,9 @@ export default async function ProfilePage() {
 
     return (
         <div>
+            <Suspense fallback={null}>
+                <SubscriptionToast />
+            </Suspense>
             <div className="mb-6">
                 <h1 className="text-2xl font-bold">Profile</h1>
                 <p className="text-gray-500 mt-1">

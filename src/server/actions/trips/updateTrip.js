@@ -18,6 +18,14 @@ export async function updateTrip(formData) {
     const endDate = formData.get('end_date') || null
     const notes = formData.get('notes') || null
 
+    // Trail metrics
+    const distanceMiles = formData.get('distance_miles')
+    const totalAscentFt = formData.get('total_ascent_ft')
+    const totalDescentFt = formData.get('total_descent_ft')
+    const maxElevationFt = formData.get('max_elevation_ft')
+    const minElevationFt = formData.get('min_elevation_ft')
+    const trailUrl = formData.get('trail_url')
+
     if (!tripId) {
         return { error: 'Trip ID is required' }
     }
@@ -49,6 +57,12 @@ export async function updateTrip(formData) {
             start_date: startDate || null,
             end_date: endDate || null,
             notes: notes?.trim() || null,
+            distance_miles: distanceMiles ? parseFloat(distanceMiles) : null,
+            total_ascent_ft: totalAscentFt ? parseInt(totalAscentFt) : null,
+            total_descent_ft: totalDescentFt ? parseInt(totalDescentFt) : null,
+            max_elevation_ft: maxElevationFt ? parseInt(maxElevationFt) : null,
+            min_elevation_ft: minElevationFt ? parseInt(minElevationFt) : null,
+            trail_url: trailUrl?.trim() || null,
             updated_at: new Date().toISOString(),
         })
         .eq('id', tripId)
