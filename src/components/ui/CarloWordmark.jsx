@@ -42,8 +42,9 @@ const CarloWordmark = ({
                 aria-label="Carlo"
             >
                 <text
-                    x="0"
+                    x="50%"
                     y="26"
+                    textAnchor="middle"
                     className="carlo-wordmark"
                     fill={color}
                     fontSize="32"

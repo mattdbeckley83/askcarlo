@@ -68,8 +68,8 @@ export default function SignUpPage() {
             {/* Logo */}
             <Link href="https://askcarlo.ai" className="mb-8">
                 <CarloWordmark
-                    width={200}
-                    height={40}
+                    width={300}
+                    height={60}
                     className="text-gray-900"
                 />
             </Link>
