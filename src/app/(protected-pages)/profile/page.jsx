@@ -4,7 +4,7 @@ import ProfileForm from './_components/ProfileForm'
 import SubscriptionToast from './_components/SubscriptionToast'
 
 export const metadata = {
-    title: 'Profile | Yonderlust',
+    title: 'Profile | Carlo',
 }
 
 export default async function ProfilePage() {

@@ -31,7 +31,7 @@ export async function updateAiContext(aiContext) {
         }
 
         revalidatePath('/profile')
-        revalidatePath('/carlo')
+        revalidatePath('/conversations')
         return { success: true }
     } catch (error) {
         console.error('Error in updateAiContext:', error)

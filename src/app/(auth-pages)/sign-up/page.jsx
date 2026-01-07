@@ -1,6 +1,6 @@
 import { SignUp } from '@clerk/nextjs'
-import Image from 'next/image'
 import Link from 'next/link'
+import CarloWordmark from '@/components/ui/CarloWordmark'
 
 const clerkAppearance = {
     variables: {
@@ -66,13 +66,11 @@ export default function SignUpPage() {
             style={{ backgroundImage: "url('/img/marketing-background.jpeg')" }}
         >
             {/* Logo */}
-            <Link href="https://yonderlust.app" className="mb-8">
-                <Image
-                    src="/img/logo/yonderlust-wordmark-black.png"
-                    alt="Yonderlust"
+            <Link href="https://askcarlo.ai" className="mb-8">
+                <CarloWordmark
                     width={200}
                     height={40}
-                    priority
+                    className="text-gray-900"
                 />
             </Link>
 

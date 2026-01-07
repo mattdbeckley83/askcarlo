@@ -34,6 +34,6 @@ export async function createConversation(template = null) {
         return { error: 'Failed to create conversation' }
     }
 
-    revalidatePath('/carlo')
+    revalidatePath('/conversations')
     return { success: true, conversation }
 }

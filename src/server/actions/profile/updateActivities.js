@@ -64,7 +64,7 @@ export async function updateActivities(activityIds, activityNotes = {}) {
 
         revalidatePath('/profile')
         revalidatePath('/home')
-        revalidatePath('/carlo')
+        revalidatePath('/conversations')
         return { success: true }
     } catch (error) {
         console.error('Error in updateActivities:', error)

@@ -3,7 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import GearList from './_components/GearList'
 
 export const metadata = {
-    title: 'My Gear | Yonderlust',
+    title: 'My Gear | Carlo',
 }
 
 async function getGearTypeId() {

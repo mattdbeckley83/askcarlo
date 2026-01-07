@@ -1,5 +1,5 @@
 const pageMeta = {
-    title: 'Yonderlust',
+    title: 'Carlo',
     description:
         'AI-powered backpacking trip planning',
     icons: {

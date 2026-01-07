@@ -3,7 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import TripList from './_components/TripList'
 
 export const metadata = {
-    title: 'My Trips | Yonderlust',
+    title: 'My Trips | Carlo',
 }
 
 async function getTrips(userId) {

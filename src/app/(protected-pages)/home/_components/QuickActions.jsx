@@ -30,7 +30,7 @@ export default function QuickActions() {
         {
             label: 'Chat with Carlo',
             description: 'Get personalized gear recommendations',
-            href: '/carlo',
+            href: '/conversations',
             iconSrc: '/img/logo/carlo.png',
             iconBg: 'bg-purple-100 dark:bg-purple-900/50',
         },

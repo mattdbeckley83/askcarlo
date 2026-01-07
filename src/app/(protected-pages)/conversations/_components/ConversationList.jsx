@@ -33,7 +33,7 @@ export default function ConversationList({ conversations, activeConversationId }
 
         if (result.success) {
             if (activeConversationId === conversationId) {
-                router.push('/carlo')
+                router.push('/conversations')
             } else {
                 router.refresh()
             }

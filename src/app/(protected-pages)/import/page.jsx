@@ -3,7 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import ImportUploader from './_components/ImportUploader'
 
 export const metadata = {
-    title: 'Import from LighterPack | Yonderlust',
+    title: 'Import from LighterPack | Carlo',
 }
 
 async function getItemTypes() {

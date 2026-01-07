@@ -271,7 +271,7 @@ async function getSelectedContext(userId, context = {}) {
 }
 
 function buildSystemPrompt(profileContext, selectedContext) {
-    const basePrompt = `You are Carlo, an AI backpacking advisor for Yonderlust.
+    const basePrompt = `You are Carlo, an AI backpacking advisor.
 
 Your expertise includes:
 - Gear selection and optimization for different conditions
@@ -516,7 +516,7 @@ export async function sendMessage(conversationId, userMessage, context = {}) {
         // Increment conversation counter for Explorer users
         await incrementCarloConversation(userId)
 
-        revalidatePath('/carlo')
+        revalidatePath('/conversations')
         revalidatePath('/home')
 
         const totalTime = Date.now() - startTime

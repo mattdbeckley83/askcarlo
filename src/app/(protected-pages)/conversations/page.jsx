@@ -4,7 +4,7 @@ import ConversationList from './_components/ConversationList'
 import ChatInterface from './_components/ChatInterface'
 
 export const metadata = {
-    title: 'Carlo - AI Assistant | Yonderlust',
+    title: 'Ask Carlo | Carlo',
 }
 
 async function getConversations(userId) {

@@ -28,7 +28,7 @@ export default function OnboardingChecklist({ onboardingStatus }) {
             label: 'Chat with Carlo',
             description: 'Get personalized advice from our AI assistant',
             completed: onboardingStatus.hasUsedCarlo,
-            href: '/carlo',
+            href: '/conversations',
             icon: PiRobot,
         },
         {

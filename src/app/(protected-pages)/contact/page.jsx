@@ -2,7 +2,7 @@ import Card from '@/components/ui/Card'
 import { PiEnvelope } from 'react-icons/pi'
 
 export const metadata = {
-    title: 'Contact Us | Yonderlust',
+    title: 'Contact Us | Carlo',
 }
 
 export default function ContactPage() {
@@ -33,10 +33,10 @@ export default function ContactPage() {
                         <p className="text-gray-700 dark:text-gray-300">
                             If you have any questions, feedback, or would like to report an issue, please reach out to us at{' '}
                             <a
-                                href="mailto:support@yonderlust.app"
+                                href="mailto:support@askcarlo.ai"
                                 className="text-orange-500 hover:text-orange-600 dark:hover:text-orange-400 font-medium"
                             >
-                                support@yonderlust.app
+                                support@askcarlo.ai
                             </a>{' '}
                             and we will get back to you ASAP.
                         </p>

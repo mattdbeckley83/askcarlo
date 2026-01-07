@@ -41,6 +41,6 @@ export async function deleteConversation(conversationId) {
         return { error: 'Failed to delete conversation' }
     }
 
-    revalidatePath('/carlo')
+    revalidatePath('/conversations')
     return { success: true }
 }

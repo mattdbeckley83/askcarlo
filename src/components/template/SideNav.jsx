@@ -10,7 +10,7 @@ import queryRoute from '@/utils/queryRoute'
 import appConfig from '@/configs/app.config'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import Image from 'next/image'
+import CarloWordmark from '@/components/ui/CarloWordmark'
 
 import {
     SIDE_NAV_WIDTH,
@@ -72,13 +72,10 @@ const SideNav = ({
                     style={{ height: HEADER_HEIGHT }}
                 >
                     {!sideNavCollapse && (
-                        <Image
-                            src="/img/logo/yonderlust-wordmark-black.png"
-                            alt="Yonderlust"
+                        <CarloWordmark
                             width={160}
                             height={32}
-                            className="dark:invert"
-                            priority
+                            className="text-gray-900 dark:text-white"
                         />
                     )}
                 </Link>

@@ -49,8 +49,8 @@ export const protectedRoutes = {
             pageContainerType: 'contained',
         },
     },
-    '/carlo': {
-        key: 'carlo',
+    '/conversations': {
+        key: 'conversations',
         authority: [],
         meta: {
             pageBackgroundType: 'plain',

@@ -3,7 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import FoodList from './_components/FoodList'
 
 export const metadata = {
-    title: 'My Food | Yonderlust',
+    title: 'My Food | Carlo',
 }
 
 async function getFoodTypeId() {

@@ -15,7 +15,7 @@ export async function generateMetadata({ params }) {
         .single()
 
     return {
-        title: trip ? `${trip.name} | Yonderlust` : 'Trip | Yonderlust',
+        title: trip ? `${trip.name} | Carlo` : 'Trip | Carlo',
     }
 }
 

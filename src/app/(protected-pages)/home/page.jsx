@@ -3,7 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import Dashboard from './_components/Dashboard'
 
 export const metadata = {
-    title: 'Home | Yonderlust',
+    title: 'Home | Carlo',
 }
 
 async function getUserData(userId) {

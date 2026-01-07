@@ -1,11 +1,11 @@
-# Yonderlust Beta - Project Context
+# Carlo - Project Context
 
 ## Project Overview
 
-Yonderlust is an AI-powered backpacking trip planning application that helps users manage gear, plan trips, and get personalized recommendations through Carlo, an AI assistant.
+Carlo is an AI-powered backpacking trip planning application that helps users manage gear, plan trips, and get personalized recommendations through Carlo, an AI assistant.
 
-**Status:** Fresh rebuild on new template (beta.yonderlust.app)
-**Previous version:** alpha.yonderlust.app (reference for features, not code)
+**Status:** Fresh rebuild on new template (app.askcarlo.ai)
+**Previous version:** alpha.askcarlo.ai (legacy) (reference for features, not code)
 
 ## Core Philosophy
 
@@ -263,13 +263,13 @@ CLERK_SECRET_KEY=[clerk_secret]
 1. **Over-engineering:** Don't add features users haven't requested
 2. **Schema complexity:** Keep tables simple, add complexity only when needed
 3. **Premature optimization:** Build for current users, not theoretical scale
-4. **Ignoring alpha:** Reference alpha.yonderlust.app for UX patterns that work
+4. **Ignoring alpha:** Reference alpha.askcarlo.ai (legacy) for UX patterns that work
 
 ## Reference Links
 
-- Alpha app (feature reference): https://alpha.yonderlust.app
+- Alpha app (feature reference): https://alpha.askcarlo.ai (legacy)
 - Supabase project: https://supabase.com/dashboard/project/hjgtrlosyxursmzfkliz
-- Vercel deployment: https://beta.yonderlust.app
+- Vercel deployment: https://app.askcarlo.ai
 
 ## Current Status
 
