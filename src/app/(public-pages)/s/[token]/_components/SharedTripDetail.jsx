@@ -2,15 +2,18 @@
 
 import { useState, useMemo } from 'react'
 import Card from '@/components/ui/Card'
-import { PiCaretDown, PiCaretUp, PiArrowSquareOut, PiEye } from 'react-icons/pi'
+import Segment from '@/components/ui/Segment'
+import { PiCaretDown, PiCaretUp, PiArrowSquareOut, PiEye, PiChartPie, PiSquaresFour } from 'react-icons/pi'
 import {
     calculateTripWeights,
     formatWeightForDisplay,
-    getWeightByCategory,
     litersToFlOz,
     convertToGrams,
-    WATER_CATEGORY_COLOR,
 } from '@/lib/utils/weightCalculations'
+// Import the same chart components used in the protected trip detail page
+import WeightTreemap from '@/app/(protected-pages)/trips/[id]/_components/WeightTreemap'
+import WeightPieChart from '@/app/(protected-pages)/trips/[id]/_components/WeightPieChart'
+import CategoryBreakdown from '@/app/(protected-pages)/trips/[id]/_components/CategoryBreakdown'
 
 const formatDate = (dateString) => {
     if (!dateString) return null
@@ -27,68 +30,6 @@ const formatNumber = (num) => {
     return num.toLocaleString()
 }
 
-// Horizontal bar chart component for weight distribution
-const WeightBarChart = ({ categoryData }) => {
-    if (!categoryData || categoryData.length === 0) return null
-
-    const totalWeight = categoryData.reduce((sum, cat) => sum + cat.weight, 0)
-    if (totalWeight === 0) return null
-
-    return (
-        <div className="space-y-3">
-            {categoryData.map((cat, i) => {
-                const pct = (cat.weight / totalWeight) * 100
-                return (
-                    <div key={i} className="space-y-1">
-                        <div className="flex justify-between text-sm">
-                            <span className="font-medium truncate">{cat.category}</span>
-                            <span className="text-gray-500 ml-2">
-                                {formatWeightForDisplay(cat.weight)} ({pct.toFixed(0)}%)
-                            </span>
-                        </div>
-                        <div className="h-6 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                            <div
-                                className="h-full rounded-full transition-all"
-                                style={{
-                                    width: `${Math.max(pct, 2)}%`,
-                                    backgroundColor: cat.color,
-                                }}
-                            />
-                        </div>
-                    </div>
-                )
-            })}
-        </div>
-    )
-}
-
-// Category breakdown list
-const CategoryBreakdownList = ({ categoryData }) => {
-    if (!categoryData || categoryData.length === 0) return null
-
-    const totalWeight = categoryData.reduce((sum, cat) => sum + cat.weight, 0)
-
-    return (
-        <div className="space-y-2">
-            {categoryData.map((cat, i) => {
-                const pct = totalWeight > 0 ? (cat.weight / totalWeight) * 100 : 0
-                return (
-                    <div key={i} className="flex items-center gap-2">
-                        <div
-                            className="w-3 h-3 rounded-full flex-shrink-0"
-                            style={{ backgroundColor: cat.color }}
-                        />
-                        <span className="flex-1 text-sm truncate">{cat.category}</span>
-                        <span className="text-sm text-gray-500">{pct.toFixed(0)}%</span>
-                        <span className="text-sm font-medium w-20 text-right">
-                            {formatWeightForDisplay(cat.weight)}
-                        </span>
-                    </div>
-                )
-            })}
-        </div>
-    )
-}
 
 // Item list sorted by weight
 const SharedItemList = ({ tripItems, categoryMap }) => {
@@ -194,6 +135,8 @@ const SharedItemList = ({ tripItems, categoryMap }) => {
 
 const SharedTripDetail = ({ trip, tripItems, categories, activity }) => {
     const [isAnalyticsExpanded, setIsAnalyticsExpanded] = useState(true)
+    const [chartView, setChartView] = useState('treemap')
+    const [hoveredCategory, setHoveredCategory] = useState(null)
 
     const categoryMap = useMemo(() => {
         return categories.reduce((acc, cat) => {
@@ -207,11 +150,6 @@ const SharedTripDetail = ({ trip, tripItems, categories, activity }) => {
     const weights = useMemo(() => {
         return calculateTripWeights(tripItems, trip.water_volume || 0)
     }, [tripItems, trip.water_volume])
-
-    // Get category breakdown for charts (includes carried water)
-    const categoryData = useMemo(() => {
-        return getWeightByCategory(tripItems, categoryMap, trip.water_volume || 0)
-    }, [tripItems, categoryMap, trip.water_volume])
 
     // Format water display with both volume AND weight
     const waterDisplay = useMemo(() => {
@@ -317,13 +255,54 @@ const SharedTripDetail = ({ trip, tripItems, categories, activity }) => {
             {isAnalyticsExpanded && hasAnalyticsData && (
                 <Card>
                     <div className="flex flex-col lg:flex-row gap-6">
-                        <div className="lg:w-[60%]">
-                            <h3 className="font-medium mb-4">Weight Distribution</h3>
-                            <WeightBarChart categoryData={categoryData} />
+                        <div className="lg:w-[70%] flex flex-col gap-4">
+                            <Segment
+                                value={chartView}
+                                onChange={(val) => setChartView(val)}
+                                size="sm"
+                                className="self-start"
+                            >
+                                <Segment.Item value="treemap">
+                                    <span className="flex items-center gap-1">
+                                        <PiSquaresFour />
+                                        <span className="hidden sm:inline">Treemap</span>
+                                    </span>
+                                </Segment.Item>
+                                <Segment.Item value="pie">
+                                    <span className="flex items-center gap-1">
+                                        <PiChartPie />
+                                        <span className="hidden sm:inline">Donut</span>
+                                    </span>
+                                </Segment.Item>
+                            </Segment>
+                            <div className="flex-1 min-h-[320px]">
+                                {chartView === 'treemap' ? (
+                                    <WeightTreemap
+                                        tripItems={tripItems}
+                                        categoryMap={categoryMap}
+                                        waterVolume={trip.water_volume || 0}
+                                        hoveredCategory={hoveredCategory}
+                                        onCategoryHover={setHoveredCategory}
+                                    />
+                                ) : (
+                                    <WeightPieChart
+                                        tripItems={tripItems}
+                                        categoryMap={categoryMap}
+                                        waterVolume={trip.water_volume || 0}
+                                        hoveredCategory={hoveredCategory}
+                                        onCategoryHover={setHoveredCategory}
+                                    />
+                                )}
+                            </div>
                         </div>
-                        <div className="lg:w-[40%]">
-                            <h3 className="font-medium mb-4">Category Breakdown</h3>
-                            <CategoryBreakdownList categoryData={categoryData} />
+                        <div className="lg:w-[30%]">
+                            <CategoryBreakdown
+                                tripItems={tripItems}
+                                categoryMap={categoryMap}
+                                waterVolume={trip.water_volume || 0}
+                                hoveredCategory={hoveredCategory}
+                                onCategoryHover={setHoveredCategory}
+                            />
                         </div>
                     </div>
                 </Card>
