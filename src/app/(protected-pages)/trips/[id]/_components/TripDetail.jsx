@@ -5,11 +5,12 @@ import { useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import Segment from '@/components/ui/Segment'
-import { PiPlus, PiTrash, PiPencil, PiChartPie, PiSquaresFour, PiCaretDown, PiCaretUp, PiArrowSquareOut } from 'react-icons/pi'
+import { PiPlus, PiTrash, PiPencil, PiChartPie, PiSquaresFour, PiCaretDown, PiCaretUp, PiArrowSquareOut, PiShareNetwork } from 'react-icons/pi'
 import TripItemList from './TripItemList'
 import AddItemToTripModal from './AddItemToTripModal'
 import EditTripModal from './EditTripModal'
 import DeleteTripDialog from './DeleteTripDialog'
+import ShareTripModal from './ShareTripModal'
 import WeightSummary from './WeightSummary'
 import CategoryBreakdown from './CategoryBreakdown'
 import WeightTreemap from './WeightTreemap'
@@ -42,6 +43,7 @@ const TripDetail = ({
     const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false)
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false)
     const [chartView, setChartView] = useState('treemap')
     const [isAnalyticsExpanded, setIsAnalyticsExpanded] = useState(false)
     const [hoveredCategory, setHoveredCategory] = useState(null)
@@ -94,6 +96,13 @@ const TripDetail = ({
                 <div className="flex justify-between items-start">
                     <h1 className="text-2xl font-bold">{trip.name}</h1>
                     <div className="flex gap-2">
+                        <Button
+                            variant="plain"
+                            icon={<PiShareNetwork />}
+                            onClick={() => setIsShareModalOpen(true)}
+                        >
+                            Share
+                        </Button>
                         <Button
                             variant="plain"
                             icon={<PiPencil />}
@@ -280,6 +289,13 @@ const TripDetail = ({
                 tripId={trip.id}
                 tripName={trip.name}
                 onSuccess={handleDeleteSuccess}
+            />
+
+            <ShareTripModal
+                isOpen={isShareModalOpen}
+                onClose={() => setIsShareModalOpen(false)}
+                tripId={trip.id}
+                tripName={trip.name}
             />
         </div>
     )
