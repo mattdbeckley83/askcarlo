@@ -19,7 +19,7 @@ const ShareTripModal = ({ isOpen, onClose, tripId, tripName }) => {
     const [copied, setCopied] = useState(false)
 
     const shareUrl = shareToken
-        ? `https://askcarlo.ai/s/${shareToken}`
+        ? `https://app.askcarlo.ai/s/${shareToken}`
         : null
 
     // Fetch current share status when modal opens

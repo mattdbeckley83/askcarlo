@@ -65,7 +65,7 @@ export async function generateMetadata({ params }) {
             title: `${trip.name} - Shared on Carlo`,
             description,
             type: 'website',
-            url: `https://askcarlo.ai/s/${token}`,
+            url: `https://app.askcarlo.ai/s/${token}`,
             siteName: 'Carlo',
         },
         twitter: {
