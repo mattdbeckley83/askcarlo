@@ -2,8 +2,15 @@
 
 import { useState, useMemo } from 'react'
 import Card from '@/components/ui/Card'
-import Segment from '@/components/ui/Segment'
-import { PiChartPie, PiSquaresFour, PiCaretDown, PiCaretUp, PiArrowSquareOut, PiEye } from 'react-icons/pi'
+import { PiCaretDown, PiCaretUp, PiArrowSquareOut, PiEye } from 'react-icons/pi'
+import {
+    calculateTripWeights,
+    formatWeightForDisplay,
+    getWeightByCategory,
+    litersToFlOz,
+    convertToGrams,
+    WATER_CATEGORY_COLOR,
+} from '@/lib/utils/weightCalculations'
 
 const formatDate = (dateString) => {
     if (!dateString) return null
@@ -20,78 +27,34 @@ const formatNumber = (num) => {
     return num.toLocaleString()
 }
 
-// Weight conversion helper
-const convertToOz = (weight, unit) => {
-    if (!weight) return 0
-    switch (unit?.toLowerCase()) {
-        case 'oz':
-            return weight
-        case 'lb':
-            return weight * 16
-        case 'g':
-            return weight * 0.035274
-        case 'kg':
-            return weight * 35.274
-        default:
-            return weight
-    }
-}
-
-const formatWeight = (oz) => {
-    if (oz >= 16) {
-        const lb = Math.floor(oz / 16)
-        const remainingOz = (oz % 16).toFixed(1)
-        return `${lb} lb ${remainingOz} oz`
-    }
-    return `${oz.toFixed(1)} oz`
-}
-
-// Simple treemap component for shared view
-const SimpleTreemap = ({ tripItems, categoryMap }) => {
-    const categoryData = useMemo(() => {
-        const grouped = {}
-
-        tripItems.forEach((tripItem) => {
-            const item = tripItem.items
-            if (!item) return
-
-            const categoryId = item.category_id || 'uncategorized'
-            const category = categoryMap[categoryId] || { name: 'Uncategorized', color: '#9CA3AF' }
-            const weightOz = convertToOz(item.weight, item.weight_unit) * tripItem.quantity
-
-            if (!grouped[categoryId]) {
-                grouped[categoryId] = {
-                    name: category.name,
-                    color: category.color,
-                    weight: 0,
-                }
-            }
-            grouped[categoryId].weight += weightOz
-        })
-
-        return Object.values(grouped).sort((a, b) => b.weight - a.weight)
-    }, [tripItems, categoryMap])
+// Horizontal bar chart component for weight distribution
+const WeightBarChart = ({ categoryData }) => {
+    if (!categoryData || categoryData.length === 0) return null
 
     const totalWeight = categoryData.reduce((sum, cat) => sum + cat.weight, 0)
-
     if (totalWeight === 0) return null
 
     return (
-        <div className="flex flex-wrap gap-1">
+        <div className="space-y-3">
             {categoryData.map((cat, i) => {
                 const pct = (cat.weight / totalWeight) * 100
                 return (
-                    <div
-                        key={i}
-                        className="p-2 rounded text-white text-xs font-medium"
-                        style={{
-                            backgroundColor: cat.color,
-                            width: `calc(${pct}% - 4px)`,
-                            minWidth: '60px',
-                        }}
-                    >
-                        <div className="truncate">{cat.name}</div>
-                        <div>{formatWeight(cat.weight)}</div>
+                    <div key={i} className="space-y-1">
+                        <div className="flex justify-between text-sm">
+                            <span className="font-medium truncate">{cat.category}</span>
+                            <span className="text-gray-500 ml-2">
+                                {formatWeightForDisplay(cat.weight)} ({pct.toFixed(0)}%)
+                            </span>
+                        </div>
+                        <div className="h-6 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div
+                                className="h-full rounded-full transition-all"
+                                style={{
+                                    width: `${Math.max(pct, 2)}%`,
+                                    backgroundColor: cat.color,
+                                }}
+                            />
+                        </div>
                     </div>
                 )
             })}
@@ -99,31 +62,9 @@ const SimpleTreemap = ({ tripItems, categoryMap }) => {
     )
 }
 
-// Simplified category breakdown
-const SimpleCategoryBreakdown = ({ tripItems, categoryMap }) => {
-    const categoryData = useMemo(() => {
-        const grouped = {}
-
-        tripItems.forEach((tripItem) => {
-            const item = tripItem.items
-            if (!item) return
-
-            const categoryId = item.category_id || 'uncategorized'
-            const category = categoryMap[categoryId] || { name: 'Uncategorized', color: '#9CA3AF' }
-            const weightOz = convertToOz(item.weight, item.weight_unit) * tripItem.quantity
-
-            if (!grouped[categoryId]) {
-                grouped[categoryId] = {
-                    name: category.name,
-                    color: category.color,
-                    weight: 0,
-                }
-            }
-            grouped[categoryId].weight += weightOz
-        })
-
-        return Object.values(grouped).sort((a, b) => b.weight - a.weight)
-    }, [tripItems, categoryMap])
+// Category breakdown list
+const CategoryBreakdownList = ({ categoryData }) => {
+    if (!categoryData || categoryData.length === 0) return null
 
     const totalWeight = categoryData.reduce((sum, cat) => sum + cat.weight, 0)
 
@@ -137,10 +78,10 @@ const SimpleCategoryBreakdown = ({ tripItems, categoryMap }) => {
                             className="w-3 h-3 rounded-full flex-shrink-0"
                             style={{ backgroundColor: cat.color }}
                         />
-                        <span className="flex-1 text-sm truncate">{cat.name}</span>
+                        <span className="flex-1 text-sm truncate">{cat.category}</span>
                         <span className="text-sm text-gray-500">{pct.toFixed(0)}%</span>
-                        <span className="text-sm font-medium w-24 text-right">
-                            {formatWeight(cat.weight)}
+                        <span className="text-sm font-medium w-20 text-right">
+                            {formatWeightForDisplay(cat.weight)}
                         </span>
                     </div>
                 )
@@ -149,7 +90,7 @@ const SimpleCategoryBreakdown = ({ tripItems, categoryMap }) => {
     )
 }
 
-// Simple item list for shared view
+// Item list sorted by weight
 const SharedItemList = ({ tripItems, categoryMap }) => {
     const groupedItems = useMemo(() => {
         const groups = {}
@@ -160,19 +101,28 @@ const SharedItemList = ({ tripItems, categoryMap }) => {
 
             const categoryId = item.category_id || 'uncategorized'
             const category = categoryMap[categoryId] || { name: 'Uncategorized', color: '#9CA3AF' }
+            const itemWeightGrams = convertToGrams(item.weight, item.weight_unit) * (tripItem.quantity || 1)
 
             if (!groups[categoryId]) {
                 groups[categoryId] = {
                     category,
                     items: [],
+                    totalWeight: 0,
                 }
             }
-            groups[categoryId].items.push({ ...tripItem, item })
+            groups[categoryId].items.push({ ...tripItem, item, weightGrams: itemWeightGrams })
+            groups[categoryId].totalWeight += itemWeightGrams
         })
 
-        return Object.values(groups).sort((a, b) =>
-            a.category.name.localeCompare(b.category.name)
-        )
+        // Sort categories by total weight (heaviest first)
+        const sortedGroups = Object.values(groups).sort((a, b) => b.totalWeight - a.totalWeight)
+
+        // Sort items within each category by weight (heaviest first)
+        sortedGroups.forEach(group => {
+            group.items.sort((a, b) => b.weightGrams - a.weightGrams)
+        })
+
+        return sortedGroups
     }, [tripItems, categoryMap])
 
     if (tripItems.length === 0) {
@@ -187,14 +137,19 @@ const SharedItemList = ({ tripItems, categoryMap }) => {
         <div className="space-y-4">
             {groupedItems.map((group, i) => (
                 <div key={i}>
-                    <div className="flex items-center gap-2 mb-2">
-                        <div
-                            className="w-3 h-3 rounded-full"
-                            style={{ backgroundColor: group.category.color }}
-                        />
-                        <h3 className="font-medium text-gray-700 dark:text-gray-300">
-                            {group.category.name}
-                        </h3>
+                    <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                            <div
+                                className="w-3 h-3 rounded-full"
+                                style={{ backgroundColor: group.category.color }}
+                            />
+                            <h3 className="font-medium text-gray-700 dark:text-gray-300">
+                                {group.category.name}
+                            </h3>
+                        </div>
+                        <span className="text-sm text-gray-500">
+                            {formatWeightForDisplay(group.totalWeight)}
+                        </span>
                     </div>
                     <div className="space-y-1 pl-5">
                         {group.items.map((tripItem, j) => (
@@ -202,7 +157,7 @@ const SharedItemList = ({ tripItems, categoryMap }) => {
                                 key={j}
                                 className="flex items-center justify-between text-sm py-1"
                             >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 flex-wrap">
                                     <span>{tripItem.item.name}</span>
                                     {tripItem.item.brand && (
                                         <span className="text-gray-400">
@@ -215,18 +170,18 @@ const SharedItemList = ({ tripItems, categoryMap }) => {
                                         </span>
                                     )}
                                     {tripItem.is_worn && (
-                                        <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">
+                                        <span className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded">
                                             worn
                                         </span>
                                     )}
                                     {tripItem.is_consumable && (
-                                        <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+                                        <span className="text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-1.5 py-0.5 rounded">
                                             consumable
                                         </span>
                                     )}
                                 </div>
-                                <span className="text-gray-600 dark:text-gray-400">
-                                    {tripItem.item.weight} {tripItem.item.weight_unit}
+                                <span className="text-gray-600 dark:text-gray-400 ml-2 whitespace-nowrap">
+                                    {formatWeightForDisplay(tripItem.weightGrams)}
                                 </span>
                             </div>
                         ))}
@@ -247,36 +202,40 @@ const SharedTripDetail = ({ trip, tripItems, categories, activity }) => {
         }, {})
     }, [categories])
 
-    // Calculate weight summary
-    const weightSummary = useMemo(() => {
-        let totalOz = 0
-        let consumableOz = 0
-        let wornOz = 0
+    // Calculate weight summary using proper utilities
+    // Note: water_volume is stored in LITERS, water_unit is the display preference
+    const weights = useMemo(() => {
+        return calculateTripWeights(tripItems, trip.water_volume || 0)
+    }, [tripItems, trip.water_volume])
 
-        tripItems.forEach((tripItem) => {
-            const item = tripItem.items
-            if (!item || !item.weight) return
+    // Get category breakdown for charts (includes carried water)
+    const categoryData = useMemo(() => {
+        return getWeightByCategory(tripItems, categoryMap, trip.water_volume || 0)
+    }, [tripItems, categoryMap, trip.water_volume])
 
-            const weightOz = convertToOz(item.weight, item.weight_unit) * tripItem.quantity
-            totalOz += weightOz
+    // Format water display with both volume AND weight
+    const waterDisplay = useMemo(() => {
+        if (!trip.water_volume || trip.water_volume <= 0) return null
 
-            if (tripItem.is_consumable) consumableOz += weightOz
-            if (tripItem.is_worn) wornOz += weightOz
-        })
+        // water_volume is stored in liters
+        // water_unit is the user's preferred display unit ('L' or 'fl oz')
+        const volumeLiters = trip.water_volume
+        const displayUnit = trip.water_unit || 'L'
 
-        // Add water weight if present
-        if (trip.water_volume && trip.water_unit) {
-            const waterOz = trip.water_unit === 'L'
-                ? trip.water_volume * 33.814 * 1.043 // liters to oz weight
-                : trip.water_volume * 1.043 // oz to oz weight
-            totalOz += waterOz
-            consumableOz += waterOz
+        let volumeStr
+        if (displayUnit === 'fl oz') {
+            const flOz = litersToFlOz(volumeLiters)
+            volumeStr = `${flOz.toFixed(1)} fl oz`
+        } else {
+            volumeStr = `${volumeLiters.toFixed(1)} L`
         }
 
-        const baseOz = totalOz - consumableOz - wornOz
+        // Weight: 1 L water = 1 kg = 2.205 lb
+        const weightLb = volumeLiters * 2.205
+        const weightStr = `${weightLb.toFixed(1)} lb`
 
-        return { totalOz, baseOz, consumableOz, wornOz }
-    }, [tripItems, trip.water_volume, trip.water_unit])
+        return `${volumeStr} (${weightStr})`
+    }, [trip.water_volume, trip.water_unit])
 
     const hasAnalyticsData = tripItems.length > 0 || (trip.water_volume && trip.water_volume > 0)
 
@@ -358,19 +317,13 @@ const SharedTripDetail = ({ trip, tripItems, categories, activity }) => {
             {isAnalyticsExpanded && hasAnalyticsData && (
                 <Card>
                     <div className="flex flex-col lg:flex-row gap-6">
-                        <div className="lg:w-[70%]">
+                        <div className="lg:w-[60%]">
                             <h3 className="font-medium mb-4">Weight Distribution</h3>
-                            <SimpleTreemap
-                                tripItems={tripItems}
-                                categoryMap={categoryMap}
-                            />
+                            <WeightBarChart categoryData={categoryData} />
                         </div>
-                        <div className="lg:w-[30%]">
+                        <div className="lg:w-[40%]">
                             <h3 className="font-medium mb-4">Category Breakdown</h3>
-                            <SimpleCategoryBreakdown
-                                tripItems={tripItems}
-                                categoryMap={categoryMap}
-                            />
+                            <CategoryBreakdownList categoryData={categoryData} />
                         </div>
                     </div>
                 </Card>
@@ -381,24 +334,24 @@ const SharedTripDetail = ({ trip, tripItems, categories, activity }) => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="text-center">
                         <p className="text-sm text-gray-500 mb-1">Total Weight</p>
-                        <p className="text-xl font-bold">{formatWeight(weightSummary.totalOz)}</p>
+                        <p className="text-xl font-bold">{formatWeightForDisplay(weights.total)}</p>
                     </div>
                     <div className="text-center">
                         <p className="text-sm text-gray-500 mb-1">Base Weight</p>
-                        <p className="text-xl font-bold text-blue-600">{formatWeight(weightSummary.baseOz)}</p>
+                        <p className="text-xl font-bold text-indigo-600">{formatWeightForDisplay(weights.base)}</p>
                     </div>
                     <div className="text-center">
                         <p className="text-sm text-gray-500 mb-1">Worn Weight</p>
-                        <p className="text-xl font-bold text-purple-600">{formatWeight(weightSummary.wornOz)}</p>
+                        <p className="text-xl font-bold text-blue-500">{formatWeightForDisplay(weights.worn)}</p>
                     </div>
                     <div className="text-center">
                         <p className="text-sm text-gray-500 mb-1">Consumable</p>
-                        <p className="text-xl font-bold text-green-600">{formatWeight(weightSummary.consumableOz)}</p>
+                        <p className="text-xl font-bold text-amber-500">{formatWeightForDisplay(weights.consumable)}</p>
                     </div>
                 </div>
-                {trip.water_volume > 0 && (
+                {waterDisplay && (
                     <p className="text-center text-sm text-gray-500 mt-2">
-                        Includes {trip.water_volume} {trip.water_unit} water
+                        Includes {waterDisplay} water
                     </p>
                 )}
             </Card>
