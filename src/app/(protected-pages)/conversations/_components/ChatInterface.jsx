@@ -89,7 +89,7 @@ export default function ChatInterface({
             if (createResult.success && createResult.conversation) {
                 activeConversationId = createResult.conversation.id
                 startTransition(() => {
-                    router.push(`/carlo?id=${activeConversationId}`)
+                    router.push(`/conversations?id=${activeConversationId}`)
                 })
             } else {
                 setIsLoading(false)
@@ -160,7 +160,7 @@ export default function ChatInterface({
 
         const newConversationId = createResult.conversation.id
         startTransition(() => {
-            router.push(`/carlo?id=${newConversationId}`)
+            router.push(`/conversations?id=${newConversationId}`)
         })
 
         // Add user message to UI immediately

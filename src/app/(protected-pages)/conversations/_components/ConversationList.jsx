@@ -14,13 +14,13 @@ export default function ConversationList({ conversations, activeConversationId }
         startTransition(async () => {
             const result = await createConversation()
             if (result.success && result.conversation) {
-                router.push(`/carlo?id=${result.conversation.id}`)
+                router.push(`/conversations?id=${result.conversation.id}`)
             }
         })
     }
 
     const handleSelectConversation = (conversationId) => {
-        router.push(`/carlo?id=${conversationId}`)
+        router.push(`/conversations?id=${conversationId}`)
     }
 
     const handleDeleteConversation = async (e, conversationId) => {
