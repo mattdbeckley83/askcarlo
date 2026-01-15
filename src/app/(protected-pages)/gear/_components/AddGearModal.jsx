@@ -257,6 +257,8 @@ const AddGearModal = ({ isOpen, onClose, categories = [], gearTypeId }) => {
                         <div className="flex gap-2">
                             <div className="flex-1 relative">
                                 <Input
+                                    id="gear-product-url"
+                                    name="productUrl"
                                     placeholder="Paste product URL to auto-fill..."
                                     value={productUrl}
                                     onChange={(e) => setProductUrl(e.target.value)}
@@ -291,10 +293,12 @@ const AddGearModal = ({ isOpen, onClose, categories = [], gearTypeId }) => {
 
                     {/* Name */}
                     <div>
-                        <label className="text-sm font-medium mb-1 block">
+                        <label htmlFor="gear-name" className="text-sm font-medium mb-1 block">
                             Name <span className="text-red-500">*</span>
                         </label>
                         <Input
+                            id="gear-name"
+                            name="name"
                             placeholder="Gear name"
                             value={formState.name}
                             onChange={handleInputChange('name')}
@@ -305,8 +309,10 @@ const AddGearModal = ({ isOpen, onClose, categories = [], gearTypeId }) => {
 
                     {/* Brand */}
                     <div>
-                        <label className="text-sm font-medium mb-1 block">Brand</label>
+                        <label htmlFor="gear-brand" className="text-sm font-medium mb-1 block">Brand</label>
                         <Input
+                            id="gear-brand"
+                            name="brand"
                             placeholder="Brand"
                             value={formState.brand}
                             onChange={handleInputChange('brand')}
@@ -317,8 +323,10 @@ const AddGearModal = ({ isOpen, onClose, categories = [], gearTypeId }) => {
                     {/* Category + Weight + Unit */}
                     <div className="grid grid-cols-12 gap-3">
                         <div className="col-span-5">
-                            <label className="text-sm font-medium mb-1 block">Category</label>
+                            <label htmlFor="gear-category" className="text-sm font-medium mb-1 block">Category</label>
                             <Select
+                                inputId="gear-category"
+                                name="category"
                                 componentAs={CreatableSelect}
                                 placeholder="Select or create..."
                                 options={categoryOptions}
@@ -330,8 +338,10 @@ const AddGearModal = ({ isOpen, onClose, categories = [], gearTypeId }) => {
                             />
                         </div>
                         <div className="col-span-4">
-                            <label className="text-sm font-medium mb-1 block">Weight</label>
+                            <label htmlFor="gear-weight" className="text-sm font-medium mb-1 block">Weight</label>
                             <Input
+                                id="gear-weight"
+                                name="weight"
                                 type="number"
                                 placeholder="0"
                                 value={formState.weight}
@@ -342,8 +352,10 @@ const AddGearModal = ({ isOpen, onClose, categories = [], gearTypeId }) => {
                             />
                         </div>
                         <div className="col-span-3">
-                            <label className="text-sm font-medium mb-1 block">Unit</label>
+                            <label htmlFor="gear-weight-unit" className="text-sm font-medium mb-1 block">Unit</label>
                             <Select
+                                inputId="gear-weight-unit"
+                                name="weightUnit"
                                 options={weightUnitOptions}
                                 value={weightUnitOptions.find(
                                     (opt) => opt.value === formState.weight_unit
@@ -356,8 +368,10 @@ const AddGearModal = ({ isOpen, onClose, categories = [], gearTypeId }) => {
 
                     {/* Description */}
                     <div>
-                        <label className="text-sm font-medium mb-1 block">Description</label>
+                        <label htmlFor="gear-description" className="text-sm font-medium mb-1 block">Description</label>
                         <Input
+                            id="gear-description"
+                            name="description"
                             textArea
                             placeholder="Optional notes..."
                             value={formState.description}

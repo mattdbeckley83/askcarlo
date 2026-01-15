@@ -255,6 +255,8 @@ const AddFoodModal = ({ isOpen, onClose, categories = [], foodTypeId }) => {
                         <div className="flex gap-2">
                             <div className="flex-1 relative">
                                 <Input
+                                    id="food-product-url"
+                                    name="productUrl"
                                     placeholder="Paste product URL to auto-fill..."
                                     value={productUrl}
                                     onChange={(e) => setProductUrl(e.target.value)}
@@ -289,10 +291,12 @@ const AddFoodModal = ({ isOpen, onClose, categories = [], foodTypeId }) => {
 
                     {/* Name */}
                     <div>
-                        <label className="text-sm font-medium mb-1 block">
+                        <label htmlFor="food-name" className="text-sm font-medium mb-1 block">
                             Name <span className="text-red-500">*</span>
                         </label>
                         <Input
+                            id="food-name"
+                            name="name"
                             placeholder="Food name"
                             value={formState.name}
                             onChange={handleInputChange('name')}
@@ -303,8 +307,10 @@ const AddFoodModal = ({ isOpen, onClose, categories = [], foodTypeId }) => {
 
                     {/* Brand */}
                     <div>
-                        <label className="text-sm font-medium mb-1 block">Brand</label>
+                        <label htmlFor="food-brand" className="text-sm font-medium mb-1 block">Brand</label>
                         <Input
+                            id="food-brand"
+                            name="brand"
                             placeholder="Brand"
                             value={formState.brand}
                             onChange={handleInputChange('brand')}
@@ -315,8 +321,10 @@ const AddFoodModal = ({ isOpen, onClose, categories = [], foodTypeId }) => {
                     {/* Category + Weight + Unit */}
                     <div className="grid grid-cols-12 gap-3">
                         <div className="col-span-5">
-                            <label className="text-sm font-medium mb-1 block">Category</label>
+                            <label htmlFor="food-category" className="text-sm font-medium mb-1 block">Category</label>
                             <Select
+                                inputId="food-category"
+                                name="category"
                                 componentAs={CreatableSelect}
                                 placeholder="Select or create..."
                                 options={categoryOptions}
@@ -328,8 +336,10 @@ const AddFoodModal = ({ isOpen, onClose, categories = [], foodTypeId }) => {
                             />
                         </div>
                         <div className="col-span-4">
-                            <label className="text-sm font-medium mb-1 block">Weight</label>
+                            <label htmlFor="food-weight" className="text-sm font-medium mb-1 block">Weight</label>
                             <Input
+                                id="food-weight"
+                                name="weight"
                                 type="number"
                                 placeholder="0"
                                 value={formState.weight}
@@ -340,8 +350,10 @@ const AddFoodModal = ({ isOpen, onClose, categories = [], foodTypeId }) => {
                             />
                         </div>
                         <div className="col-span-3">
-                            <label className="text-sm font-medium mb-1 block">Unit</label>
+                            <label htmlFor="food-weight-unit" className="text-sm font-medium mb-1 block">Unit</label>
                             <Select
+                                inputId="food-weight-unit"
+                                name="weightUnit"
                                 options={weightUnitOptions}
                                 value={weightUnitOptions.find(
                                     (opt) => opt.value === formState.weight_unit
@@ -354,8 +366,10 @@ const AddFoodModal = ({ isOpen, onClose, categories = [], foodTypeId }) => {
 
                     {/* Calories */}
                     <div>
-                        <label className="text-sm font-medium mb-1 block">Total Calories</label>
+                        <label htmlFor="food-calories" className="text-sm font-medium mb-1 block">Total Calories</label>
                         <Input
+                            id="food-calories"
+                            name="calories"
                             type="number"
                             placeholder="0"
                             value={formState.calories}
@@ -368,8 +382,10 @@ const AddFoodModal = ({ isOpen, onClose, categories = [], foodTypeId }) => {
 
                     {/* Description */}
                     <div>
-                        <label className="text-sm font-medium mb-1 block">Description</label>
+                        <label htmlFor="food-description" className="text-sm font-medium mb-1 block">Description</label>
                         <Input
+                            id="food-description"
+                            name="description"
                             textArea
                             placeholder="Optional notes..."
                             value={formState.description}
