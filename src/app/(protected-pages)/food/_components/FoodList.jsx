@@ -163,9 +163,9 @@ const FoodList = ({ items = [], categories = [], foodTypeId }) => {
                 </Button>
             </div>
 
-            <Card bodyClass="!p-0" bordered={false} className="border border-gray-200 dark:border-gray-700 rounded-xl">
-                <div className="overflow-auto max-h-[70vh] rounded-xl">
-                    <Table overflow={false} className="[&>thead]:border-0 [&>tbody]:border-t-0">
+            <Card>
+                <div className="overflow-auto max-h-[70vh]">
+                    <Table overflow={false}>
                         <THead className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-800/95 backdrop-blur-sm">
                             <Tr>
                                 <Th>

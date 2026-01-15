@@ -2,7 +2,7 @@
 
 import Card from '@/components/ui/Card'
 import Progress from '@/components/ui/Progress'
-import { PiCheck, PiBackpack, PiMapTrifold, PiRobot, PiUser } from 'react-icons/pi'
+import { PiCheck } from 'react-icons/pi'
 import Link from 'next/link'
 
 export default function OnboardingChecklist({ onboardingStatus }) {
@@ -13,7 +13,6 @@ export default function OnboardingChecklist({ onboardingStatus }) {
             description: 'Start building your gear inventory',
             completed: onboardingStatus.hasAddedGear,
             href: '/gear?action=add',
-            icon: PiBackpack,
         },
         {
             id: 'trip',
@@ -21,7 +20,6 @@ export default function OnboardingChecklist({ onboardingStatus }) {
             description: 'Plan a trip and add gear to it',
             completed: onboardingStatus.hasAddedTrip,
             href: '/trips?action=add',
-            icon: PiMapTrifold,
         },
         {
             id: 'carlo',
@@ -29,15 +27,13 @@ export default function OnboardingChecklist({ onboardingStatus }) {
             description: 'Get personalized advice from our AI assistant',
             completed: onboardingStatus.hasUsedCarlo,
             href: '/conversations',
-            icon: PiRobot,
         },
         {
             id: 'profile',
-            label: 'Complete your profile',
-            description: 'Add your name and preferences',
+            label: 'Select your activities',
+            description: 'Choose the outdoor activities you enjoy',
             completed: onboardingStatus.hasCompletedProfile,
             href: '/profile',
-            icon: PiUser,
         },
     ]
 
@@ -69,44 +65,35 @@ export default function OnboardingChecklist({ onboardingStatus }) {
                             href={item.href}
                             className={`group ${item.completed ? 'pointer-events-none' : ''}`}
                         >
-                            <div
-                                className={`flex items-start gap-3 p-3 rounded-lg border transition-colors ${
-                                    item.completed
-                                        ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-                                        : 'border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/20'
-                                }`}
-                            >
-                                <div
-                                    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                                        item.completed
-                                            ? 'bg-green-100 dark:bg-green-900/50'
-                                            : 'bg-gray-100 dark:bg-gray-800'
-                                    }`}
-                                >
-                                    {item.completed ? (
-                                        <PiCheck className="w-4 h-4 text-green-600 dark:text-green-400" />
-                                    ) : (
-                                        <item.icon className="w-4 h-4 text-gray-400 dark:text-gray-500" />
-                                    )}
+                            <div className="flex items-start gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
+                                {/* Checkbox */}
+                                <div className="flex-shrink-0 mt-0.5">
+                                    <div
+                                        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                                            item.completed
+                                                ? 'bg-[#fe7f2d] border-[#fe7f2d]'
+                                                : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'
+                                        }`}
+                                    >
+                                        {item.completed && (
+                                            <PiCheck className="w-3.5 h-3.5 text-white" strokeWidth={3} />
+                                        )}
+                                    </div>
                                 </div>
+
+                                {/* Task content */}
                                 <div className="flex-1 min-w-0">
                                     <p
                                         className={`font-medium ${
                                             item.completed
-                                                ? 'text-green-700 dark:text-green-400 line-through'
+                                                ? 'text-gray-500 dark:text-gray-400 line-through'
                                                 : 'text-gray-900 dark:text-white'
                                         }`}
                                     >
                                         {item.label}
                                     </p>
-                                    <p
-                                        className={`text-sm ${
-                                            item.completed
-                                                ? 'text-green-600 dark:text-green-500'
-                                                : 'text-gray-500 dark:text-gray-400'
-                                        }`}
-                                    >
-                                        {item.completed ? 'Completed!' : item.description}
+                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                        {item.description}
                                     </p>
                                 </div>
                             </div>
