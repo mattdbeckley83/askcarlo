@@ -49,18 +49,27 @@ export default function ActivityPickerModal({
 
     const selectedCount = localSelectedIds.length
 
+    const dialogTitleId = 'activity-picker-title'
+    const dialogDescId = 'activity-picker-desc'
+
     return (
-        <Dialog isOpen={isOpen} onClose={handleClose} width={400}>
+        <Dialog
+            isOpen={isOpen}
+            onClose={handleClose}
+            width={400}
+            aria-labelledby={dialogTitleId}
+            aria-describedby={dialogDescId}
+        >
             <div className="flex flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-lg font-semibold">Select Activities</h4>
+                    <h4 id={dialogTitleId} className="text-lg font-semibold">Select Activities</h4>
                     <span className="text-sm text-gray-500 dark:text-gray-400">
                         {selectedCount} selected
                     </span>
                 </div>
 
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                <p id={dialogDescId} className="text-sm text-gray-500 dark:text-gray-400 mb-4">
                     Select activities to help Carlo understand what type of trip you're planning.
                 </p>
 

@@ -214,10 +214,19 @@ export default function TripPlanningModal({ isOpen, onClose, onSubmit }) {
 
     const selectedTrip = trips.find((t) => t.id === formState.trip_id)
 
+    const dialogTitleId = 'trip-planning-title'
+    const dialogDescId = 'trip-planning-desc'
+
     return (
-        <Dialog isOpen={isOpen} onClose={handleClose} width={520}>
-            <h4 className="text-lg font-semibold mb-4">Trip Planning</h4>
-            <p className="text-gray-500 text-sm mb-4">
+        <Dialog
+            isOpen={isOpen}
+            onClose={handleClose}
+            width={520}
+            aria-labelledby={dialogTitleId}
+            aria-describedby={dialogDescId}
+        >
+            <h4 id={dialogTitleId} className="text-lg font-semibold mb-4">Trip Planning</h4>
+            <p id={dialogDescId} className="text-gray-500 text-sm mb-4">
                 Get personalized advice for your trip with full context of your planned gear.
             </p>
 

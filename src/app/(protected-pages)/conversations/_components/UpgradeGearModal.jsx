@@ -142,10 +142,19 @@ export default function UpgradeGearModal({ isOpen, onClose, onSubmit }) {
         onClose()
     }
 
+    const dialogTitleId = 'upgrade-gear-title'
+    const dialogDescId = 'upgrade-gear-desc'
+
     return (
-        <Dialog isOpen={isOpen} onClose={handleClose} width={480}>
-            <h4 className="text-lg font-semibold mb-4">Upgrade Gear</h4>
-            <p className="text-gray-500 text-sm mb-4">
+        <Dialog
+            isOpen={isOpen}
+            onClose={handleClose}
+            width={480}
+            aria-labelledby={dialogTitleId}
+            aria-describedby={dialogDescId}
+        >
+            <h4 id={dialogTitleId} className="text-lg font-semibold mb-4">Upgrade Gear</h4>
+            <p id={dialogDescId} className="text-gray-500 text-sm mb-4">
                 Get personalized recommendations to replace or upgrade an item from your gear list.
             </p>
 

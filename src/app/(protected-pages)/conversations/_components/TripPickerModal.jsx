@@ -89,19 +89,28 @@ export default function TripPickerModal({
         return uniqueItems.size
     }, [localSelectedIds, tripItems])
 
+    const dialogTitleId = 'trip-picker-title'
+    const dialogDescId = 'trip-picker-desc'
+
     return (
-        <Dialog isOpen={isOpen} onClose={handleClose} width={550}>
+        <Dialog
+            isOpen={isOpen}
+            onClose={handleClose}
+            width={550}
+            aria-labelledby={dialogTitleId}
+            aria-describedby={dialogDescId}
+        >
             <div className="flex flex-col h-[60vh] max-h-[500px]">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-lg font-semibold">Select Trips</h4>
+                    <h4 id={dialogTitleId} className="text-lg font-semibold">Select Trips</h4>
                     <span className="text-sm text-gray-500 dark:text-gray-400">
                         {selectedCount} selected
                     </span>
                 </div>
 
                 {/* Info Banner */}
-                <div className="flex items-start gap-2 p-3 mb-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-sm text-blue-700 dark:text-blue-300">
+                <div id={dialogDescId} className="flex items-start gap-2 p-3 mb-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-sm text-blue-700 dark:text-blue-300">
                     <PiInfo className="w-4 h-4 flex-shrink-0 mt-0.5" />
                     <span>
                         When you select a trip, all items assigned to that trip will be automatically added to your context.

@@ -104,13 +104,22 @@ export default function ItemPickerModal({
     const typeLabel = itemType === 'food' ? 'Food' : 'Gear'
     const typeLabelLower = itemType === 'food' ? 'food' : 'gear'
 
+    const dialogTitleId = `item-picker-title-${itemType}`
+    const dialogDescId = `item-picker-desc-${itemType}`
+
     return (
-        <Dialog isOpen={isOpen} onClose={handleClose} width={600}>
+        <Dialog
+            isOpen={isOpen}
+            onClose={handleClose}
+            width={600}
+            aria-labelledby={dialogTitleId}
+            aria-describedby={dialogDescId}
+        >
             <div className="flex flex-col h-[70vh] max-h-[600px]">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-lg font-semibold">Select {typeLabel}</h4>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                    <h4 id={dialogTitleId} className="text-lg font-semibold">Select {typeLabel}</h4>
+                    <span id={dialogDescId} className="text-sm text-gray-500 dark:text-gray-400">
                         {selectedCount} selected
                     </span>
                 </div>

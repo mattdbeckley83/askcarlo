@@ -21,7 +21,7 @@ export default function Dashboard({
 
     // Determine welcome message based on progress
     const welcomeMessage = hasCompletedAnyTask
-        ? `Welcome back, ${firstName}! You're making progress`
+        ? `Welcome back, ${firstName}`
         : `Welcome, ${firstName}! Let's get you started`
 
     return (
