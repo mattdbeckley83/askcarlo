@@ -117,10 +117,6 @@ const GearList = ({ items = [], categories = [], gearTypeId }) => {
                     aVal = a.brand || ''
                     bVal = b.brand || ''
                     break
-                case 'description':
-                    aVal = a.description || ''
-                    bVal = b.description || ''
-                    break
                 case 'weight':
                     aVal = a.weight || 0
                     bVal = b.weight || 0
@@ -194,14 +190,6 @@ const GearList = ({ items = [], categories = [], gearTypeId }) => {
                                 </Th>
                                 <Th>
                                     <SortableHeader
-                                        label="Description"
-                                        sortKey="description"
-                                        currentSort={sort}
-                                        onSort={handleSort}
-                                    />
-                                </Th>
-                                <Th>
-                                    <SortableHeader
                                         label="Weight"
                                         sortKey="weight"
                                         currentSort={sort}
@@ -213,7 +201,7 @@ const GearList = ({ items = [], categories = [], gearTypeId }) => {
                         <TBody>
                             {filteredAndSortedItems.length === 0 ? (
                                 <Tr>
-                                    <Td colSpan={5} className="text-center py-8">
+                                    <Td colSpan={4} className="text-center py-8">
                                         <div className="flex flex-col items-center gap-2 text-gray-500">
                                             {items.length === 0 ? (
                                                 <>
@@ -250,11 +238,6 @@ const GearList = ({ items = [], categories = [], gearTypeId }) => {
                                             <Td>
                                                 <span className="text-gray-600 dark:text-gray-400">
                                                     {item.brand || '—'}
-                                                </span>
-                                            </Td>
-                                            <Td>
-                                                <span className="text-gray-600 dark:text-gray-400">
-                                                    {item.description || '—'}
                                                 </span>
                                             </Td>
                                             <Td>{formatWeight(item.weight, item.weight_unit)}</Td>

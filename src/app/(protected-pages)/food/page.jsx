@@ -3,7 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import FoodList from './_components/FoodList'
 
 export const metadata = {
-    title: 'My Food | Carlo',
+    title: 'Food Pantry | Carlo',
 }
 
 async function getFoodTypeId() {
@@ -66,7 +66,7 @@ export default async function FoodPage() {
     return (
         <div>
             <div className="mb-6">
-                <h1 className="text-2xl font-bold">My Food</h1>
+                <h1 className="text-2xl font-bold">Food Pantry</h1>
                 <p className="text-gray-500 mt-1">
                     Manage your food inventory
                 </p>

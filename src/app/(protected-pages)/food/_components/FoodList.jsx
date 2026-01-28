@@ -121,10 +121,6 @@ const FoodList = ({ items = [], categories = [], foodTypeId }) => {
                     aVal = a.weight || 0
                     bVal = b.weight || 0
                     return (aVal - bVal) * multiplier
-                case 'calories':
-                    aVal = a.calories || 0
-                    bVal = b.calories || 0
-                    return (aVal - bVal) * multiplier
                 default:
                     return 0
             }
@@ -178,7 +174,7 @@ const FoodList = ({ items = [], categories = [], foodTypeId }) => {
                                 </Th>
                                 <Th>
                                     <SortableHeader
-                                        label="Food Name"
+                                        label="Item Name"
                                         sortKey="name"
                                         currentSort={sort}
                                         onSort={handleSort}
@@ -200,20 +196,12 @@ const FoodList = ({ items = [], categories = [], foodTypeId }) => {
                                         onSort={handleSort}
                                     />
                                 </Th>
-                                <Th>
-                                    <SortableHeader
-                                        label="Calories"
-                                        sortKey="calories"
-                                        currentSort={sort}
-                                        onSort={handleSort}
-                                    />
-                                </Th>
                             </Tr>
                         </THead>
                         <TBody>
                             {filteredAndSortedItems.length === 0 ? (
                                 <Tr>
-                                    <Td colSpan={5} className="text-center py-8">
+                                    <Td colSpan={4} className="text-center py-8">
                                         <div className="flex flex-col items-center gap-2 text-gray-500">
                                             {items.length === 0 ? (
                                                 <>
@@ -253,9 +241,6 @@ const FoodList = ({ items = [], categories = [], foodTypeId }) => {
                                                 </span>
                                             </Td>
                                             <Td>{formatWeight(item.weight, item.weight_unit)}</Td>
-                                            <Td>
-                                                {item.calories ? `${item.calories} cal` : '—'}
-                                            </Td>
                                         </Tr>
                                     )
                                 })

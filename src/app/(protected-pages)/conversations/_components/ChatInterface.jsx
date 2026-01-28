@@ -148,8 +148,29 @@ export default function ChatInterface({
         }
     }
 
-    const handleTemplateSubmit = async ({ template, prompt }) => {
+    const handleTemplateSubmit = async ({ template, prompt, itemId, tripId }) => {
         setIsLoading(true)
+
+        // Update context state with template selections
+        const templateContext = { ...selectedContext }
+
+        if (itemId) {
+            // UpgradeGearModal selected a single item - add to appropriate type
+            const item = items.find(i => i.id === itemId)
+            if (item?.item_type_id === itemTypes.gear) {
+                templateContext.gearIds = [itemId]
+            } else if (item?.item_type_id === itemTypes.food) {
+                templateContext.foodIds = [itemId]
+            }
+        }
+
+        if (tripId) {
+            // TripPlanningModal selected a trip
+            templateContext.tripIds = [tripId]
+        }
+
+        // Update UI state so context buttons reflect selection
+        setSelectedContext(templateContext)
 
         // Create conversation with template type
         const createResult = await createConversation(template)
@@ -172,8 +193,8 @@ export default function ChatInterface({
         }
         setMessages([userMessage])
 
-        // Send the template prompt with context
-        const result = await sendMessage(newConversationId, prompt, selectedContext)
+        // Send the template prompt with updated context
+        const result = await sendMessage(newConversationId, prompt, templateContext)
 
         if (result.success) {
             const assistantMessage = {

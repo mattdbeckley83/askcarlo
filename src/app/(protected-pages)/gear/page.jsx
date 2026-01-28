@@ -3,7 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import GearList from './_components/GearList'
 
 export const metadata = {
-    title: 'My Gear | Carlo',
+    title: 'Gear Closet | Carlo',
 }
 
 async function getGearTypeId() {
@@ -66,7 +66,7 @@ export default async function GearPage() {
     return (
         <div>
             <div className="mb-6">
-                <h1 className="text-2xl font-bold">My Gear</h1>
+                <h1 className="text-2xl font-bold">Gear Closet</h1>
                 <p className="text-gray-500 mt-1">
                     Manage your gear inventory
                 </p>
