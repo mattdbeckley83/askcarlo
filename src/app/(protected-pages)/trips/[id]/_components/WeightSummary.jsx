@@ -79,7 +79,7 @@ const WeightSummary = ({ tripItems, tripId, waterVolume, waterUnit, onWaterUpdat
 
     if (tripItems.length === 0 && !waterVolume) {
         return (
-            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl px-6 py-4">
+            <div className="bg-white dark:bg-gray-800 rounded-xl px-6 py-4">
                 <p className="text-sm text-gray-500 text-center">
                     Add items to see weight analytics
                 </p>
@@ -88,11 +88,11 @@ const WeightSummary = ({ tripItems, tripId, waterVolume, waterUnit, onWaterUpdat
     }
 
     return (
-        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl px-6 py-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl px-6 py-4">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full">
                 {/* Total Weight */}
                 <div className="flex flex-col items-center text-center">
-                    <span className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Total</span>
                     <span className="text-xl font-bold text-gray-900 dark:text-white">
                         {formatWeightForDisplay(weights.total)}
                     </span>
@@ -100,15 +100,15 @@ const WeightSummary = ({ tripItems, tripId, waterVolume, waterUnit, onWaterUpdat
 
                 {/* Base Weight */}
                 <div className="flex flex-col items-center text-center">
-                    <span className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Base</span>
-                    <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400">
+                    <span className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Base</span>
+                    <span className="text-xl font-bold text-gray-900 dark:text-white">
                         {formatWeightForDisplay(weights.base)}
                     </span>
                 </div>
 
                 {/* Worn Weight */}
                 <div className="flex flex-col items-center text-center">
-                    <span className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Worn</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Worn</span>
                     <span className="text-xl font-bold text-blue-500">
                         {formatWeightForDisplay(weights.worn)}
                     </span>
@@ -121,7 +121,7 @@ const WeightSummary = ({ tripItems, tripId, waterVolume, waterUnit, onWaterUpdat
                         className="flex items-center gap-2 group"
                     >
                         <div className="flex flex-col items-center text-center">
-                            <span className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Consumable</span>
+                            <span className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Consumable</span>
                             <span className="text-xl font-bold text-amber-500">
                                 {formatWeightForDisplay(weights.consumable)}
                             </span>

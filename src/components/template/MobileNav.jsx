@@ -2,7 +2,6 @@ import { useState, Suspense, lazy } from 'react'
 import classNames from 'classnames'
 import Drawer from '@/components/ui/Drawer'
 import NavToggle from '@/components/shared/NavToggle'
-import SideNavUserSection from '@/components/template/SideNavUserSection'
 import { DIR_RTL } from '@/constants/theme.constant'
 import withHeaderItem from '@/utils/hoc/withHeaderItem'
 import useNavigation from '@/utils/hooks/useNavigation'
@@ -60,20 +59,15 @@ const MobileNav = ({ translationSetup = appConfig.activeNavTranslation }) => {
             >
                 <Suspense fallback={<></>}>
                     {isOpen && (
-                        <div className="flex flex-col h-full">
-                            <div className="flex-1 overflow-y-auto">
-                                <VerticalMenuContent
-                                    collapsed={false}
-                                    navigationTree={navigationTree}
-                                    routeKey={currentRouteKey}
-                                    userAuthority={session?.user?.authority || []}
-                                    translationSetup={translationSetup}
-                                    direction={direction}
-                                    onMenuItemClick={handleDrawerClose}
-                                />
-                            </div>
-                            <SideNavUserSection onItemClick={handleDrawerClose} />
-                        </div>
+                        <VerticalMenuContent
+                            collapsed={false}
+                            navigationTree={navigationTree}
+                            routeKey={currentRouteKey}
+                            userAuthority={session?.user?.authority || []}
+                            translationSetup={translationSetup}
+                            direction={direction}
+                            onMenuItemClick={handleDrawerClose}
+                        />
                     )}
                 </Suspense>
             </Drawer>

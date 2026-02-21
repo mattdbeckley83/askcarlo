@@ -3,10 +3,9 @@
 import { useState, useMemo, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Table from '@/components/ui/Table'
-import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
-import { PiMagnifyingGlass, PiPlus } from 'react-icons/pi'
+import { PiPlus } from 'react-icons/pi'
 import AddTripModal from './AddTripModal'
 
 const { Tr, Th, Td, THead, TBody } = Table
@@ -31,7 +30,6 @@ const formatDateRange = (startDate, endDate) => {
 const TripList = ({ trips = [], activities = [] }) => {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const [searchQuery, setSearchQuery] = useState('')
     const [isAddModalOpen, setIsAddModalOpen] = useState(false)
 
     // Open add modal if action=add is in URL
@@ -50,42 +48,27 @@ const TripList = ({ trips = [], activities = [] }) => {
         }, {})
     }, [activities])
 
-    const filteredTrips = useMemo(() => {
-        if (!searchQuery.trim()) return trips
-        const query = searchQuery.toLowerCase()
-        return trips.filter(
-            (trip) =>
-                trip.name?.toLowerCase().includes(query) ||
-                trip.notes?.toLowerCase().includes(query) ||
-                activityMap[trip.activity_id]?.name?.toLowerCase().includes(query)
-        )
-    }, [trips, searchQuery, activityMap])
+    const filteredTrips = useMemo(() => trips, [trips])
 
     const handleRowClick = (trip) => {
         router.push(`/trips/${trip.id}`)
     }
 
     return (
-        <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-center gap-4">
-                <div className="flex-1 max-w-md">
-                    <Input
-                        placeholder="Search trips..."
-                        prefix={<PiMagnifyingGlass className="text-lg" />}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-                <Button
-                    variant="solid"
-                    icon={<PiPlus />}
-                    onClick={() => setIsAddModalOpen(true)}
-                >
-                    New Trip
-                </Button>
-            </div>
-
+        <>
             <Card>
+                <div className="flex items-center justify-between gap-4 mb-4">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">My Trips</h1>
+                    <div className="flex items-center gap-3">
+                        <Button
+                            variant="solid"
+                            icon={<PiPlus />}
+                            onClick={() => setIsAddModalOpen(true)}
+                        >
+                            New Trip
+                        </Button>
+                    </div>
+                </div>
                 <Table>
                     <THead>
                         <Tr>
@@ -154,7 +137,7 @@ const TripList = ({ trips = [], activities = [] }) => {
                 onClose={() => setIsAddModalOpen(false)}
                 activities={activities}
             />
-        </div>
+        </>
     )
 }
 

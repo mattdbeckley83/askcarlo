@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import ConversationList from './_components/ConversationList'
 import ChatInterface from './_components/ChatInterface'
+import TokenSuccessRefresh from './_components/TokenSuccessRefresh'
 
 export const metadata = {
     title: 'Ask Carlo | Carlo',
@@ -20,6 +21,31 @@ async function getConversations(userId) {
     }
 
     return conversations || []
+}
+
+async function getFirstMessages(conversationIds) {
+    if (!conversationIds.length) return {}
+
+    const { data, error } = await supabaseAdmin
+        .from('conversation_messages')
+        .select('conversation_id, content')
+        .in('conversation_id', conversationIds)
+        .eq('role', 'user')
+        .order('created_at', { ascending: true })
+
+    if (error) {
+        console.error('Error fetching first messages:', error)
+        return {}
+    }
+
+    // Keep only the first user message per conversation
+    const firstMessages = {}
+    for (const msg of data || []) {
+        if (!firstMessages[msg.conversation_id]) {
+            firstMessages[msg.conversation_id] = msg.content
+        }
+    }
+    return firstMessages
 }
 
 async function getItems(userId) {
@@ -152,25 +178,17 @@ export default async function CarloPage({ searchParams }) {
         getItemTypes(),
     ])
 
+    const firstMessages = await getFirstMessages(conversations.map((c) => c.id))
+
     const params = await searchParams
     const activeConversationId = params?.id || null
+    const tokensSuccess = params?.tokens === 'success'
 
     return (
-        <div className="flex flex-col h-[calc(100vh-120px)]">
-            <div className="mb-4">
-                <h1 className="text-2xl font-bold">Carlo</h1>
-                <p className="text-gray-500 mt-1">
-                    Your AI backpacking advisor - get personalized gear and trip recommendations
-                </p>
-            </div>
-            <div className="flex flex-1 gap-4 min-h-0">
-                <div className="w-80 flex-shrink-0">
-                    <ConversationList
-                        conversations={conversations}
-                        activeConversationId={activeConversationId}
-                    />
-                </div>
-                <div className="flex-1 min-w-0">
+        <div className="flex flex-col h-[calc(100vh-64px)] overflow-hidden bg-gray-100 dark:bg-gray-800/60">
+            {tokensSuccess && <TokenSuccessRefresh />}
+            <div className="flex gap-4 flex-1 min-h-0 px-8 sm:px-12 pt-4 sm:pt-6 pb-4 sm:pb-6">
+                <div className="flex-1 min-w-0 flex flex-col">
                     <ChatInterface
                         conversationId={activeConversationId}
                         items={items}
@@ -182,7 +200,21 @@ export default async function CarloPage({ searchParams }) {
                         itemTypes={itemTypes}
                     />
                 </div>
+                <div className="w-[22rem] flex-shrink-0 flex flex-col">
+                    <ConversationList
+                        conversations={conversations}
+                        firstMessages={firstMessages}
+                        activeConversationId={activeConversationId}
+                    />
+                </div>
             </div>
+            <footer className="flex justify-end px-8 sm:px-12 py-2 text-xs text-gray-400 dark:text-gray-500 flex-shrink-0">
+                <div className="flex items-center gap-2">
+                    <span className="hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer transition-colors">Terms &amp; Conditions</span>
+                    <span>|</span>
+                    <span className="hover:text-gray-600 dark:hover:text-gray-300 cursor-pointer transition-colors">Privacy Policy</span>
+                </div>
+            </footer>
         </div>
     )
 }

@@ -4,8 +4,7 @@ import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
-import Segment from '@/components/ui/Segment'
-import { PiPlus, PiTrash, PiPencil, PiChartPie, PiSquaresFour, PiCaretDown, PiCaretUp, PiArrowSquareOut, PiShareNetwork } from 'react-icons/pi'
+import { PiTrash, PiPencil, PiArrowSquareOut, PiShareNetwork, PiCaretUp, PiCaretDown } from 'react-icons/pi'
 import TripItemList from './TripItemList'
 import AddItemToTripModal from './AddItemToTripModal'
 import EditTripModal from './EditTripModal'
@@ -14,7 +13,6 @@ import ShareTripModal from './ShareTripModal'
 import WeightSummary from './WeightSummary'
 import CategoryBreakdown from './CategoryBreakdown'
 import WeightTreemap from './WeightTreemap'
-import WeightPieChart from './WeightPieChart'
 
 const formatDate = (dateString) => {
     if (!dateString) return null
@@ -44,9 +42,8 @@ const TripDetail = ({
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const [isShareModalOpen, setIsShareModalOpen] = useState(false)
-    const [chartView, setChartView] = useState('treemap')
-    const [isAnalyticsExpanded, setIsAnalyticsExpanded] = useState(false)
     const [hoveredCategory, setHoveredCategory] = useState(null)
+    const [isAnalyticsVisible, setIsAnalyticsVisible] = useState(true)
 
     // Water state - initialize from trip data
     const [waterVolume, setWaterVolume] = useState(trip.water_volume || 0)
@@ -120,10 +117,11 @@ const TripDetail = ({
                         </Button>
                     </div>
                 </div>
-                {/* Row 2: Activity/dates + Analytics toggle */}
-                <div className="flex justify-between items-center">
-                    <div className="flex flex-wrap gap-4 text-gray-500">
+                {/* Row 2: All trip details on single line + analytics toggle */}
+                <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 overflow-hidden whitespace-nowrap min-w-0">
                         {activity && <span>{activity.name}</span>}
+                        {activity && (trip.start_date || trip.end_date || trip.notes || trip.distance_miles) && <span>•</span>}
                         {(trip.start_date || trip.end_date) && (
                             <span>
                                 {formatDate(trip.start_date)}
@@ -131,139 +129,85 @@ const TripDetail = ({
                                 {trip.end_date && formatDate(trip.end_date)}
                             </span>
                         )}
-                    </div>
-                    {hasAnalyticsData && (
-                        <button
-                            onClick={() => setIsAnalyticsExpanded(!isAnalyticsExpanded)}
-                            className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors text-sm"
-                        >
-                            {isAnalyticsExpanded ? <PiCaretUp size={16} /> : <PiCaretDown size={16} />}
-                            <span>{isAnalyticsExpanded ? 'Hide Analytics' : 'Show Analytics'}</span>
-                        </button>
-                    )}
-                </div>
-                {/* Notes */}
-                {trip.notes && (
-                    <p className="text-gray-600 dark:text-gray-400">
-                        {trip.notes}
-                    </p>
-                )}
-                {/* Trail Metrics */}
-                {(trip.distance_miles || trip.total_ascent_ft || trip.total_descent_ft || trip.max_elevation_ft || trip.min_elevation_ft || trip.trail_url) && (
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
-                        {trip.distance_miles && (
-                            <span>{trip.distance_miles} mi</span>
-                        )}
-                        {trip.total_ascent_ft && (
-                            <span>{formatNumber(trip.total_ascent_ft)} ft ↑</span>
-                        )}
-                        {trip.total_descent_ft && (
-                            <span>{formatNumber(trip.total_descent_ft)} ft ↓</span>
-                        )}
-                        {trip.max_elevation_ft && (
-                            <span>{formatNumber(trip.max_elevation_ft)}' max</span>
-                        )}
-                        {trip.min_elevation_ft && (
-                            <span>{formatNumber(trip.min_elevation_ft)}' min</span>
-                        )}
+                        {(trip.start_date || trip.end_date) && (trip.notes || trip.distance_miles) && <span>•</span>}
+                        {trip.distance_miles && <span>{trip.distance_miles} mi</span>}
+                        {trip.total_ascent_ft && <span>{formatNumber(trip.total_ascent_ft)} ft ↑</span>}
+                        {trip.total_descent_ft && <span>{formatNumber(trip.total_descent_ft)} ft ↓</span>}
+                        {trip.max_elevation_ft && <span>{formatNumber(trip.max_elevation_ft)}' max</span>}
+                        {trip.min_elevation_ft && <span>{formatNumber(trip.min_elevation_ft)}' min</span>}
+                        {(trip.distance_miles || trip.total_ascent_ft || trip.total_descent_ft || trip.max_elevation_ft || trip.min_elevation_ft) && trip.notes && <span>•</span>}
+                        {trip.notes && <span className="truncate">{trip.notes}</span>}
                         {trip.trail_url && (
                             <a
                                 href={trip.trail_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:underline"
+                                className="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:underline flex-shrink-0"
                             >
-                                Trail Link <PiArrowSquareOut size={14} />
+                                Trail <PiArrowSquareOut size={14} />
                             </a>
                         )}
                     </div>
-                )}
+                    <button
+                        onClick={() => setIsAnalyticsVisible(!isAnalyticsVisible)}
+                        className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors flex-shrink-0"
+                    >
+                        <span>{isAnalyticsVisible ? 'Hide Analytics' : 'Show Analytics'}</span>
+                        {isAnalyticsVisible ? <PiCaretUp size={14} /> : <PiCaretDown size={14} />}
+                    </button>
+                </div>
             </div>
 
-            {/* Analytics Charts - Collapsible */}
-            {isAnalyticsExpanded && hasAnalyticsData && (
-                <Card>
-                    <div className="flex flex-col lg:flex-row gap-6">
-                        <div className="lg:w-[70%] flex flex-col gap-4">
-                            <Segment
-                                value={chartView}
-                                onChange={(val) => setChartView(val)}
-                                size="sm"
-                                className="self-start"
-                            >
-                                <Segment.Item value="treemap">
-                                    <span className="flex items-center gap-1">
-                                        <PiSquaresFour />
-                                        <span className="hidden sm:inline">Treemap</span>
-                                    </span>
-                                </Segment.Item>
-                                <Segment.Item value="pie">
-                                    <span className="flex items-center gap-1">
-                                        <PiChartPie />
-                                        <span className="hidden sm:inline">Donut</span>
-                                    </span>
-                                </Segment.Item>
-                            </Segment>
-                            <div className="flex-1 min-h-[320px]">
-                                {chartView === 'treemap' ? (
-                                    <WeightTreemap
+            {/* Analytics section (charts + weight summary) */}
+            {isAnalyticsVisible && (
+                <>
+                    {/* Analytics Charts */}
+                    {hasAnalyticsData && (
+                        <Card>
+                            <div className="flex flex-col lg:flex-row gap-4 lg:items-start">
+                                <div className="lg:w-[65%]">
+                                    <div className="h-[360px]">
+                                        <WeightTreemap
+                                            tripItems={tripItems}
+                                            categoryMap={categoryMap}
+                                            waterVolume={waterVolume}
+                                            hoveredCategory={hoveredCategory}
+                                            onCategoryHover={setHoveredCategory}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="lg:w-[35%]">
+                                    <CategoryBreakdown
                                         tripItems={tripItems}
                                         categoryMap={categoryMap}
                                         waterVolume={waterVolume}
                                         hoveredCategory={hoveredCategory}
                                         onCategoryHover={setHoveredCategory}
                                     />
-                                ) : (
-                                    <WeightPieChart
-                                        tripItems={tripItems}
-                                        categoryMap={categoryMap}
-                                        waterVolume={waterVolume}
-                                        hoveredCategory={hoveredCategory}
-                                        onCategoryHover={setHoveredCategory}
-                                    />
-                                )}
+                                </div>
                             </div>
-                        </div>
-                        <div className="lg:w-[30%]">
-                            <CategoryBreakdown
-                                tripItems={tripItems}
-                                categoryMap={categoryMap}
-                                waterVolume={waterVolume}
-                                hoveredCategory={hoveredCategory}
-                                onCategoryHover={setHoveredCategory}
-                            />
-                        </div>
-                    </div>
-                </Card>
-            )}
+                        </Card>
+                    )}
 
-            {/* Weight Summary - Always visible */}
-            <WeightSummary
-                tripItems={tripItems}
-                tripId={trip.id}
-                waterVolume={waterVolume}
-                waterUnit={waterUnit}
-                onWaterUpdate={handleWaterUpdate}
-            />
+                    {/* Weight Summary - below charts */}
+                    <WeightSummary
+                        tripItems={tripItems}
+                        tripId={trip.id}
+                        waterVolume={waterVolume}
+                        waterUnit={waterUnit}
+                        onWaterUpdate={handleWaterUpdate}
+                    />
+                </>
+            )}
 
             {/* Items Section */}
             <Card>
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-semibold">Items</h2>
-                    <Button
-                        variant="solid"
-                        size="sm"
-                        icon={<PiPlus />}
-                        onClick={() => setIsAddItemModalOpen(true)}
-                        disabled={availableItems.length === 0}
-                    >
-                        Add Items
-                    </Button>
-                </div>
                 <TripItemList
                     tripItems={tripItems}
                     tripId={trip.id}
                     categoryMap={categoryMap}
+                    onAddItem={() => setIsAddItemModalOpen(true)}
+                    addItemDisabled={availableItems.length === 0}
                 />
             </Card>
 

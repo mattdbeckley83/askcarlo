@@ -13,16 +13,16 @@ export const protectedRoutes = {
         key: 'gear',
         authority: [],
         meta: {
-            pageBackgroundType: 'plain',
-            pageContainerType: 'contained',
+            pageBackgroundType: 'gray',
+            pageContainerType: 'gutterless',
         },
     },
     '/food': {
         key: 'food',
         authority: [],
         meta: {
-            pageBackgroundType: 'plain',
-            pageContainerType: 'contained',
+            pageBackgroundType: 'gray',
+            pageContainerType: 'gutterless',
         },
     },
     '/import': {
@@ -37,8 +37,8 @@ export const protectedRoutes = {
         key: 'trips',
         authority: [],
         meta: {
-            pageBackgroundType: 'plain',
-            pageContainerType: 'contained',
+            pageBackgroundType: 'gray',
+            pageContainerType: 'gutterless',
         },
     },
     '/trips/:id': {
@@ -53,8 +53,8 @@ export const protectedRoutes = {
         key: 'conversations',
         authority: [],
         meta: {
-            pageBackgroundType: 'plain',
-            pageContainerType: 'contained',
+            pageContainerType: 'gutterless',
+            footer: false,
         },
     },
     '/profile': {

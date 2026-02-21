@@ -4,6 +4,8 @@ import Header from '@/components/template/Header'
 import MobileNav from '@/components/template/MobileNav'
 import SideNavToggle from '@/components/template/SideNavToggle'
 import LayoutBase from '@/components/template/LayoutBase'
+import TokenBalance from '@/components/ui/TokenBalance'
+import UserProfileDropdown from '@/components/template/UserProfileDropdown'
 import { LAYOUT_COLLAPSIBLE_SIDE } from '@/constants/theme.constant'
 
 const CollapsibleSide = ({ children }) => {
@@ -22,6 +24,12 @@ const CollapsibleSide = ({ children }) => {
                                 <MobileNav />
                                 <SideNavToggle />
                             </>
+                        }
+                        headerEnd={
+                            <div className="flex items-center gap-3">
+                                <TokenBalance />
+                                <UserProfileDropdown hoverable={false} />
+                            </div>
                         }
                     />
                     <div className="h-full flex flex-auto flex-col">

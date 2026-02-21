@@ -19,6 +19,11 @@ const CategoryBreakdown = ({ tripItems, categoryMap, waterVolume = 0, hoveredCat
         onCategoryHover?.(null)
     }, [onCategoryHover])
 
+    // Split data into two columns (fill first column, then second)
+    const midpoint = Math.ceil(categoryData.length / 2)
+    const firstColumn = categoryData.slice(0, midpoint)
+    const secondColumn = categoryData.slice(midpoint)
+
     if (categoryData.length === 0) {
         return (
             <div className="text-center py-4 text-gray-500">
@@ -27,48 +32,50 @@ const CategoryBreakdown = ({ tripItems, categoryMap, waterVolume = 0, hoveredCat
         )
     }
 
+    const renderItem = (item) => {
+        const isHovered = hoveredCategory === item.category
+        const isDimmed = hoveredCategory && !isHovered
+
+        return (
+            <div
+                key={item.id}
+                className={`flex items-center justify-between py-1.5 px-2 rounded transition-all duration-150 cursor-pointer
+                    ${isHovered
+                        ? 'bg-amber-50 dark:bg-amber-900/30'
+                        : 'hover:bg-gray-50 dark:hover:bg-gray-800'}
+                    ${isDimmed ? 'opacity-40' : 'opacity-100'}
+                `}
+                onMouseEnter={() => handleMouseEnter(item.category)}
+                onMouseLeave={handleMouseLeave}
+            >
+                <div className="flex items-center gap-1.5 min-w-0">
+                    <span
+                        className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: item.color }}
+                    />
+                    <span className={`text-sm font-medium truncate ${isHovered ? 'text-amber-900 dark:text-amber-100' : ''}`}>
+                        {item.category}
+                    </span>
+                </div>
+                <span className={`text-sm ml-1 flex-shrink-0 ${isHovered ? 'text-amber-700 dark:text-amber-300' : 'text-gray-400'}`}>
+                    {item.percentage.toFixed(0)}%
+                </span>
+            </div>
+        )
+    }
+
     return (
-        <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+        <div className="flex flex-col gap-1.5">
+            <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1 text-center">
                 Weight by Category
             </h3>
-            <div className="flex flex-col gap-1">
-                {categoryData.map((item) => {
-                    const isHovered = hoveredCategory === item.category
-                    const isDimmed = hoveredCategory && !isHovered
-
-                    return (
-                        <div
-                            key={item.id}
-                            className={`flex items-center justify-between py-2 px-3 rounded-lg transition-all duration-150 cursor-pointer
-                                ${isHovered
-                                    ? 'bg-amber-50 dark:bg-amber-900/30 scale-[1.02] shadow-sm'
-                                    : 'hover:bg-gray-50 dark:hover:bg-gray-800'}
-                                ${isDimmed ? 'opacity-50' : 'opacity-100'}
-                            `}
-                            onMouseEnter={() => handleMouseEnter(item.category)}
-                            onMouseLeave={handleMouseLeave}
-                        >
-                            <div className="flex items-center gap-3">
-                                <span
-                                    className="w-3 h-3 rounded-full flex-shrink-0"
-                                    style={{ backgroundColor: item.color }}
-                                />
-                                <span className={`font-medium ${isHovered ? 'text-amber-900 dark:text-amber-100' : ''}`}>
-                                    {item.category}
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <span className={`${isHovered ? 'text-amber-800 dark:text-amber-200' : 'text-gray-600 dark:text-gray-400'}`}>
-                                    {formatWeightForDisplay(item.weight)}
-                                </span>
-                                <span className={`text-sm w-12 text-right ${isHovered ? 'text-amber-700 dark:text-amber-300' : 'text-gray-400'}`}>
-                                    {item.percentage.toFixed(1)}%
-                                </span>
-                            </div>
-                        </div>
-                    )
-                })}
+            <div className="flex gap-3">
+                <div className="flex-1 flex flex-col gap-0.5">
+                    {firstColumn.map(renderItem)}
+                </div>
+                <div className="flex-1 flex flex-col gap-0.5">
+                    {secondColumn.map(renderItem)}
+                </div>
             </div>
         </div>
     )

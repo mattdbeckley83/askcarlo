@@ -1,6 +1,8 @@
 'use server'
 
+import { auth } from '@clerk/nextjs/server'
 import Anthropic from '@anthropic-ai/sdk'
+import { hasSufficientTokens, deductTokens, calculateTokensFromCost } from '../tokens/tokenActions'
 
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY
@@ -185,16 +187,19 @@ Return ONLY the JSON object, no other text or markdown formatting.`
 
         // Ensure all required fields exist
         return {
-            name: parsed.name || '',
-            brand: parsed.brand || '',
-            category: parsed.category || '',
-            weight: parsed.weight ?? null,
-            weight_unit: parsed.weight_unit || '',
-            description: parsed.description || '',
-            product_url: originalUrl,
-            confidence: typeof parsed.confidence === 'number' ? parsed.confidence : 0.5,
-            item_type: parsed.item_type || 'gear',
-            calories: parsed.calories ?? null,
+            data: {
+                name: parsed.name || '',
+                brand: parsed.brand || '',
+                category: parsed.category || '',
+                weight: parsed.weight ?? null,
+                weight_unit: parsed.weight_unit || '',
+                description: parsed.description || '',
+                product_url: originalUrl,
+                confidence: typeof parsed.confidence === 'number' ? parsed.confidence : 0.5,
+                item_type: parsed.item_type || 'gear',
+                calories: parsed.calories ?? null,
+            },
+            usage: message.usage,
         }
     } catch (parseError) {
         console.error('--- SMART-FILL ERROR ---')
@@ -226,6 +231,28 @@ export async function extractFromUrl(url) {
         return { error: 'Invalid URL format. Please enter a valid http or https URL.' }
     }
 
+    // Check authentication
+    const { userId } = await auth()
+    if (!userId) {
+        sfLog('Error: Unauthorized')
+        sfGroupEnd()
+        return { error: 'Unauthorized' }
+    }
+
+    // Check token balance
+    const tokenCheck = await hasSufficientTokens()
+    sfLog('Token check:', tokenCheck)
+
+    if (!tokenCheck.allowed) {
+        sfLog('Insufficient tokens:', tokenCheck.balance)
+        sfGroupEnd()
+        return {
+            error: 'insufficient_tokens',
+            message: 'You need tokens to use smart-fill.',
+            balance: tokenCheck.balance,
+        }
+    }
+
     // Check API keys
     if (!PERPLEXITY_API_KEY) {
         console.error('PERPLEXITY_API_KEY not configured')
@@ -250,7 +277,7 @@ export async function extractFromUrl(url) {
         }
 
         // Stage 2: Extract structured data with Claude
-        const extractedData = await extractWithClaude(perplexityResponse, trimmedUrl)
+        const { data: extractedData, usage: claudeUsage } = await extractWithClaude(perplexityResponse, trimmedUrl)
 
         sfGroup('--- FINAL ITEM FIELDS ---')
         sfLog('name:', extractedData.name)
@@ -265,6 +292,30 @@ export async function extractFromUrl(url) {
         sfLog('calories:', extractedData.calories)
         sfGroupEnd()
 
+        // Calculate and deduct tokens
+        // Perplexity cost is estimated at ~$0.005 per call (0.5 cents)
+        const perplexityCostCents = 0.5
+        const { tokens: claudeTokens, costCents: claudeCostCents } = await calculateTokensFromCost(
+            claudeUsage.input_tokens,
+            claudeUsage.output_tokens
+        )
+        const totalCostCents = perplexityCostCents + claudeCostCents
+        const tokensUsed = Math.max(1, Math.ceil(totalCostCents * 2))
+
+        sfLog('Smart-fill tokens to deduct:', tokensUsed, 'Total cost cents:', totalCostCents)
+
+        const deductResult = await deductTokens(
+            tokensUsed,
+            'smart_fill',
+            `Smart-fill: ${trimmedUrl.substring(0, 50)}${trimmedUrl.length > 50 ? '...' : ''}`,
+            Math.round(totalCostCents * 100) // Store as integer
+        )
+
+        if (deductResult.error) {
+            sfLog('Warning: Token deduction failed:', deductResult.error)
+            // Continue anyway - extraction was successful
+        }
+
         const totalTime = Date.now() - startTime
         sfLog('Total extraction time (ms):', totalTime)
         sfLog('--- SMART-FILL DEBUG END ---')
@@ -273,6 +324,8 @@ export async function extractFromUrl(url) {
         return {
             success: true,
             data: extractedData,
+            tokensUsed,
+            newBalance: deductResult.newBalance,
         }
     } catch (error) {
         console.error('--- SMART-FILL ERROR ---')

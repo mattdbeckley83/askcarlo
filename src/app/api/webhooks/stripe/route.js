@@ -1,5 +1,5 @@
 import { headers } from 'next/headers'
-import { getStripe, PLANS, SUBSCRIPTION_STATUS } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 
 export async function POST(req) {
@@ -10,7 +10,6 @@ export async function POST(req) {
         return new Response('Webhook secret not configured', { status: 500 })
     }
 
-    // Get the raw body for signature verification
     const body = await req.text()
     const headerPayload = await headers()
     const signature = headerPayload.get('stripe-signature')
@@ -30,150 +29,72 @@ export async function POST(req) {
     }
 
     try {
-        switch (event.type) {
-            case 'customer.subscription.created':
-            case 'customer.subscription.updated': {
-                const subscription = event.data.object
-                await handleSubscriptionChange(subscription)
-                break
+        if (event.type === 'checkout.session.completed') {
+            const session = event.data.object
+            console.log(`[stripe-webhook] checkout.session.completed: session=${session.id}, payment_status=${session.payment_status}`)
+
+            // Only process payment (not setup) sessions
+            if (session.payment_status !== 'paid') {
+                return new Response('Webhook processed', { status: 200 })
             }
 
-            case 'customer.subscription.deleted': {
-                const subscription = event.data.object
-                await handleSubscriptionDeleted(subscription)
-                break
+            const userId = session.metadata?.userId
+            const tokensToAdd = parseInt(session.metadata?.tokensToAdd || '0', 10)
+
+            if (!userId || !tokensToAdd) {
+                console.error('[stripe-webhook] Missing userId or tokensToAdd in session metadata', session.metadata)
+                return new Response('Missing metadata', { status: 400 })
             }
 
-            case 'invoice.payment_succeeded': {
-                const invoice = event.data.object
-                if (invoice.subscription) {
-                    await handlePaymentSucceeded(invoice)
-                }
-                break
+            console.log(`[stripe-webhook] Crediting ${tokensToAdd} tokens to user ${userId}`)
+
+            // Get current balance
+            const { data: user, error: fetchError } = await supabaseAdmin
+                .from('users')
+                .select('token_balance')
+                .eq('id', userId)
+                .single()
+
+            if (fetchError || !user) {
+                console.error('[stripe-webhook] Error fetching user for token credit:', fetchError)
+                return new Response('User not found', { status: 400 })
             }
 
-            case 'invoice.payment_failed': {
-                const invoice = event.data.object
-                if (invoice.subscription) {
-                    await handlePaymentFailed(invoice)
-                }
-                break
+            const newBalance = (user.token_balance || 0) + tokensToAdd
+
+            // Credit tokens
+            const { error: updateError } = await supabaseAdmin
+                .from('users')
+                .update({ token_balance: newBalance })
+                .eq('id', userId)
+
+            if (updateError) {
+                console.error('[stripe-webhook] Error crediting tokens:', updateError)
+                throw updateError
             }
 
-            case 'customer.subscription.trial_will_end': {
-                // Optional: Send email reminder about trial ending
-                const subscription = event.data.object
-                console.log(`Trial ending soon for customer: ${subscription.customer}`)
-                break
+            // Record transaction
+            const { error: txError } = await supabaseAdmin
+                .from('token_transactions')
+                .insert({
+                    user_id: userId,
+                    amount: tokensToAdd,
+                    transaction_type: 'purchase',
+                    description: `Purchased ${tokensToAdd} tokens via Stripe (session: ${session.id})`,
+                })
+
+            if (txError) {
+                console.error('[stripe-webhook] Error recording token transaction:', txError)
             }
 
-            default:
-                console.log(`Unhandled event type: ${event.type}`)
+            console.log(`[stripe-webhook] Success: credited ${tokensToAdd} tokens to user ${userId}. New balance: ${newBalance}`)
+        } else {
+            console.log(`[stripe-webhook] Unhandled event type: ${event.type}`)
         }
 
         return new Response('Webhook processed', { status: 200 })
     } catch (error) {
-        console.error('Error processing webhook:', error)
+        console.error('[stripe-webhook] Error processing webhook:', error)
         return new Response('Webhook processing failed', { status: 500 })
     }
-}
-
-async function handleSubscriptionChange(subscription) {
-    const customerId = subscription.customer
-    const subscriptionId = subscription.id
-    const status = subscription.status
-    const trialEnd = subscription.trial_end
-    const currentPeriodEnd = subscription.current_period_end
-
-    // Map Stripe status to our status
-    let subscriptionStatus
-    if (status === 'trialing') {
-        subscriptionStatus = SUBSCRIPTION_STATUS.TRIALING
-    } else if (status === 'active') {
-        subscriptionStatus = SUBSCRIPTION_STATUS.ACTIVE
-    } else if (status === 'past_due') {
-        subscriptionStatus = SUBSCRIPTION_STATUS.PAST_DUE
-    } else if (status === 'canceled' || status === 'unpaid') {
-        subscriptionStatus = SUBSCRIPTION_STATUS.CANCELED
-    } else {
-        subscriptionStatus = SUBSCRIPTION_STATUS.ACTIVE
-    }
-
-    const updateData = {
-        subscription_plan: PLANS.TRAILBLAZER,
-        subscription_status: subscriptionStatus,
-        stripe_subscription_id: subscriptionId,
-        trial_ends_at: trialEnd ? new Date(trialEnd * 1000).toISOString() : null,
-        subscription_ends_at: currentPeriodEnd ? new Date(currentPeriodEnd * 1000).toISOString() : null,
-    }
-
-    const { error } = await supabaseAdmin
-        .from('users')
-        .update(updateData)
-        .eq('stripe_customer_id', customerId)
-
-    if (error) {
-        console.error('Error updating subscription:', error)
-        throw error
-    }
-
-    console.log(`Subscription updated for customer ${customerId}: ${subscriptionStatus}`)
-}
-
-async function handleSubscriptionDeleted(subscription) {
-    const customerId = subscription.customer
-
-    const { error } = await supabaseAdmin
-        .from('users')
-        .update({
-            subscription_plan: PLANS.EXPLORER,
-            subscription_status: SUBSCRIPTION_STATUS.CANCELED,
-            stripe_subscription_id: null,
-            trial_ends_at: null,
-            subscription_ends_at: null,
-        })
-        .eq('stripe_customer_id', customerId)
-
-    if (error) {
-        console.error('Error handling subscription deletion:', error)
-        throw error
-    }
-
-    console.log(`Subscription deleted for customer ${customerId}, reverted to explorer`)
-}
-
-async function handlePaymentSucceeded(invoice) {
-    const customerId = invoice.customer
-
-    const { error } = await supabaseAdmin
-        .from('users')
-        .update({
-            subscription_status: SUBSCRIPTION_STATUS.ACTIVE,
-        })
-        .eq('stripe_customer_id', customerId)
-
-    if (error) {
-        console.error('Error handling payment success:', error)
-        throw error
-    }
-
-    console.log(`Payment succeeded for customer ${customerId}`)
-}
-
-async function handlePaymentFailed(invoice) {
-    const customerId = invoice.customer
-
-    const { error } = await supabaseAdmin
-        .from('users')
-        .update({
-            subscription_status: SUBSCRIPTION_STATUS.PAST_DUE,
-        })
-        .eq('stripe_customer_id', customerId)
-
-    if (error) {
-        console.error('Error handling payment failure:', error)
-        throw error
-    }
-
-    console.log(`Payment failed for customer ${customerId}, marked as past_due`)
 }

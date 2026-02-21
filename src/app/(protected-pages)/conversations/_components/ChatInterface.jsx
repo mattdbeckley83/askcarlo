@@ -3,11 +3,13 @@
 import { useState, useEffect, useRef, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { PiLightning, PiMapTrifold, PiChatCircle, PiWarningCircle } from 'react-icons/pi'
+import { PiLightning, PiMapTrifold, PiWarningCircle, PiArrowRight } from 'react-icons/pi'
 import { getConversation } from '@/server/actions/carlo/getConversation'
 import { sendMessage } from '@/server/actions/carlo/sendMessage'
 import { createConversation } from '@/server/actions/carlo/createConversation'
 import { getFeedback } from '@/server/actions/carlo/submitFeedback'
+import { useTokenBalance } from '@/lib/contexts/TokenBalanceContext'
+import useCurrentSession from '@/utils/hooks/useCurrentSession'
 import UpgradeGearModal from './UpgradeGearModal'
 import TripPlanningModal from './TripPlanningModal'
 import MessageFeedback from './MessageFeedback'
@@ -24,6 +26,7 @@ export default function ChatInterface({
     itemTypes = {},
 }) {
     const router = useRouter()
+    const { updateBalance } = useTokenBalance()
     const [messages, setMessages] = useState([])
     const [inputValue, setInputValue] = useState('')
     const [isLoading, setIsLoading] = useState(false)
@@ -38,9 +41,11 @@ export default function ChatInterface({
         tripIds: [],
         activityIds: [],
     })
-    const [subscriptionLimitReached, setSubscriptionLimitReached] = useState(false)
+    const [insufficientTokens, setInsufficientTokens] = useState(false)
     const messagesEndRef = useRef(null)
     const textareaRef = useRef(null)
+    const { session } = useCurrentSession()
+    const userImage = session?.user?.image || null
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -119,9 +124,14 @@ export default function ChatInterface({
             }
             setMessages((prev) => [...prev, assistantMessage])
             router.refresh() // Refresh to update conversation title in sidebar
-        } else if (result.error === 'subscription_limit_reached') {
-            // Handle subscription limit - show upgrade prompt
-            setSubscriptionLimitReached(true)
+
+            // Update token balance in header
+            if (typeof result.newBalance === 'number') {
+                updateBalance(result.newBalance)
+            }
+        } else if (result.error === 'insufficient_tokens') {
+            // Handle insufficient tokens - show purchase prompt
+            setInsufficientTokens(true)
             // Remove the user message we just added since it wasn't processed
             setMessages((prev) => prev.slice(0, -1))
             // Put the message back in the input
@@ -205,6 +215,11 @@ export default function ChatInterface({
             }
             setMessages((prev) => [...prev, assistantMessage])
             router.refresh()
+
+            // Update token balance in header
+            if (typeof result.newBalance === 'number') {
+                updateBalance(result.newBalance)
+            }
         } else {
             const errorMessage = {
                 id: `temp-${Date.now()}-error`,
@@ -222,28 +237,25 @@ export default function ChatInterface({
     if (!conversationId && messages.length === 0) {
         return (
             <>
-                <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 h-full flex flex-col">
-                    <div className="flex-1 flex items-center justify-center p-8">
-                        <div className="text-center max-w-xl">
-                            <div className="w-16 h-16 mx-auto mb-4 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center">
-                                <PiChatCircle className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
+                <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 h-full flex flex-col overflow-hidden">
+                    <div className="flex-1 min-h-0 overflow-y-auto p-8">
+                        <div>
+                            <div className="mb-8 mt-16 text-justify px-12">
+                                <p className="text-[1.95rem] font-bold text-indigo-600 dark:text-indigo-400 mb-3">
+                                    Welcome to Carlo!
+                                </p>
+                                <p className="text-2xl font-normal text-gray-600 dark:text-gray-400">
+                                    I'm your personal{' '}
+                                    <RotatingActivity activities={userActivityNames} />{' '}
+                                    advisor with expertise in gear, trip planning, and nutrition. Select a quick start template or write your own custom prompt to get started.
+                                </p>
                             </div>
-                            <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
-                                Welcome to Carlo! I'm your personal{' '}
-                                <RotatingActivity activities={userActivityNames} />{' '}
-                                advisor
-                                <br />
-                                with expertise in gear, trip planning, and nutrition.
-                            </p>
-
-                            {/* Quick Start Header */}
-                            <div className="text-xs text-gray-400 dark:text-gray-500 mb-3 uppercase tracking-wide">Quick Start</div>
 
                             {/* Template Buttons */}
                             <div className="flex justify-center gap-3 mb-6">
                                 <button
                                     onClick={() => setUpgradeModalOpen(true)}
-                                    className="w-44 flex flex-col items-center gap-2 p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors"
+                                    className="w-44 min-h-[240px] flex flex-col items-center justify-center gap-2 p-4 bg-gray-100 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors"
                                 >
                                     <PiLightning className="w-6 h-6 text-amber-500" />
                                     <div className="text-center">
@@ -253,7 +265,7 @@ export default function ChatInterface({
                                 </button>
                                 <button
                                     onClick={() => setTripModalOpen(true)}
-                                    className="w-44 flex flex-col items-center gap-2 p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors"
+                                    className="w-44 min-h-[240px] flex flex-col items-center justify-center gap-2 p-4 bg-gray-100 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors"
                                 >
                                     <PiMapTrifold className="w-6 h-6 text-green-500" />
                                     <div className="text-center">
@@ -288,9 +300,9 @@ export default function ChatInterface({
                         onContextChange={setSelectedContext}
                     />
 
-                    <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                    <div className="px-4 py-3">
                         <form onSubmit={handleSubmit}>
-                            <div className="flex gap-2">
+                            <div className="flex items-center gap-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 px-2">
                                 <textarea
                                     ref={textareaRef}
                                     value={inputValue}
@@ -298,14 +310,15 @@ export default function ChatInterface({
                                     onKeyDown={handleKeyDown}
                                     placeholder="Ask Carlo anything about backpacking..."
                                     rows={1}
-                                    className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                    className="flex-1 px-2 py-4 bg-transparent resize-none focus:outline-none text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                                 />
                                 <button
                                     type="submit"
                                     disabled={!inputValue.trim() || isLoading}
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-600 text-white rounded-full hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    aria-label="Send"
                                 >
-                                    Send
+                                    <PiArrowRight size={16} />
                                 </button>
                             </div>
                         </form>
@@ -328,8 +341,8 @@ export default function ChatInterface({
     }
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 h-full flex flex-col">
-            <div className="flex-1 overflow-y-auto p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 h-full flex flex-col overflow-hidden">
+            <div className="flex-1 min-h-0 overflow-y-auto p-4">
                 {isFetching ? (
                     <div className="flex items-center justify-center h-full">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 dark:border-indigo-400"></div>
@@ -359,6 +372,7 @@ export default function ChatInterface({
                                     conversationId={conversationId}
                                     userQuery={userQuery}
                                     existingFeedback={feedbackData[message.id]}
+                                    userImage={userImage}
                                 />
                             )
                         })}
@@ -381,6 +395,41 @@ export default function ChatInterface({
                 )}
             </div>
 
+            {/* Insufficient Tokens Banner */}
+            {insufficientTokens && (
+                <div className="mx-4 mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                    <div className="flex items-start gap-3">
+                        <PiWarningCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                            <h4 className="font-medium text-amber-800 dark:text-amber-200">
+                                Insufficient tokens
+                            </h4>
+                            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
+                                You need tokens to send messages to Carlo. Purchase more tokens to continue chatting.
+                            </p>
+                            <div className="mt-3 flex gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        // Future: navigate to /tokens page
+                                    }}
+                                    className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium rounded-lg transition-colors"
+                                >
+                                    Get More Tokens
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setInsufficientTokens(false)}
+                                    className="px-4 py-2 text-sm text-amber-700 dark:text-amber-300 hover:underline"
+                                >
+                                    Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Context Footer */}
             <ContextFooter
                 items={items}
@@ -393,63 +442,32 @@ export default function ChatInterface({
                 onContextChange={setSelectedContext}
             />
 
-            {/* Subscription Limit Banner */}
-            {subscriptionLimitReached && (
-                <div className="mx-4 mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-                    <div className="flex items-start gap-3">
-                        <PiWarningCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                        <div className="flex-1">
-                            <h4 className="font-medium text-amber-800 dark:text-amber-200">
-                                Monthly conversation limit reached
-                            </h4>
-                            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
-                                You've used all 5 free conversations this month. Upgrade to Trailblazer for unlimited conversations with Carlo.
-                            </p>
-                            <div className="mt-3 flex gap-3">
-                                <Link
-                                    href="/profile"
-                                    className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-lg transition-colors"
-                                >
-                                    Upgrade to Trailblazer
-                                </Link>
-                                <button
-                                    type="button"
-                                    onClick={() => setSubscriptionLimitReached(false)}
-                                    className="px-4 py-2 text-sm text-amber-700 dark:text-amber-300 hover:underline"
-                                >
-                                    Dismiss
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="px-4 py-3">
                 <form onSubmit={handleSubmit}>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 px-2">
                         <textarea
                             ref={textareaRef}
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            placeholder={subscriptionLimitReached ? "Upgrade to continue chatting..." : "Type your message..."}
+                            placeholder={insufficientTokens ? "Get tokens to continue chatting..." : "Type your message..."}
                             rows={1}
-                            disabled={subscriptionLimitReached}
-                            className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={insufficientTokens}
+                            className="flex-1 px-2 py-4 bg-transparent resize-none focus:outline-none text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                         <button
                             type="submit"
-                            disabled={!inputValue.trim() || isLoading || subscriptionLimitReached}
-                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            disabled={!inputValue.trim() || isLoading || insufficientTokens}
+                            className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-indigo-600 text-white rounded-full hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            aria-label="Send"
                         >
                             {isLoading ? (
-                                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                 </svg>
                             ) : (
-                                'Send'
+                                <PiArrowRight size={16} />
                             )}
                         </button>
                     </div>
@@ -459,19 +477,36 @@ export default function ChatInterface({
     )
 }
 
-function MessageBubble({ message, conversationId, userQuery, existingFeedback }) {
+function MessageBubble({ message, conversationId, userQuery, existingFeedback, userImage }) {
     const isUser = message.role === 'user'
     const isError = message.isError
     const showFeedback = !isUser && !isError && conversationId
 
     return (
         <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : ''}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                isUser ? 'bg-gray-200 dark:bg-gray-600' : 'bg-indigo-100 dark:bg-indigo-900'
-            }`}>
-                <span className={`text-xs font-medium ${isUser ? 'text-gray-600 dark:text-gray-300' : 'text-indigo-600 dark:text-indigo-400'}`}>
-                    {isUser ? 'U' : 'C'}
-                </span>
+            <div className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden">
+                {isUser ? (
+                    userImage ? (
+                        <img
+                            src={userImage}
+                            alt="You"
+                            referrerPolicy="no-referrer"
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-600">
+                            <span className="text-xs font-medium text-gray-600 dark:text-gray-300">U</span>
+                        </div>
+                    )
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700">
+                        <img
+                            src="/img/logo/carlo.png"
+                            alt="Carlo"
+                            className="w-full h-full object-contain dark:invert"
+                        />
+                    </div>
+                )}
             </div>
             <div className="max-w-[80%]">
                 <div className={`rounded-lg px-4 py-3 ${
@@ -525,7 +560,7 @@ function RotatingActivity({ activities }) {
 
     return (
         <span
-            className={`font-bold text-gray-900 dark:text-white inline-block transition-opacity duration-300 ${
+            className={`font-extrabold text-gray-900 dark:text-white inline-block transition-opacity duration-300 ${
                 isVisible ? 'opacity-100' : 'opacity-0'
             }`}
         >

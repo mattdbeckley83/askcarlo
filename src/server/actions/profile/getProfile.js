@@ -68,13 +68,6 @@ export async function getProfile() {
                 createdAt: dbUser?.created_at || clerkUser?.createdAt,
                 aiContext: dbUser?.ai_context || '',
             },
-            subscription: {
-                plan: dbUser?.subscription_plan || 'explorer',
-                status: dbUser?.subscription_status || 'active',
-                trialEndsAt: dbUser?.trial_ends_at || null,
-                subscriptionEndsAt: dbUser?.subscription_ends_at || null,
-                hasStripeSubscription: !!dbUser?.stripe_subscription_id,
-            },
             activities: activities || [],
             selectedActivityIds,
             activityNotes,

@@ -55,6 +55,9 @@ const config = {
 			'2xl': '1536px',
 		},
 		extend: {
+			fontFamily: {
+				'national-park': ['"National Park"', 'system-ui', 'sans-serif'],
+			},
 			colors: {
 				'cream': '#fcf5f0',
 				'cream-dark': '#f5ebe3',

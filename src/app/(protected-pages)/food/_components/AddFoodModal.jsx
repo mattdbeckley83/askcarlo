@@ -11,6 +11,7 @@ import Spinner from '@/components/ui/Spinner'
 import { PiMagicWand, PiLink } from 'react-icons/pi'
 import { addItem } from '@/server/actions/items/addItem'
 import { extractFromUrl } from '@/server/actions/items/extractFromUrl'
+import { useTokenBalance } from '@/lib/contexts/TokenBalanceContext'
 
 const weightUnitOptions = [
     { value: 'oz', label: 'oz' },
@@ -31,6 +32,7 @@ const loadingMessages = [
 ]
 
 const AddFoodModal = ({ isOpen, onClose, categories = [], foodTypeId }) => {
+    const { updateBalance } = useTokenBalance()
     const [isPending, startTransition] = useTransition()
     const [error, setError] = useState(null)
     const [productUrl, setProductUrl] = useState('')
@@ -141,6 +143,10 @@ const AddFoodModal = ({ isOpen, onClose, categories = [], foodTypeId }) => {
             }
 
             if (result.success && result.data) {
+                if (typeof result.newBalance === 'number') {
+                    updateBalance(result.newBalance)
+                }
+
                 const data = result.data
 
                 if (data.confidence < 0.5) {

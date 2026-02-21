@@ -44,13 +44,7 @@ export default async function TripsPage() {
     ])
 
     return (
-        <div>
-            <div className="mb-6">
-                <h1 className="text-2xl font-bold">My Trips</h1>
-                <p className="text-gray-500 mt-1">
-                    Plan and manage your backpacking trips
-                </p>
-            </div>
+        <div className="px-8 sm:px-12 pt-4 sm:pt-6 pb-10 sm:pb-16">
             <TripList trips={trips} activities={activities} />
         </div>
     )

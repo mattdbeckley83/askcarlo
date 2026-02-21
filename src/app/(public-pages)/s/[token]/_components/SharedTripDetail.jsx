@@ -2,8 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Card from '@/components/ui/Card'
-import Segment from '@/components/ui/Segment'
-import { PiCaretDown, PiCaretUp, PiArrowSquareOut, PiEye, PiChartPie, PiSquaresFour } from 'react-icons/pi'
+import { PiCaretDown, PiCaretUp, PiArrowSquareOut, PiEye } from 'react-icons/pi'
 import {
     calculateTripWeights,
     formatWeightForDisplay,
@@ -12,7 +11,6 @@ import {
 } from '@/lib/utils/weightCalculations'
 // Import the same chart components used in the protected trip detail page
 import WeightTreemap from '@/app/(protected-pages)/trips/[id]/_components/WeightTreemap'
-import WeightPieChart from '@/app/(protected-pages)/trips/[id]/_components/WeightPieChart'
 import CategoryBreakdown from '@/app/(protected-pages)/trips/[id]/_components/CategoryBreakdown'
 
 const formatDate = (dateString) => {
@@ -135,7 +133,6 @@ const SharedItemList = ({ tripItems, categoryMap }) => {
 
 const SharedTripDetail = ({ trip, tripItems, categories, activity }) => {
     const [isAnalyticsExpanded, setIsAnalyticsExpanded] = useState(true)
-    const [chartView, setChartView] = useState('treemap')
     const [hoveredCategory, setHoveredCategory] = useState(null)
 
     const categoryMap = useMemo(() => {
@@ -254,48 +251,19 @@ const SharedTripDetail = ({ trip, tripItems, categories, activity }) => {
             {/* Analytics Charts - Collapsible */}
             {isAnalyticsExpanded && hasAnalyticsData && (
                 <Card>
-                    <div className="flex flex-col lg:flex-row gap-6">
-                        <div className="lg:w-[70%] flex flex-col gap-4">
-                            <Segment
-                                value={chartView}
-                                onChange={(val) => setChartView(val)}
-                                size="sm"
-                                className="self-start"
-                            >
-                                <Segment.Item value="treemap">
-                                    <span className="flex items-center gap-1">
-                                        <PiSquaresFour />
-                                        <span className="hidden sm:inline">Treemap</span>
-                                    </span>
-                                </Segment.Item>
-                                <Segment.Item value="pie">
-                                    <span className="flex items-center gap-1">
-                                        <PiChartPie />
-                                        <span className="hidden sm:inline">Donut</span>
-                                    </span>
-                                </Segment.Item>
-                            </Segment>
-                            <div className="flex-1 min-h-[320px]">
-                                {chartView === 'treemap' ? (
-                                    <WeightTreemap
-                                        tripItems={tripItems}
-                                        categoryMap={categoryMap}
-                                        waterVolume={trip.water_volume || 0}
-                                        hoveredCategory={hoveredCategory}
-                                        onCategoryHover={setHoveredCategory}
-                                    />
-                                ) : (
-                                    <WeightPieChart
-                                        tripItems={tripItems}
-                                        categoryMap={categoryMap}
-                                        waterVolume={trip.water_volume || 0}
-                                        hoveredCategory={hoveredCategory}
-                                        onCategoryHover={setHoveredCategory}
-                                    />
-                                )}
+                    <div className="flex flex-col lg:flex-row gap-4 lg:items-start">
+                        <div className="lg:w-[65%]">
+                            <div className="h-[360px]">
+                                <WeightTreemap
+                                    tripItems={tripItems}
+                                    categoryMap={categoryMap}
+                                    waterVolume={trip.water_volume || 0}
+                                    hoveredCategory={hoveredCategory}
+                                    onCategoryHover={setHoveredCategory}
+                                />
                             </div>
                         </div>
-                        <div className="lg:w-[30%]">
+                        <div className="lg:w-[35%]">
                             <CategoryBreakdown
                                 tripItems={tripItems}
                                 categoryMap={categoryMap}

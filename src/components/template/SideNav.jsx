@@ -2,7 +2,6 @@
 import classNames from '@/utils/classNames'
 import ScrollBar from '@/components/ui/ScrollBar'
 import VerticalMenuContent from '@/components/template/VerticalMenuContent'
-import SideNavUserSection from '@/components/template/SideNavUserSection'
 import useTheme from '@/utils/hooks/useTheme'
 import useCurrentSession from '@/utils/hooks/useCurrentSession'
 import useNavigation from '@/utils/hooks/useNavigation'
@@ -94,8 +93,6 @@ const SideNav = ({
                     </ScrollBar>
                 </div>
 
-                {/* User section - fixed at bottom */}
-                <SideNavUserSection collapsed={sideNavCollapse} />
             </div>
         </div>
     )

@@ -36,7 +36,7 @@ const SortableHeader = ({ label, sortKey, currentSort, onSort }) => {
     return (
         <button
             onClick={() => onSort(sortKey)}
-            className="flex items-center gap-1 hover:text-gray-900 dark:hover:text-gray-100 transition-colors group"
+            className="flex items-center gap-1 uppercase hover:text-gray-900 dark:hover:text-gray-100 transition-colors group"
         >
             <span>{label}</span>
             <span className="text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">
@@ -140,31 +140,31 @@ const GearList = ({ items = [], categories = [], gearTypeId }) => {
     }
 
     return (
-        <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-center gap-4">
-                <div className="flex-1 max-w-md">
-                    <Input
-                        placeholder="Search gear..."
-                        prefix={<PiMagnifyingGlass className="text-lg" />}
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-                <Button
-                    variant="solid"
-                    icon={<PiPlus />}
-                    onClick={() => setIsAddModalOpen(true)}
-                >
-                    Add Gear
-                </Button>
-            </div>
-
+        <>
             <Card>
-                <div className="overflow-auto max-h-[70vh]">
+                <div className="flex items-center gap-4 mb-4">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">Gear Closet</h1>
+                    <div className="flex-1">
+                        <Input
+                            placeholder="Search gear..."
+                            prefix={<PiMagnifyingGlass className="text-lg" />}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                    <Button
+                        variant="solid"
+                        icon={<PiPlus />}
+                        onClick={() => setIsAddModalOpen(true)}
+                    >
+                        Add Gear
+                    </Button>
+                </div>
+                <div>
                     <Table overflow={false}>
-                        <THead className="sticky top-0 z-10 bg-gray-50 dark:bg-gray-800/95 backdrop-blur-sm">
+                        <THead className="border-b border-gray-200 dark:border-gray-700">
                             <Tr>
-                                <Th>
+                                <Th className="w-[140px]">
                                     <SortableHeader
                                         label="Category"
                                         sortKey="category"
@@ -172,7 +172,7 @@ const GearList = ({ items = [], categories = [], gearTypeId }) => {
                                         onSort={handleSort}
                                     />
                                 </Th>
-                                <Th>
+                                <Th className="w-[280px]">
                                     <SortableHeader
                                         label="Item Name"
                                         sortKey="name"
@@ -188,7 +188,7 @@ const GearList = ({ items = [], categories = [], gearTypeId }) => {
                                         onSort={handleSort}
                                     />
                                 </Th>
-                                <Th>
+                                <Th className="w-[80px]">
                                     <SortableHeader
                                         label="Weight"
                                         sortKey="weight"
@@ -264,7 +264,7 @@ const GearList = ({ items = [], categories = [], gearTypeId }) => {
                 categories={categories}
                 gearTypeId={gearTypeId}
             />
-        </div>
+        </>
     )
 }
 

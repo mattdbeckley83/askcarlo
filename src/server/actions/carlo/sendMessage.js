@@ -4,7 +4,7 @@ import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { revalidatePath } from 'next/cache'
 import Anthropic from '@anthropic-ai/sdk'
-import { canUseCarloChat, incrementCarloConversation } from '@/lib/checkSubscriptionAccess'
+import { hasSufficientTokens, deductTokens, calculateTokensFromCost } from '../tokens/tokenActions'
 
 const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
@@ -365,17 +365,17 @@ export async function sendMessage(conversationId, userMessage, context = {}) {
 
     carloLog('User ID:', userId)
 
-    // Check subscription access
-    const accessCheck = await canUseCarloChat(userId)
-    carloLog('Subscription access:', accessCheck)
+    // Check token balance
+    const tokenCheck = await hasSufficientTokens()
+    carloLog('Token check:', tokenCheck)
 
-    if (!accessCheck.allowed) {
-        carloLog('Access denied:', accessCheck.reason)
+    if (!tokenCheck.allowed) {
+        carloLog('Insufficient tokens:', tokenCheck.balance)
         carloGroupEnd()
         return {
-            error: 'subscription_limit_reached',
-            message: accessCheck.reason,
-            remaining: accessCheck.remaining,
+            error: 'insufficient_tokens',
+            message: 'You need tokens to send messages. Purchase more tokens to continue.',
+            balance: tokenCheck.balance,
         }
     }
 
@@ -467,6 +467,27 @@ export async function sendMessage(conversationId, userMessage, context = {}) {
         carloLog('Usage:', response.usage)
         carloGroupEnd()
 
+        // Calculate and deduct tokens based on actual API usage
+        const { tokens: tokensUsed, costCents } = await calculateTokensFromCost(
+            response.usage.input_tokens,
+            response.usage.output_tokens
+        )
+        carloLog('Tokens to deduct:', tokensUsed, 'Cost cents:', costCents)
+
+        const deductResult = await deductTokens(
+            tokensUsed,
+            'carlo_chat',
+            `Carlo chat: ${userMessage.substring(0, 50)}${userMessage.length > 50 ? '...' : ''}`,
+            Math.round(costCents * 100) // Store as integer (hundredths of a cent)
+        )
+
+        if (deductResult.error) {
+            console.error('Error deducting tokens:', deductResult.error)
+            // Continue anyway - message was already sent, don't fail the request
+        }
+
+        carloLog('Token deduction result:', deductResult)
+
         // Save assistant response
         const { error: assistantMsgError } = await supabaseAdmin
             .from('conversation_messages')
@@ -513,9 +534,6 @@ export async function sendMessage(conversationId, userMessage, context = {}) {
                 .eq('id', userId)
         }
 
-        // Increment conversation counter for Explorer users
-        await incrementCarloConversation(userId)
-
         revalidatePath('/conversations')
         revalidatePath('/home')
 
@@ -524,7 +542,12 @@ export async function sendMessage(conversationId, userMessage, context = {}) {
         carloLog('--- CARLO DEBUG END ---')
         carloGroupEnd()
 
-        return { success: true, message: assistantMessage }
+        return {
+            success: true,
+            message: assistantMessage,
+            tokensUsed,
+            newBalance: deductResult.newBalance,
+        }
     } catch (error) {
         console.error('--- CARLO ERROR ---')
         console.error('Error calling Claude API:', error)

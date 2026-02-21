@@ -1,3 +1,13 @@
+@keyframes token-spend {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+.animate-token-spend {
+    animation: token-spend 0.4s ease-out;
+}
+
 @keyframes scroll {
     to {
     transform: translateY(calc(-50% - 0.5rem));

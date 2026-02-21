@@ -57,7 +57,7 @@ const WeightTreemap = ({ tripItems, categoryMap, waterVolume = 0, hoveredCategor
     }
 
     return (
-        <div className="h-full min-h-[280px]">
+        <div className="h-full w-full">
             <ResponsiveTreeMap
                 data={data}
                 identity="name"

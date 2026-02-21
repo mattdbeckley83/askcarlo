@@ -5,6 +5,7 @@ import HeaderLogo from '@/components/template/HeaderLogo'
 import MobileNav from '@/components/template/MobileNav'
 import HorizontalNav from '@/components/template/HorizontalNav'
 import LayoutBase from '@/components/template/LayoutBase'
+import TokenBalance from '@/components/ui/TokenBalance'
 import { LAYOUT_TOP_BAR_CLASSIC } from '@/constants/theme.constant'
 
 const TopBarClassic = ({ children }) => {
@@ -26,9 +27,10 @@ const TopBarClassic = ({ children }) => {
                         }
                         headerMiddle={<HorizontalNav />}
                         headerEnd={
-                            <>
+                            <div className="flex items-center gap-3">
+                                <TokenBalance />
                                 <UserProfileDropdown hoverable={false} />
-                            </>
+                            </div>
                         }
                     />
                     {children}

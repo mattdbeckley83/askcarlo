@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { PiThumbsUp, PiThumbsUpFill, PiThumbsDown, PiThumbsDownFill, PiCheck } from 'react-icons/pi'
+import { PiThumbsUp, PiThumbsUpFill, PiThumbsDown, PiThumbsDownFill, PiCheck, PiCopy } from 'react-icons/pi'
 import FeedbackIssueSelector from './FeedbackIssueSelector'
 import { submitFeedback } from '@/server/actions/carlo/submitFeedback'
 
@@ -16,6 +16,13 @@ export default function MessageFeedback({
     const [showIssueSelector, setShowIssueSelector] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitted, setSubmitted] = useState(!!existingFeedback)
+    const [copied, setCopied] = useState(false)
+
+    const handleCopy = async () => {
+        await navigator.clipboard.writeText(messageContent)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+    }
 
     const handleThumbsUp = async () => {
         if (isSubmitting) return
@@ -86,6 +93,17 @@ export default function MessageFeedback({
     return (
         <div className="mt-1">
             <div className="flex items-center gap-0.5">
+                <button
+                    onClick={handleCopy}
+                    className="p-1.5 rounded-md transition-colors text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    title="Copy message"
+                >
+                    {copied ? (
+                        <PiCheck className="w-4 h-4 text-green-500" />
+                    ) : (
+                        <PiCopy className="w-4 h-4" />
+                    )}
+                </button>
                 <button
                     onClick={handleThumbsUp}
                     disabled={isSubmitting}
