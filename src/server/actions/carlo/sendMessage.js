@@ -476,7 +476,7 @@ export async function sendMessage(conversationId, userMessage, context = {}) {
 
         const deductResult = await deductTokens(
             tokensUsed,
-            'carlo_chat',
+            'usage_chat',
             `Carlo chat: ${userMessage.substring(0, 50)}${userMessage.length > 50 ? '...' : ''}`,
             Math.round(costCents * 100) // Store as integer (hundredths of a cent)
         )

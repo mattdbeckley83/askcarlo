@@ -85,9 +85,10 @@ export async function deductTokens(amount, transactionType, description, apiCost
         .insert({
             user_id: userId,
             amount: -amount, // Negative for deductions
+            balance_after: newBalance,
             transaction_type: transactionType,
             description: description,
-            api_cost_cents: apiCostCents,
+            metadata: apiCostCents != null ? { api_cost_cents: apiCostCents } : {},
         })
 
     if (txError) {

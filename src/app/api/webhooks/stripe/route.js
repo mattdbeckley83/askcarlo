@@ -79,8 +79,10 @@ export async function POST(req) {
                 .insert({
                     user_id: userId,
                     amount: tokensToAdd,
+                    balance_after: newBalance,
                     transaction_type: 'purchase',
                     description: `Purchased ${tokensToAdd} tokens via Stripe (session: ${session.id})`,
+                    stripe_payment_id: session.payment_intent || session.id,
                 })
 
             if (txError) {
