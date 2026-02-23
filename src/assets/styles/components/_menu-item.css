@@ -7,9 +7,10 @@
     }
   
     &.menu-item-active {
-      @apply text-primary hover:text-primary;
+      @apply text-[#fe7f2d] hover:text-[#fe7f2d] bg-[#fe7f2d]/10 hover:bg-[#fe7f2d]/10 dark:hover:bg-[#fe7f2d]/10;
+      box-shadow: inset 3px 0 0 #fe7f2d;
     }
-  
+
     a {
       @apply outline-0
     }
@@ -44,8 +45,9 @@
       }
 
       &.menu-item-active {
-        @apply text-primary hover:text-primary;
-      } 
+        @apply text-[#fe7f2d] hover:text-[#fe7f2d] bg-[#fe7f2d]/10 hover:bg-[#fe7f2d]/10 dark:hover:bg-[#fe7f2d]/10;
+        box-shadow: inset 3px 0 0 #fe7f2d;
+      }
     }
 
     .menu-item-divider {

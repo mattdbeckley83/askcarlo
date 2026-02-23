@@ -12,8 +12,8 @@
 
 const CarloWordmark = ({
     className = '',
-    width = 160,
-    height = 32,
+    width = 210,
+    height = 44,
     color = 'currentColor'
 }) => {
     return (
@@ -36,18 +36,18 @@ const CarloWordmark = ({
             <svg
                 width={width}
                 height={height}
-                viewBox="0 0 160 32"
+                viewBox="0 0 210 44"
                 className={className}
                 role="img"
                 aria-label="Carlo"
             >
                 <text
-                    x="50%"
-                    y="26"
-                    textAnchor="middle"
+                    x="2"
+                    y="38"
+                    textAnchor="start"
                     className="carlo-wordmark"
                     fill={color}
-                    fontSize="32"
+                    fontSize="40"
                 >
                     Carlo
                 </text>

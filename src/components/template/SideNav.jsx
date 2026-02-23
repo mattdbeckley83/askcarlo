@@ -65,15 +65,14 @@ const SideNav = ({
                     href={appConfig.authenticatedEntryPath}
                     className={classNames(
                         'flex items-center flex-shrink-0',
-                        LOGO_X_GUTTER,
-                        sideNavCollapse && 'justify-center px-0'
+                        sideNavCollapse ? 'justify-center px-0' : 'pl-7'
                     )}
                     style={{ height: HEADER_HEIGHT }}
                 >
                     {!sideNavCollapse && (
                         <CarloWordmark
-                            width={160}
-                            height={32}
+                            width={210}
+                            height={44}
                             className="text-gray-900 dark:text-white"
                         />
                     )}

@@ -68,7 +68,7 @@ const DefaultItem = (props) => {
             <MenuItem key={nav.key} eventKey={nav.key} dotIndent={indent}>
                 <Link
                     href={nav.path}
-                    className="flex items-center gap-2 h-full w-full"
+                    className="flex items-center gap-3 h-full w-full"
                     target={nav.isExternalLink ? '_blank' : ''}
                     onClick={() =>
                         onLinkClick?.({

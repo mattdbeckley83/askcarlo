@@ -4,7 +4,7 @@ const NavIcon = ({ src, alt }) => (
     <img
         src={src}
         alt={alt}
-        className="w-5 h-5 dark:invert"
+        className="w-7 h-7 brightness-0 dark:invert"
     />
 )
 
