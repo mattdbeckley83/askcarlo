@@ -13,5 +13,3 @@ export function getStripe() {
     return stripe
 }
 
-export const TOKEN_PACK_PRICE_ID = process.env.STRIPE_TOKEN_PACK_PRICE_ID
-export const TOKENS_PER_PACK = 500

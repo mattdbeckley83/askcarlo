@@ -524,6 +524,9 @@ export async function sendMessage(conversationId, userMessage, context = {}) {
             .eq('id', userId)
             .single()
 
+        let finalBalance = deductResult.newBalance
+        let tokensAwarded = 0
+
         if (user && !user.has_used_carlo_chat) {
             await supabaseAdmin
                 .from('users')
@@ -532,6 +535,16 @@ export async function sendMessage(conversationId, userMessage, context = {}) {
                     first_carlo_chat_at: new Date().toISOString(),
                 })
                 .eq('id', userId)
+
+            // Re-fetch balance — the BEFORE UPDATE trigger added 50 tokens
+            const { data: refreshed } = await supabaseAdmin
+                .from('users')
+                .select('token_balance')
+                .eq('id', userId)
+                .single()
+
+            if (refreshed) finalBalance = refreshed.token_balance
+            tokensAwarded = 50
         }
 
         revalidatePath('/conversations')
@@ -546,7 +559,8 @@ export async function sendMessage(conversationId, userMessage, context = {}) {
             success: true,
             message: assistantMessage,
             tokensUsed,
-            newBalance: deductResult.newBalance,
+            newBalance: finalBalance,
+            ...(tokensAwarded > 0 && { tokensAwarded }),
         }
     } catch (error) {
         console.error('--- CARLO ERROR ---')

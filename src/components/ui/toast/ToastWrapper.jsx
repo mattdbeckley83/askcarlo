@@ -104,7 +104,7 @@ const ToastWrapper = (props) => {
                 initial={placementTransition.variants.initial}
                 variants={placementTransition.variants}
                 animate={item.visible ? 'animate' : 'exit'}
-                transition={{ duration: 0.15, type: 'tween' }}
+                transition={{ duration: 0.4, type: 'tween' }}
             >
                 {cloneElement(item.node, {
                     ...toastProps,

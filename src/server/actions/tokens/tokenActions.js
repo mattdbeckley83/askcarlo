@@ -99,12 +99,16 @@ export async function deductTokens(amount, transactionType, description, apiCost
     return { success: true, newBalance }
 }
 
+// Billing constants
+const CENTS_PER_TOKEN = 1 // 1 token = $0.01 (one cent)
+const BILLING_MARKUP  = 5 // We charge 5× the raw Anthropic API cost
+
 /**
  * Calculate tokens from API usage
- * Formula: (API cost in cents x 2), rounded up, minimum 1
+ * Formula: (API cost in cents × BILLING_MARKUP) / CENTS_PER_TOKEN, rounded up, minimum 1
  *
  * Sonnet 4 pricing:
- * - Input: $3.00 per 1M tokens = 0.0003 cents per token
+ * - Input:  $3.00 per 1M tokens = 0.0003 cents per token
  * - Output: $15.00 per 1M tokens = 0.0015 cents per token
  *
  * Note: This is a pure utility function, but must be async since it's in a 'use server' file
@@ -115,12 +119,12 @@ export async function deductTokens(amount, transactionType, description, apiCost
  */
 export async function calculateTokensFromCost(inputTokens, outputTokens) {
     // Sonnet 4 pricing: $3/1M input, $15/1M output
-    const inputCostCents = (inputTokens / 1_000_000) * 300 // $3 = 300 cents per 1M
+    const inputCostCents  = (inputTokens  / 1_000_000) * 300  // $3  = 300 cents per 1M
     const outputCostCents = (outputTokens / 1_000_000) * 1500 // $15 = 1500 cents per 1M
-    const totalCostCents = inputCostCents + outputCostCents
+    const totalCostCents  = inputCostCents + outputCostCents
 
-    // Tokens = cost x 2, rounded up, minimum 1
-    const tokens = Math.max(1, Math.ceil(totalCostCents * 2))
+    // Tokens to charge = (API cost × markup) ÷ cents-per-token, rounded up, minimum 1
+    const tokens = Math.max(1, Math.ceil((totalCostCents * BILLING_MARKUP) / CENTS_PER_TOKEN))
 
     return { tokens, costCents: totalCostCents }
 }

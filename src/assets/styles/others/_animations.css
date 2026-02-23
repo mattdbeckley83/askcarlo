@@ -8,6 +8,17 @@
     animation: token-spend 0.4s ease-out;
 }
 
+@keyframes token-grant {
+    0%   { transform: scale(1);    box-shadow: 0 0 0 0px rgba(34,197,94,0); }
+    25%  { transform: scale(1.14); box-shadow: 0 0 0 4px rgba(34,197,94,0.55); }
+    60%  { transform: scale(1.06); box-shadow: 0 0 0 8px rgba(34,197,94,0.15); }
+    100% { transform: scale(1);    box-shadow: 0 0 0 0px rgba(34,197,94,0); }
+}
+
+.animate-token-grant {
+    animation: token-grant 0.75s ease-out;
+}
+
 @keyframes scroll {
     to {
     transform: translateY(calc(-50% - 0.5rem));

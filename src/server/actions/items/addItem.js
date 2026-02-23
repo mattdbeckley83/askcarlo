@@ -96,6 +96,7 @@ export async function addItem(formData) {
         .eq('id', userId)
         .single()
 
+    let tokensAwarded = 0
     if (user && !user.has_added_gear) {
         await supabaseAdmin
             .from('users')
@@ -104,10 +105,11 @@ export async function addItem(formData) {
                 first_gear_added_at: new Date().toISOString(),
             })
             .eq('id', userId)
+        tokensAwarded = 25
     }
 
     revalidatePath('/gear')
     revalidatePath('/food')
     revalidatePath('/home')
-    return { success: true, item }
+    return { success: true, item, ...(tokensAwarded > 0 && { tokensAwarded }) }
 }

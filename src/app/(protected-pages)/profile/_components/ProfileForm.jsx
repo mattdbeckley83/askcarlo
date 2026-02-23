@@ -6,6 +6,10 @@ import Checkbox from '@/components/ui/Checkbox'
 import Button from '@/components/ui/Button'
 import { updateActivities } from '@/server/actions/profile/updateActivities'
 import { updateAiContext } from '@/server/actions/profile/updateAiContext'
+import { useTokenBalance } from '@/lib/contexts/TokenBalanceContext'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
+import { PiCoins } from 'react-icons/pi'
 
 const MAX_ACTIVITY_NOTES_LENGTH = 500
 const MAX_AI_CONTEXT_LENGTH = 1000
@@ -22,6 +26,7 @@ const ProfileForm = ({
     const [aiContext, setAiContext] = useState(user.aiContext || '')
     const [isPending, startTransition] = useTransition()
     const [saveStatus, setSaveStatus] = useState(null)
+    const { refresh } = useTokenBalance()
 
     const handleActivityToggle = (activityId, checked) => {
         setSelectedIds((prev) => {
@@ -81,6 +86,19 @@ const ProfileForm = ({
             const contextResult = await updateAiContext(aiContext)
 
             if (activitiesResult.success && contextResult.success) {
+                if (activitiesResult.tokensAwarded) {
+                    refresh()
+                    toast.push(
+                        <Notification
+                            title={`+${activitiesResult.tokensAwarded} tokens earned!`}
+                            customIcon={<PiCoins className="text-[#fe7f2d] mt-0.5" size={22} />}
+                            duration={6000}
+                            closable
+                        >
+                            Activities selected
+                        </Notification>
+                    )
+                }
                 setSaveStatus('success')
                 setTimeout(() => setSaveStatus(null), 3000)
             } else {

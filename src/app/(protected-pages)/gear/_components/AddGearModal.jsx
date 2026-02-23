@@ -8,10 +8,12 @@ import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Alert from '@/components/ui/Alert'
 import Spinner from '@/components/ui/Spinner'
-import { PiMagicWand, PiLink } from 'react-icons/pi'
+import { PiMagicWand, PiLink, PiCoins } from 'react-icons/pi'
 import { addItem } from '@/server/actions/items/addItem'
 import { extractFromUrl } from '@/server/actions/items/extractFromUrl'
 import { useTokenBalance } from '@/lib/contexts/TokenBalanceContext'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
 
 const weightUnitOptions = [
     { value: 'oz', label: 'oz' },
@@ -39,7 +41,7 @@ const loadingMessages = [
 ]
 
 const AddGearModal = ({ isOpen, onClose, categories = [], gearTypeId }) => {
-    const { updateBalance } = useTokenBalance()
+    const { updateBalance, refresh } = useTokenBalance()
     const [isPending, startTransition] = useTransition()
     const [error, setError] = useState(null)
     const [productUrl, setProductUrl] = useState('')
@@ -219,6 +221,19 @@ const AddGearModal = ({ isOpen, onClose, categories = [], gearTypeId }) => {
             if (result.error) {
                 setError(result.error)
             } else {
+                if (result.tokensAwarded) {
+                    refresh()
+                    toast.push(
+                        <Notification
+                            title={`+${result.tokensAwarded} tokens earned!`}
+                            customIcon={<PiCoins className="text-[#fe7f2d] mt-0.5" size={22} />}
+                            duration={6000}
+                            closable
+                        >
+                            First gear item added
+                        </Notification>
+                    )
+                }
                 setProductUrl('')
                 setExtractionWarning(null)
                 setFormState({

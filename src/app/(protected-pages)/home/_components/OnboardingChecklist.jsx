@@ -8,7 +8,16 @@ import Link from 'next/link'
 export default function OnboardingChecklist({ onboardingStatus }) {
     const checklistItems = [
         {
+            id: 'profile',
+            reward: 25,
+            label: 'Add context to your profile',
+            description: 'Choose the outdoor activities you enjoy',
+            completed: onboardingStatus.hasCompletedProfile,
+            href: '/profile',
+        },
+        {
             id: 'gear',
+            reward: 25,
             label: 'Add your first gear item',
             description: 'Start building your gear inventory',
             completed: onboardingStatus.hasAddedGear,
@@ -16,6 +25,7 @@ export default function OnboardingChecklist({ onboardingStatus }) {
         },
         {
             id: 'trip',
+            reward: 25,
             label: 'Create your first trip',
             description: 'Plan a trip and add gear to it',
             completed: onboardingStatus.hasAddedTrip,
@@ -23,17 +33,11 @@ export default function OnboardingChecklist({ onboardingStatus }) {
         },
         {
             id: 'carlo',
+            reward: 50,
             label: 'Chat with Carlo',
             description: 'Get personalized advice from our AI assistant',
             completed: onboardingStatus.hasUsedCarlo,
             href: '/conversations',
-        },
-        {
-            id: 'profile',
-            label: 'Select your activities',
-            description: 'Choose the outdoor activities you enjoy',
-            completed: onboardingStatus.hasCompletedProfile,
-            href: '/profile',
         },
     ]
 
@@ -95,6 +99,11 @@ export default function OnboardingChecklist({ onboardingStatus }) {
                                     <p className="text-sm text-gray-500 dark:text-gray-400">
                                         {item.description}
                                     </p>
+                                    {!item.completed && (
+                                        <span className="text-xs font-medium text-[#fe7f2d]">
+                                            +{item.reward} tokens
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         </Link>

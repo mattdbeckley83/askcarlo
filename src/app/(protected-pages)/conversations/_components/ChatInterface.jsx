@@ -3,12 +3,14 @@
 import { useState, useEffect, useRef, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { PiLightning, PiMapTrifold, PiWarningCircle, PiArrowRight } from 'react-icons/pi'
+import { PiLightning, PiMapTrifold, PiWarningCircle, PiArrowRight, PiCoins } from 'react-icons/pi'
 import { getConversation } from '@/server/actions/carlo/getConversation'
 import { sendMessage } from '@/server/actions/carlo/sendMessage'
 import { createConversation } from '@/server/actions/carlo/createConversation'
 import { getFeedback } from '@/server/actions/carlo/submitFeedback'
 import { useTokenBalance } from '@/lib/contexts/TokenBalanceContext'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
 import useCurrentSession from '@/utils/hooks/useCurrentSession'
 import UpgradeGearModal from './UpgradeGearModal'
 import TripPlanningModal from './TripPlanningModal'
@@ -129,6 +131,18 @@ export default function ChatInterface({
             if (typeof result.newBalance === 'number') {
                 updateBalance(result.newBalance)
             }
+            if (result.tokensAwarded) {
+                toast.push(
+                    <Notification
+                        title={`+${result.tokensAwarded} tokens earned!`}
+                        customIcon={<PiCoins className="text-[#fe7f2d] mt-0.5" size={22} />}
+                        duration={6000}
+                        closable
+                    >
+                        First Carlo chat
+                    </Notification>
+                )
+            }
         } else if (result.error === 'insufficient_tokens') {
             // Handle insufficient tokens - show purchase prompt
             setInsufficientTokens(true)
@@ -219,6 +233,18 @@ export default function ChatInterface({
             // Update token balance in header
             if (typeof result.newBalance === 'number') {
                 updateBalance(result.newBalance)
+            }
+            if (result.tokensAwarded) {
+                toast.push(
+                    <Notification
+                        title={`+${result.tokensAwarded} tokens earned!`}
+                        customIcon={<PiCoins className="text-[#fe7f2d] mt-0.5" size={22} />}
+                        duration={6000}
+                        closable
+                    >
+                        First Carlo chat
+                    </Notification>
+                )
             }
         } else {
             const errorMessage = {

@@ -60,6 +60,7 @@ export async function addTrip(formData) {
         .eq('id', userId)
         .single()
 
+    let tokensAwarded = 0
     if (user && !user.has_added_trip) {
         await supabaseAdmin
             .from('users')
@@ -68,9 +69,10 @@ export async function addTrip(formData) {
                 first_trip_added_at: new Date().toISOString(),
             })
             .eq('id', userId)
+        tokensAwarded = 25
     }
 
     revalidatePath('/trips')
     revalidatePath('/home')
-    return { success: true, trip }
+    return { success: true, trip, ...(tokensAwarded > 0 && { tokensAwarded }) }
 }

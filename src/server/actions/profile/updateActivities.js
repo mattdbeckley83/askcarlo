@@ -15,6 +15,8 @@ export async function updateActivities(activityIds, activityNotes = {}) {
         return { error: 'Invalid activity IDs' }
     }
 
+    let tokensAwarded = 0
+
     try {
         // Delete all existing user activities
         const { error: deleteError } = await supabaseAdmin
@@ -59,13 +61,14 @@ export async function updateActivities(activityIds, activityNotes = {}) {
                         profile_completed_at: new Date().toISOString(),
                     })
                     .eq('id', userId)
+                tokensAwarded = 25
             }
         }
 
         revalidatePath('/profile')
         revalidatePath('/home')
         revalidatePath('/conversations')
-        return { success: true }
+        return { success: true, ...(tokensAwarded > 0 && { tokensAwarded }) }
     } catch (error) {
         console.error('Error in updateActivities:', error)
         return { error: 'An unexpected error occurred' }

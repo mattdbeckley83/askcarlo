@@ -1,6 +1,7 @@
 import { SignUp } from '@clerk/nextjs'
 import Link from 'next/link'
 import CarloWordmark from '@/components/ui/CarloWordmark'
+import ReferralCapture from './_components/ReferralCapture'
 
 const clerkAppearance = {
     variables: {
@@ -59,12 +60,17 @@ const clerkAppearance = {
     },
 }
 
-export default function SignUpPage() {
+export default async function SignUpPage({ searchParams }) {
+    const params = await searchParams
+    const refCode = params?.ref || null
+
     return (
         <div
             className="min-h-screen w-full bg-cover bg-center bg-fixed bg-no-repeat flex flex-col items-center justify-center px-4 py-8"
             style={{ backgroundImage: "url('/img/marketing-background.jpeg')" }}
         >
+            {refCode && <ReferralCapture code={refCode} />}
+
             {/* Logo */}
             <Link href="https://askcarlo.ai" className="mb-8">
                 <CarloWordmark
@@ -73,6 +79,15 @@ export default function SignUpPage() {
                     className="text-gray-900"
                 />
             </Link>
+
+            {/* Referral banner */}
+            {refCode && (
+                <div className="mb-4 w-full max-w-[400px] px-4 py-3 bg-white/90 backdrop-blur-sm rounded-xl text-center border border-white/50 shadow-sm">
+                    <p className="text-sm text-gray-700">
+                        🎉 You were invited to Carlo! Chat with our AI assistant and you&apos;ll both earn free tokens.
+                    </p>
+                </div>
+            )}
 
             {/* Clerk SignUp Component */}
             <SignUp

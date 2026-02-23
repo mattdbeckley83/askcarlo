@@ -1,6 +1,7 @@
 import { auth, currentUser } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import Dashboard from './_components/Dashboard'
+import ReferralActivate from './_components/ReferralActivate'
 
 export const metadata = {
     title: 'Home | Carlo',
@@ -38,9 +39,12 @@ export default async function HomePage() {
     }
 
     return (
-        <Dashboard
-            firstName={firstName}
-            onboardingStatus={onboardingStatus}
-        />
+        <>
+            <ReferralActivate />
+            <Dashboard
+                firstName={firstName}
+                onboardingStatus={onboardingStatus}
+            />
+        </>
     )
 }

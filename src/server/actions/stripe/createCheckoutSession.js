@@ -1,18 +1,20 @@
 'use server'
 
 import { auth } from '@clerk/nextjs/server'
-import { getStripe, TOKEN_PACK_PRICE_ID, TOKENS_PER_PACK } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
+import { TOKEN_PACKAGES } from '@/lib/tokenPackages'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 
-export async function createCheckoutSession() {
+export async function createCheckoutSession(packageId = 'starter') {
     const { userId } = await auth()
 
     if (!userId) {
         return { error: 'Not authenticated' }
     }
 
-    if (!TOKEN_PACK_PRICE_ID) {
-        return { error: 'Token pack price not configured' }
+    const pkg = TOKEN_PACKAGES.find((p) => p.id === packageId)
+    if (!pkg) {
+        return { error: 'Invalid package' }
     }
 
     try {
@@ -51,13 +53,20 @@ export async function createCheckoutSession() {
             payment_method_types: ['card'],
             line_items: [
                 {
-                    price: TOKEN_PACK_PRICE_ID,
+                    price_data: {
+                        currency: 'usd',
+                        unit_amount: pkg.priceUsd * 100,
+                        product_data: {
+                            name: `Carlo — ${pkg.label}`,
+                            description: `${pkg.tokens.toLocaleString()} AI tokens for chatting with Carlo`,
+                        },
+                    },
                     quantity: 1,
                 },
             ],
             metadata: {
                 userId: user.id,
-                tokensToAdd: String(TOKENS_PER_PACK),
+                tokensToAdd: String(pkg.tokens),
             },
             success_url: `${baseUrl}/conversations?tokens=success`,
             cancel_url: `${baseUrl}/conversations?tokens=canceled`,

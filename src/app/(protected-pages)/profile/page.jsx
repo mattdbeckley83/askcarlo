@@ -1,5 +1,6 @@
 import { getProfile } from '@/server/actions/profile/getProfile'
 import ProfileForm from './_components/ProfileForm'
+import ReferralStatus from './_components/ReferralStatus'
 
 export const metadata = {
     title: 'Profile | Carlo',
@@ -35,6 +36,7 @@ export default async function ProfilePage() {
                 selectedActivityIds={result.selectedActivityIds}
                 activityNotes={result.activityNotes}
             />
+            <ReferralStatus />
         </div>
     )
 }

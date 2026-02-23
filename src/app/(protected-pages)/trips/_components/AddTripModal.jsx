@@ -8,10 +8,15 @@ import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import FormItem from '@/components/ui/Form/FormItem'
 import { addTrip } from '@/server/actions/trips/addTrip'
+import { useTokenBalance } from '@/lib/contexts/TokenBalanceContext'
+import toast from '@/components/ui/toast'
+import Notification from '@/components/ui/Notification'
+import { PiCoins } from 'react-icons/pi'
 
 const AddTripModal = ({ isOpen, onClose, activities = [] }) => {
     const router = useRouter()
     const [isPending, startTransition] = useTransition()
+    const { refresh } = useTokenBalance()
     const [error, setError] = useState(null)
     const [showTrailDetails, setShowTrailDetails] = useState(false)
     const [formState, setFormState] = useState({
@@ -69,6 +74,19 @@ const AddTripModal = ({ isOpen, onClose, activities = [] }) => {
             if (result.error) {
                 setError(result.error)
             } else {
+                if (result.tokensAwarded) {
+                    refresh()
+                    toast.push(
+                        <Notification
+                            title={`+${result.tokensAwarded} tokens earned!`}
+                            customIcon={<PiCoins className="text-[#fe7f2d] mt-0.5" size={22} />}
+                            duration={6000}
+                            closable
+                        >
+                            First trip created
+                        </Notification>
+                    )
+                }
                 // Reset form and navigate to the new trip
                 resetForm()
                 onClose()
