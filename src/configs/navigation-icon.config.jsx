@@ -1,10 +1,10 @@
 import { PiUserCircleDuotone } from 'react-icons/pi'
 
-const NavIcon = ({ src, alt }) => (
+const NavIcon = ({ src, alt, className = '' }) => (
     <img
         src={src}
         alt={alt}
-        className="w-7 h-7 brightness-0 dark:invert"
+        className={`w-7 h-7 brightness-0 dark:invert ${className}`}
     />
 )
 
@@ -13,7 +13,7 @@ const navigationIcon = {
     gear: <NavIcon src="/img/logo/backpack.png" alt="My Gear" />,
     food: <NavIcon src="/img/logo/food.png" alt="My Food" />,
     trips: <NavIcon src="/img/logo/trips.png" alt="My Trips" />,
-    carlo: <NavIcon src="/img/logo/carlo.png" alt="Carlo" />,
+    carlo: <NavIcon src="/img/logo/carlo.png" alt="Carlo" className="opacity-60" />,
     profile: <PiUserCircleDuotone />,
 }
 

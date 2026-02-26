@@ -42,7 +42,7 @@ export const protectedRoutes = {
         },
     },
     '/trips/:id': {
-        key: 'tripDetail',
+        key: 'trips',
         authority: [],
         meta: {
             pageBackgroundType: 'plain',
@@ -61,7 +61,7 @@ export const protectedRoutes = {
         key: 'profile',
         authority: [],
         meta: {
-            pageBackgroundType: 'plain',
+            pageBackgroundType: 'gray',
             pageContainerType: 'contained',
         },
     },

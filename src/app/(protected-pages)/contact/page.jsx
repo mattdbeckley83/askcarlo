@@ -10,9 +10,6 @@ export default function ContactPage() {
         <div>
             <div className="mb-6">
                 <h1 className="text-2xl font-bold">Contact Us</h1>
-                <p className="text-gray-500 mt-1">
-                    We'd love to hear from you
-                </p>
             </div>
 
             <div className="max-w-2xl">
@@ -24,14 +21,11 @@ export default function ContactPage() {
                             </div>
                             <div>
                                 <h2 className="text-lg font-semibold">Get in Touch</h2>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">
-                                    We're here to help with any questions or feedback
-                                </p>
                             </div>
                         </div>
 
                         <p className="text-gray-700 dark:text-gray-300">
-                            If you have any questions, feedback, or would like to report an issue, please reach out to us at{' '}
+                            If you have any questions, feedback, or would like to report an issue, please reach out at{' '}
                             <a
                                 href="mailto:matt@askcarlo.ai"
                                 className="text-orange-500 hover:text-orange-600 dark:hover:text-orange-400 font-medium"
