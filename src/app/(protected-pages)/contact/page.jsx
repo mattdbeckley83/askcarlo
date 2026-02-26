@@ -33,10 +33,10 @@ export default function ContactPage() {
                         <p className="text-gray-700 dark:text-gray-300">
                             If you have any questions, feedback, or would like to report an issue, please reach out to us at{' '}
                             <a
-                                href="mailto:support@askcarlo.ai"
+                                href="mailto:matt@askcarlo.ai"
                                 className="text-orange-500 hover:text-orange-600 dark:hover:text-orange-400 font-medium"
                             >
-                                support@askcarlo.ai
+                                matt@askcarlo.ai
                             </a>{' '}
                             and we will get back to you ASAP.
                         </p>
