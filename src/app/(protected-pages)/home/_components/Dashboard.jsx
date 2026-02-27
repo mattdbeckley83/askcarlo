@@ -2,6 +2,7 @@
 
 import OnboardingChecklist from './OnboardingChecklist'
 import DashboardOverview from './DashboardOverview'
+import TokenUsageChart from './TokenUsageChart'
 
 export default function Dashboard({ onboardingStatus }) {
     const isOnboardingComplete =
@@ -17,9 +18,12 @@ export default function Dashboard({ onboardingStatus }) {
                 <OnboardingChecklist onboardingStatus={onboardingStatus} />
             )}
 
-            {/* Dashboard Overview - only show once onboarding is complete */}
+            {/* Dashboard Overview + charts - only show once onboarding is complete */}
             {isOnboardingComplete && (
-                <DashboardOverview />
+                <>
+                    <DashboardOverview />
+                    <TokenUsageChart />
+                </>
             )}
         </div>
     )
