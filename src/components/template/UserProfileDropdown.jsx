@@ -5,7 +5,7 @@ import withHeaderItem from '@/utils/hoc/withHeaderItem'
 import Link from 'next/link'
 import { useClerk } from '@clerk/nextjs'
 import useCurrentSession from '@/utils/hooks/useCurrentSession'
-import { PiUserDuotone, PiSignOutDuotone, PiUserCircleDuotone, PiEnvelopeDuotone, PiQuestionDuotone } from 'react-icons/pi'
+import { PiUserDuotone, PiSignOutDuotone, PiUserCircleDuotone, PiQuestionDuotone } from 'react-icons/pi'
 
 const dropdownItemList = [
     {
@@ -17,11 +17,6 @@ const dropdownItemList = [
         label: 'Support',
         path: '/support',
         icon: <PiQuestionDuotone />,
-    },
-    {
-        label: 'Contact Us',
-        path: '/contact',
-        icon: <PiEnvelopeDuotone />,
     },
 ]
 

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Avatar from '@/components/ui/Avatar'
 import { useClerk } from '@clerk/nextjs'
 import useCurrentSession from '@/utils/hooks/useCurrentSession'
-import { PiUserDuotone, PiUserCircle, PiSignOut, PiCaretUp, PiCaretDown, PiEnvelope } from 'react-icons/pi'
+import { PiUserDuotone, PiUserCircle, PiSignOut, PiCaretUp, PiCaretDown } from 'react-icons/pi'
 
 const STORAGE_KEY = 'userSectionExpanded'
 
@@ -101,14 +101,6 @@ const SideNavUserSection = ({ collapsed = false, onItemClick }) => {
                     >
                         <PiUserCircle size={18} />
                         <span>Profile</span>
-                    </Link>
-                    <Link
-                        href="/contact"
-                        onClick={handleItemClick}
-                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                    >
-                        <PiEnvelope size={18} />
-                        <span>Contact Us</span>
                     </Link>
                     <button
                         onClick={handleSignOut}
