@@ -533,10 +533,10 @@ function MessageBubble({ message, conversationId, userQuery, existingFeedback, u
             <div className="max-w-[80%]">
                 <div className={`rounded-lg px-4 py-3 ${
                     isUser
-                        ? 'bg-indigo-600 text-white'
+                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                         : isError
                             ? 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
+                            : 'bg-indigo-600 text-white'
                 }`}>
                     <div className="whitespace-pre-wrap text-sm">
                         {message.content}
