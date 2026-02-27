@@ -11,6 +11,11 @@
       box-shadow: inset 3px 0 0 #fe7f2d;
     }
 
+    &.menu-item-active:has(a[href="/conversations"]) {
+      @apply text-indigo-600 hover:text-indigo-600 bg-indigo-600/10 hover:bg-indigo-600/10 dark:hover:bg-indigo-600/10;
+      box-shadow: inset 3px 0 0 #4f46e5;
+    }
+
     a {
       @apply outline-0
     }
@@ -47,6 +52,11 @@
       &.menu-item-active {
         @apply text-[#fe7f2d] hover:text-[#fe7f2d] bg-[#fe7f2d]/10 hover:bg-[#fe7f2d]/10 dark:hover:bg-[#fe7f2d]/10;
         box-shadow: inset 3px 0 0 #fe7f2d;
+      }
+
+      &.menu-item-active:has(a[href="/conversations"]) {
+        @apply text-indigo-600 hover:text-indigo-600 bg-indigo-600/10 hover:bg-indigo-600/10 dark:hover:bg-indigo-600/10;
+        box-shadow: inset 3px 0 0 #4f46e5;
       }
     }
 
