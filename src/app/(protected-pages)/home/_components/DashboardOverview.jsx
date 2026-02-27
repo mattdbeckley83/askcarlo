@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { PiBackpack, PiMapTrifold, PiChatsCircle } from 'react-icons/pi'
+import { PiSparkle } from 'react-icons/pi'
 import Card from '@/components/ui/Card'
 import { getDashboardStats } from '@/server/actions/dashboard/getDashboardStats'
 
@@ -40,19 +40,19 @@ export default function DashboardOverview() {
                             label="Total gear items"
                             value={stats?.totalItems}
                             bgColor="bg-sky-100"
-                            icon={<PiBackpack className="w-4 h-4 text-white" />}
+                            icon={<img src="/img/logo/backpack.png" alt="Gear" className="w-4 h-4 invert" />}
                         />
                         <StatCard
                             label="Total trips created"
                             value={stats?.totalTrips}
                             bgColor="bg-emerald-100"
-                            icon={<PiMapTrifold className="w-4 h-4 text-white" />}
+                            icon={<img src="/img/logo/trips.png" alt="Trips" className="w-4 h-4 invert" />}
                         />
                         <StatCard
                             label="Total Carlo conversations"
                             value={stats?.totalConversations}
                             bgColor="bg-purple-100"
-                            icon={<PiChatsCircle className="w-4 h-4 text-white" />}
+                            icon={<PiSparkle className="w-4 h-4 text-white" />}
                         />
                     </div>
                 </div>
