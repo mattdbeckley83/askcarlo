@@ -133,7 +133,7 @@ export default function TripPickerModal({
                 <div className="flex gap-2 mb-3">
                     <button
                         onClick={handleSelectAll}
-                        className="text-sm text-[#fe7f2d] hover:underline"
+                        className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
                     >
                         Select All ({filteredTrips.length})
                     </button>
@@ -167,7 +167,7 @@ export default function TripPickerModal({
                                             checked={localSelectedIds.includes(trip.id)}
                                             onChange={() => handleToggleTrip(trip.id)}
                                             className="mt-0.5"
-                                            checkboxClass="text-[#fe7f2d]"
+                                            checkboxClass="text-indigo-600"
                                         />
                                         <div className="flex-1 min-w-0">
                                             <div className="text-sm font-medium text-gray-900 dark:text-white">
@@ -208,7 +208,7 @@ export default function TripPickerModal({
                     <Button variant="plain" size="sm" onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button variant="solid" size="sm" className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]" onClick={handleSave}>
+                    <Button variant="solid" size="sm" className="!bg-indigo-600 hover:!bg-indigo-700" onClick={handleSave}>
                         Save ({selectedCount} trip{selectedCount !== 1 ? 's' : ''})
                     </Button>
                 </div>
