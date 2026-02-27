@@ -1,6 +1,7 @@
 'use client'
 
 import OnboardingChecklist from './OnboardingChecklist'
+import DashboardOverview from './DashboardOverview'
 
 export default function Dashboard({
     firstName,
@@ -36,6 +37,11 @@ export default function Dashboard({
             {/* Getting Started Checklist - only show if not complete */}
             {!isOnboardingComplete && (
                 <OnboardingChecklist onboardingStatus={onboardingStatus} />
+            )}
+
+            {/* Dashboard Overview - only show once onboarding is complete */}
+            {isOnboardingComplete && (
+                <DashboardOverview />
             )}
         </div>
     )
