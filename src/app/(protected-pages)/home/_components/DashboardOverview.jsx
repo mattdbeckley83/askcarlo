@@ -8,7 +8,7 @@ import { getDashboardStats } from '@/server/actions/dashboard/getDashboardStats'
 const StatCard = ({ label, value, icon, bgColor }) => (
     <div className={`${bgColor} rounded-2xl p-5 flex flex-col justify-between h-28`}>
         <div className="flex items-start justify-between">
-            <span className="text-xs font-medium text-gray-700">
+            <span className="text-sm font-medium text-gray-900">
                 {label}
             </span>
             <div className="w-9 h-9 bg-black rounded-full flex items-center justify-center flex-shrink-0">
@@ -32,7 +32,7 @@ export default function DashboardOverview() {
         <div className="w-3/4">
             <Card>
                 <div className="flex flex-col gap-4">
-                    <h2 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    <h2 className="text-sm font-bold text-gray-900 dark:text-white">
                         Overview
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
