@@ -155,11 +155,6 @@ const ShareTripModal = ({ isOpen, onClose, tripId, tripName }) => {
                 </>
             )}
 
-            <div className="flex justify-end mt-6">
-                <Button variant="plain" onClick={handleClose}>
-                    Close
-                </Button>
-            </div>
         </Dialog>
     )
 }
