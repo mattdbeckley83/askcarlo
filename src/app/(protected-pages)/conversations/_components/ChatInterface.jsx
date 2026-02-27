@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { PiLightning, PiMapTrifold, PiWarningCircle, PiArrowRight, PiCoins } from 'react-icons/pi'
+import { PiLightning, PiMapTrifold, PiWarningCircle, PiArrowRight, PiCoins, PiSparkle } from 'react-icons/pi'
 import { getConversation } from '@/server/actions/carlo/getConversation'
 import { sendMessage } from '@/server/actions/carlo/sendMessage'
 import { createConversation } from '@/server/actions/carlo/createConversation'
@@ -526,11 +526,7 @@ function MessageBubble({ message, conversationId, userQuery, existingFeedback, u
                     )
                 ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700">
-                        <img
-                            src="/img/logo/carlo.png"
-                            alt="Carlo"
-                            className="w-full h-full object-contain dark:invert"
-                        />
+                        <PiSparkle className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                     </div>
                 )}
             </div>
