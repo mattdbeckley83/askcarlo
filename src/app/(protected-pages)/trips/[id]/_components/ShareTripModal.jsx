@@ -87,7 +87,7 @@ const ShareTripModal = ({ isOpen, onClose, tripId, tripName }) => {
 
             {isLoading ? (
                 <div className="flex items-center justify-center py-8">
-                    <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-primary" />
+                    <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-[#fe7f2d]" />
                 </div>
             ) : (
                 <>
@@ -109,6 +109,7 @@ const ShareTripModal = ({ isOpen, onClose, tripId, tripName }) => {
                             onChange={handleToggle}
                             disabled={isPending}
                             isLoading={isPending}
+                            switcherClass="bg-[#fe7f2d] dark:bg-[#fe7f2d]"
                         />
                     </div>
 
@@ -128,6 +129,7 @@ const ShareTripModal = ({ isOpen, onClose, tripId, tripName }) => {
                                 <Button
                                     variant="solid"
                                     size="sm"
+                                    className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
                                     icon={copied ? <PiCheck /> : <PiCopy />}
                                     onClick={handleCopy}
                                 >
