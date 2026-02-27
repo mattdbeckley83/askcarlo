@@ -5,11 +5,11 @@ import Card from '@/components/ui/Card'
 import Chart from '@/components/shared/Chart'
 import { getTokenUsageChart } from '@/server/actions/dashboard/getTokenUsageChart'
 
-const TABS = ['All', 'Carlo Chat', 'Smart Fill']
+const TABS = ['All', 'Input', 'Output']
 
-// Soft, muted colors — indigo for Carlo, emerald for Smart Fill
-const CHAT_COLOR = '#818CF8'
-const SMART_FILL_COLOR = '#6EE7B7'
+// Input: soft blue, Output: soft indigo (Carlo AI color)
+const INPUT_COLOR = '#93C5FD'   // blue-300
+const OUTPUT_COLOR = '#818CF8'  // indigo-400
 
 export default function TokenUsageChart() {
     const [data, setData] = useState(null)
@@ -24,24 +24,24 @@ export default function TokenUsageChart() {
     const { series, chartColors } = useMemo(() => {
         if (!data) return { series: [], chartColors: [] }
 
-        if (activeTab === 'Carlo Chat') {
+        if (activeTab === 'Input') {
             return {
-                series: [{ name: 'Carlo Chat', data: data.chatSeries }],
-                chartColors: [CHAT_COLOR],
+                series: [{ name: 'Input', data: data.inputSeries }],
+                chartColors: [INPUT_COLOR],
             }
         }
-        if (activeTab === 'Smart Fill') {
+        if (activeTab === 'Output') {
             return {
-                series: [{ name: 'Smart Fill', data: data.smartFillSeries }],
-                chartColors: [SMART_FILL_COLOR],
+                series: [{ name: 'Output', data: data.outputSeries }],
+                chartColors: [OUTPUT_COLOR],
             }
         }
         return {
             series: [
-                { name: 'Carlo Chat', data: data.chatSeries },
-                { name: 'Smart Fill', data: data.smartFillSeries },
+                { name: 'Input', data: data.inputSeries },
+                { name: 'Output', data: data.outputSeries },
             ],
-            chartColors: [CHAT_COLOR, SMART_FILL_COLOR],
+            chartColors: [INPUT_COLOR, OUTPUT_COLOR],
         }
     }, [data, activeTab])
 
@@ -77,12 +77,12 @@ export default function TokenUsageChart() {
         yaxis: {
             labels: {
                 style: { fontSize: '11px', colors: '#9ca3af' },
-                formatter: (val) => Math.round(val),
+                formatter: (val) => Math.round(val).toLocaleString(),
             },
         },
         tooltip: {
             y: {
-                formatter: (val) => `${val} tokens`,
+                formatter: (val) => `${val.toLocaleString()} tokens`,
             },
         },
         legend: {

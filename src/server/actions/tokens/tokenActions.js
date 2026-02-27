@@ -47,7 +47,7 @@ export async function hasSufficientTokens() {
  * @param {number|null} apiCostCents - Optional API cost in cents (stored as integer)
  * @returns {Promise<{success: boolean, newBalance: number} | {error: string}>}
  */
-export async function deductTokens(amount, transactionType, description, apiCostCents = null) {
+export async function deductTokens(amount, transactionType, description, apiCostCents = null, inputTokens = null, outputTokens = null) {
     const { userId } = await auth()
     if (!userId) {
         return { error: 'Unauthorized' }
@@ -88,7 +88,11 @@ export async function deductTokens(amount, transactionType, description, apiCost
             balance_after: newBalance,
             transaction_type: transactionType,
             description: description,
-            metadata: apiCostCents != null ? { api_cost_cents: apiCostCents } : {},
+            metadata: {
+                ...(apiCostCents != null && { api_cost_cents: apiCostCents }),
+                ...(inputTokens != null && { input_tokens: inputTokens }),
+                ...(outputTokens != null && { output_tokens: outputTokens }),
+            },
         })
 
     if (txError) {

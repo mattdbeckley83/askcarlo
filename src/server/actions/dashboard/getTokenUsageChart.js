@@ -13,7 +13,7 @@ export async function getTokenUsageChart() {
 
     const { data, error } = await supabaseAdmin
         .from('token_transactions')
-        .select('amount, transaction_type, created_at')
+        .select('amount, transaction_type, created_at, metadata')
         .eq('user_id', userId)
         .lt('amount', 0)
         .gte('created_at', since.toISOString())
@@ -30,7 +30,7 @@ export async function getTokenUsageChart() {
         const d = new Date(since)
         d.setDate(since.getDate() + i)
         const key = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-        dateMap[key] = { chat: 0, smartFill: 0 }
+        dateMap[key] = { input: 0, output: 0 }
     }
 
     for (const tx of data || []) {
@@ -38,18 +38,14 @@ export async function getTokenUsageChart() {
             month: 'short',
             day: 'numeric',
         })
-        if (!dateMap[key]) dateMap[key] = { chat: 0, smartFill: 0 }
-        const tokens = Math.abs(tx.amount)
-        if (tx.transaction_type === 'smart_fill') {
-            dateMap[key].smartFill += tokens
-        } else {
-            dateMap[key].chat += tokens
-        }
+        if (!dateMap[key]) dateMap[key] = { input: 0, output: 0 }
+        dateMap[key].input += tx.metadata?.input_tokens || 0
+        dateMap[key].output += tx.metadata?.output_tokens || 0
     }
 
     const dates = Object.keys(dateMap)
-    const chatSeries = dates.map((d) => dateMap[d].chat)
-    const smartFillSeries = dates.map((d) => dateMap[d].smartFill)
+    const inputSeries = dates.map((d) => dateMap[d].input)
+    const outputSeries = dates.map((d) => dateMap[d].output)
 
-    return { success: true, dates, chatSeries, smartFillSeries }
+    return { success: true, dates, inputSeries, outputSeries }
 }

@@ -308,7 +308,9 @@ export async function extractFromUrl(url) {
             tokensUsed,
             'smart_fill',
             `Smart-fill: ${trimmedUrl.substring(0, 50)}${trimmedUrl.length > 50 ? '...' : ''}`,
-            Math.round(totalCostCents * 100) // Store as integer
+            Math.round(totalCostCents * 100), // Store as integer
+            claudeUsage.input_tokens,
+            claudeUsage.output_tokens
         )
 
         if (deductResult.error) {
