@@ -73,6 +73,22 @@ export const protectedRoutes = {
             pageContainerType: 'gutterless',
         },
     },
+    '/contact': {
+        key: 'contact',
+        authority: [],
+        meta: {
+            pageBackgroundType: 'gray',
+            pageContainerType: 'gutterless',
+        },
+    },
+    '/support': {
+        key: 'support',
+        authority: [],
+        meta: {
+            pageBackgroundType: 'gray',
+            pageContainerType: 'gutterless',
+        },
+    },
 }
 
 export const publicRoutes = {

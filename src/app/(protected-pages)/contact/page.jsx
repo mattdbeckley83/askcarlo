@@ -1,4 +1,3 @@
-import Card from '@/components/ui/Card'
 import { PiEnvelope } from 'react-icons/pi'
 
 export const metadata = {
@@ -7,41 +6,33 @@ export const metadata = {
 
 export default function ContactPage() {
     return (
-        <div>
-            <div className="mb-6">
-                <h1 className="text-2xl font-bold">Contact Us</h1>
-            </div>
+        <div className="px-4 sm:px-6 md:px-8 py-16">
+            <div className="max-w-2xl mx-auto text-center">
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+                    Contact Us
+                </h1>
+                <p className="text-xl text-gray-600 dark:text-gray-400 mb-16">
+                    We&apos;d love to hear from you!
+                </p>
 
-            <div className="max-w-2xl">
-                <Card>
-                    <div className="flex flex-col gap-4">
-                        <div className="flex items-center gap-3">
-                            <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-                                <PiEnvelope className="text-orange-500" size={24} />
-                            </div>
-                            <div>
-                                <h2 className="text-lg font-semibold">Get in Touch</h2>
-                            </div>
-                        </div>
-
-                        <p className="text-gray-700 dark:text-gray-300">
-                            If you have any questions, feedback, or would like to report an issue, please reach out at{' '}
-                            <a
-                                href="mailto:matt@askcarlo.ai"
-                                className="text-orange-500 hover:text-orange-600 dark:hover:text-orange-400 font-medium"
-                            >
-                                matt@askcarlo.ai
-                            </a>{' '}
-                            and we will get back to you ASAP.
-                        </p>
-
-                        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                            <p className="text-sm text-blue-700 dark:text-blue-300">
-                                <span className="font-medium">Response Time:</span> We typically respond within 24-48 hours during business days.
-                            </p>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 md:p-16">
+                    <div className="flex justify-center mb-6">
+                        <div className="w-16 h-16 bg-[#fe7f2d] rounded-full flex items-center justify-center">
+                            <PiEnvelope className="w-8 h-8 text-white" />
                         </div>
                     </div>
-                </Card>
+                    <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed">
+                        If you have any questions, feedback, or would like to report an issue,
+                        please reach out to us at{' '}
+                        <a
+                            href="mailto:matt@askcarlo.ai"
+                            className="text-[#fe7f2d] hover:underline font-medium transition-colors"
+                        >
+                            matt@askcarlo.ai
+                        </a>
+                        {' '}and we will get back to you as soon as we can.
+                    </p>
+                </div>
             </div>
         </div>
     )
