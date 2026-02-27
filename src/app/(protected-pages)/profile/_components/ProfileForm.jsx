@@ -193,13 +193,13 @@ const ProfileForm = ({
                                                 onClick={() => toggleNoteExpanded(activity.id)}
                                                 className="text-xs text-[#fe7f2d] hover:underline whitespace-nowrap"
                                             >
-                                                {isExpanded ? '[- Hide]' : '[+ Add details]'}
+                                                {isExpanded ? '[- Hide]' : '[+ Add Context]'}
                                             </button>
                                         )}
                                     </div>
 
                                     {isSelected && !isExpanded && hasNote && (
-                                        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400 italic pl-6">
+                                        <p className="mt-2 text-xs text-[#fe7f2d] italic pl-6">
                                             {truncateText(note)}
                                         </p>
                                     )}
