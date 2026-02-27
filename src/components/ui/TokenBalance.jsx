@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { PiShoppingCartSimple } from 'react-icons/pi'
 import { useTokenBalance } from '@/lib/contexts/TokenBalanceContext'
 import { createCheckoutSession } from '@/server/actions/stripe/createCheckoutSession'
 import { TOKEN_PACKAGES } from '@/lib/tokenPackages'
@@ -56,12 +57,15 @@ const TokenBalance = () => {
             </button>
 
             {open && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-50 p-4 flex flex-col gap-4">
-                    <p className="text-xs text-gray-400 dark:text-gray-500">
-                        Tokens are spent when you chat with Carlo or use other AI-powered features.
-                    </p>
+                <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-50 p-4 flex flex-col gap-3">
+                    <div>
+                        <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5">Buy Tokens</p>
+                        <p className="text-xs text-gray-400 dark:text-gray-500">
+                            Tokens are spent when you chat with Carlo or use Smart Fill.
+                        </p>
+                    </div>
 
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-2">
                         {TOKEN_PACKAGES.map((pkg) => (
                             <button
                                 key={pkg.id}
@@ -71,31 +75,32 @@ const TokenBalance = () => {
                                     setCheckingOutId(pkg.id)
                                     const result = await createCheckoutSession(pkg.id)
                                     if (result.url) {
-                                        window.location.href = result.url
+                                        window.open(result.url, '_blank')
+                                        setCheckingOutId(null)
                                     } else {
                                         console.error('Checkout error:', result.error)
                                         setCheckingOutId(null)
                                     }
                                 }}
-                                className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/20 dark:hover:bg-indigo-900/40 border border-indigo-200 dark:border-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors group"
                             >
-                                <span className="font-medium text-gray-900 dark:text-white">
-                                    {checkingOutId === pkg.id ? 'Redirecting...' : pkg.label}
-                                </span>
                                 <div className="flex items-center gap-2">
+                                    <PiShoppingCartSimple className="w-4 h-4 text-indigo-500 dark:text-indigo-400 flex-shrink-0" />
+                                    <span className="font-medium text-indigo-900 dark:text-indigo-100">
+                                        {checkingOutId === pkg.id ? 'Opening...' : pkg.label}
+                                    </span>
                                     {pkg.badge && (
-                                        <span className="text-xs px-1.5 py-0.5 bg-[#fe7f2d]/10 text-[#fe7f2d] rounded font-medium">
+                                        <span className="text-xs px-1.5 py-0.5 bg-indigo-600 text-white rounded font-medium">
                                             {pkg.badge}
                                         </span>
                                     )}
-                                    <span className="font-semibold text-gray-900 dark:text-white">
-                                        ${pkg.priceUsd}
-                                    </span>
                                 </div>
+                                <span className="font-semibold text-indigo-700 dark:text-indigo-300">
+                                    ${pkg.priceUsd}
+                                </span>
                             </button>
                         ))}
                     </div>
-
                 </div>
             )}
         </div>
