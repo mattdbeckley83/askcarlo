@@ -93,43 +93,45 @@ export default function SupportPage() {
                 </p>
             </div>
 
-            <div className="max-w-3xl flex flex-col gap-4">
-                {faqs.map((faq) => (
-                    <Card key={faq.question}>
-                        <div className="flex gap-4">
-                            <div className="flex-shrink-0 mt-0.5">
-                                <div className="p-2 bg-[#fe7f2d]/10 rounded-lg">
-                                    {faq.icon}
+            <div className="max-w-2xl flex flex-col gap-6">
+                <Card>
+                    <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                        {faqs.map((faq) => (
+                            <div key={faq.question} className="flex gap-4 py-4 first:pt-0 last:pb-0">
+                                <div className="flex-shrink-0 mt-0.5">
+                                    <div className="p-2 bg-[#fe7f2d]/10 rounded-lg">
+                                        {faq.icon}
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <h2 className="font-semibold text-gray-900 dark:text-gray-100">
+                                        {faq.question}
+                                    </h2>
+                                    {faq.answer && (
+                                        <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                                            {faq.answer}
+                                        </p>
+                                    )}
+                                    {faq.tips && (
+                                        <ul className="flex flex-col gap-2 mt-1">
+                                            {faq.tips.map((tip) => (
+                                                <li key={tip.title} className="flex gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                                    <span className="text-[#fe7f2d] font-bold flex-shrink-0">·</span>
+                                                    <span>
+                                                        <span className="font-medium text-gray-900 dark:text-gray-100">
+                                                            {tip.title}
+                                                        </span>{' '}
+                                                        {tip.detail}
+                                                    </span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
                             </div>
-                            <div className="flex flex-col gap-2">
-                                <h2 className="font-semibold text-gray-900 dark:text-gray-100">
-                                    {faq.question}
-                                </h2>
-                                {faq.answer && (
-                                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                                        {faq.answer}
-                                    </p>
-                                )}
-                                {faq.tips && (
-                                    <ul className="flex flex-col gap-2 mt-1">
-                                        {faq.tips.map((tip) => (
-                                            <li key={tip.title} className="flex gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                                <span className="text-[#fe7f2d] font-bold flex-shrink-0">·</span>
-                                                <span>
-                                                    <span className="font-medium text-gray-900 dark:text-gray-100">
-                                                        {tip.title}
-                                                    </span>{' '}
-                                                    {tip.detail}
-                                                </span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </div>
-                        </div>
-                    </Card>
-                ))}
+                        ))}
+                    </div>
+                </Card>
 
                 <Card>
                     <div className="flex flex-col gap-2">
