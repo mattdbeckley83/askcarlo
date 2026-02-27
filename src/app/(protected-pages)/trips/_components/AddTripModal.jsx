@@ -11,7 +11,6 @@ import { addTrip } from '@/server/actions/trips/addTrip'
 import { useTokenBalance } from '@/lib/contexts/TokenBalanceContext'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
-import { PiCoins } from 'react-icons/pi'
 
 const AddTripModal = ({ isOpen, onClose, activities = [] }) => {
     const router = useRouter()
@@ -78,12 +77,13 @@ const AddTripModal = ({ isOpen, onClose, activities = [] }) => {
                     refresh()
                     toast.push(
                         <Notification
-                            title={`+${result.tokensAwarded} tokens earned!`}
-                            customIcon={<PiCoins className="text-[#fe7f2d] mt-0.5" size={22} />}
+                            title="First trip created"
                             duration={6000}
                             closable
                         >
-                            First trip created
+                            <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                                +{result.tokensAwarded} tokens earned
+                            </span>
                         </Notification>
                     )
                 }

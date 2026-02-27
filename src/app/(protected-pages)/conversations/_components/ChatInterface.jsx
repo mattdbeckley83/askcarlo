@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { PiLightning, PiMapTrifold, PiWarningCircle, PiArrowRight, PiCoins, PiSparkle } from 'react-icons/pi'
+import { PiLightning, PiMapTrifold, PiWarningCircle, PiArrowRight, PiSparkle } from 'react-icons/pi'
 import { getConversation } from '@/server/actions/carlo/getConversation'
 import { sendMessage } from '@/server/actions/carlo/sendMessage'
 import { createConversation } from '@/server/actions/carlo/createConversation'
@@ -134,12 +134,13 @@ export default function ChatInterface({
             if (result.tokensAwarded) {
                 toast.push(
                     <Notification
-                        title={`+${result.tokensAwarded} tokens earned!`}
-                        customIcon={<PiCoins className="text-[#fe7f2d] mt-0.5" size={22} />}
+                        title="First Carlo chat"
                         duration={6000}
                         closable
                     >
-                        First Carlo chat
+                        <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                            +{result.tokensAwarded} tokens earned
+                        </span>
                     </Notification>
                 )
             }
@@ -237,12 +238,13 @@ export default function ChatInterface({
             if (result.tokensAwarded) {
                 toast.push(
                     <Notification
-                        title={`+${result.tokensAwarded} tokens earned!`}
-                        customIcon={<PiCoins className="text-[#fe7f2d] mt-0.5" size={22} />}
+                        title="First Carlo chat"
                         duration={6000}
                         closable
                     >
-                        First Carlo chat
+                        <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                            +{result.tokensAwarded} tokens earned
+                        </span>
                     </Notification>
                 )
             }

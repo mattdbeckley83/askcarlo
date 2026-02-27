@@ -8,7 +8,7 @@ import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Alert from '@/components/ui/Alert'
 import Spinner from '@/components/ui/Spinner'
-import { PiSparkle, PiLink, PiCoins } from 'react-icons/pi'
+import { PiSparkle, PiLink } from 'react-icons/pi'
 import { addItem } from '@/server/actions/items/addItem'
 import { extractFromUrl } from '@/server/actions/items/extractFromUrl'
 import { useTokenBalance } from '@/lib/contexts/TokenBalanceContext'
@@ -225,12 +225,13 @@ const AddGearModal = ({ isOpen, onClose, categories = [], gearTypeId }) => {
                     refresh()
                     toast.push(
                         <Notification
-                            title={`+${result.tokensAwarded} tokens earned!`}
-                            customIcon={<PiCoins className="text-[#fe7f2d] mt-0.5" size={22} />}
+                            title="First gear item added"
                             duration={6000}
                             closable
                         >
-                            First gear item added
+                            <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                                +{result.tokensAwarded} tokens earned
+                            </span>
                         </Notification>
                     )
                 }

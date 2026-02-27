@@ -9,7 +9,6 @@ import { updateAiContext } from '@/server/actions/profile/updateAiContext'
 import { useTokenBalance } from '@/lib/contexts/TokenBalanceContext'
 import toast from '@/components/ui/toast'
 import Notification from '@/components/ui/Notification'
-import { PiCoins } from 'react-icons/pi'
 
 const MAX_ACTIVITY_NOTES_LENGTH = 500
 const MAX_AI_CONTEXT_LENGTH = 1000
@@ -90,12 +89,13 @@ const ProfileForm = ({
                     refresh()
                     toast.push(
                         <Notification
-                            title={`+${activitiesResult.tokensAwarded} tokens earned!`}
-                            customIcon={<PiCoins className="text-[#fe7f2d] mt-0.5" size={22} />}
+                            title="Activities selected"
                             duration={6000}
                             closable
                         >
-                            Activities selected
+                            <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                                +{activitiesResult.tokensAwarded} tokens earned
+                            </span>
                         </Notification>
                     )
                 }
