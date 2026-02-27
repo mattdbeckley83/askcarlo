@@ -8,7 +8,7 @@ import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Alert from '@/components/ui/Alert'
 import Spinner from '@/components/ui/Spinner'
-import { PiMagicWand, PiLink, PiCoins } from 'react-icons/pi'
+import { PiSparkle, PiLink, PiCoins } from 'react-icons/pi'
 import { addItem } from '@/server/actions/items/addItem'
 import { extractFromUrl } from '@/server/actions/items/extractFromUrl'
 import { useTokenBalance } from '@/lib/contexts/TokenBalanceContext'
@@ -293,7 +293,7 @@ const AddFoodModal = ({ isOpen, onClose, categories = [], foodTypeId }) => {
                                 className="!bg-indigo-600 hover:!bg-indigo-700"
                                 onClick={handleAutoFill}
                                 disabled={isExtracting || !productUrl.trim()}
-                                icon={isExtracting ? <Spinner size={16} /> : <PiMagicWand />}
+                                icon={isExtracting ? <Spinner size={16} /> : <PiSparkle />}
                             >
                                 {isExtracting ? '' : 'Fill'}
                             </Button>

@@ -1,4 +1,4 @@
-import { PiUserCircleDuotone } from 'react-icons/pi'
+import { PiUserCircleDuotone, PiSparkleDuotone } from 'react-icons/pi'
 
 const NavIcon = ({ src, alt, className = '' }) => (
     <img
@@ -14,7 +14,7 @@ const navigationIcon = {
     food: <NavIcon src="/img/logo/food.png" alt="My Food" />,
     categories: <NavIcon src="/img/logo/categories.png" alt="Categories" className="opacity-60" />,
     trips: <NavIcon src="/img/logo/trips.png" alt="My Trips" />,
-    carlo: <NavIcon src="/img/logo/carlo.png" alt="Carlo" className="opacity-60" />,
+    carlo: <PiSparkleDuotone className="w-7 h-7 opacity-70" />,
     profile: <PiUserCircleDuotone />,
 }
 
