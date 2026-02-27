@@ -80,6 +80,10 @@ export const publicRoutes = {
         key: 'dashboard',
         authority: [],
     },
+    '/privacy': {
+        key: 'privacy',
+        authority: [],
+    },
 }
 
 export const authRoutes = authRoute
