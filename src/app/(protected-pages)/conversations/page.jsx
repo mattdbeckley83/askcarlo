@@ -117,20 +117,6 @@ async function getCategories(userId) {
     return categories || []
 }
 
-async function getActivities() {
-    const { data: activities, error } = await supabaseAdmin
-        .from('activities')
-        .select('id, name, description')
-        .order('name')
-
-    if (error) {
-        console.error('Error fetching activities:', error)
-        return []
-    }
-
-    return activities || []
-}
-
 async function getItemTypes() {
     const { data: itemTypes, error } = await supabaseAdmin
         .from('item_types')
@@ -152,31 +138,32 @@ async function getItemTypes() {
 async function getUserActivities(userId) {
     const { data: userActivities, error } = await supabaseAdmin
         .from('user_activities')
-        .select('activity_id, activities(name)')
+        .select('activity_id, activities(id, name, description)')
         .eq('user_id', userId)
+        .order('activity_id')
 
     if (error) {
         console.error('Error fetching user activities:', error)
         return []
     }
 
-    // Extract activity names
-    return userActivities?.map((ua) => ua.activities?.name).filter(Boolean) || []
+    return userActivities?.map((ua) => ua.activities).filter(Boolean) || []
 }
 
 export default async function CarloPage({ searchParams }) {
     const { userId } = await auth()
 
-    const [conversations, items, trips, tripItems, categories, activities, userActivityNames, itemTypes] = await Promise.all([
+    const [conversations, items, trips, tripItems, categories, userActivities, itemTypes] = await Promise.all([
         getConversations(userId),
         getItems(userId),
         getTrips(userId),
         getTripItems(userId),
         getCategories(userId),
-        getActivities(),
         getUserActivities(userId),
         getItemTypes(),
     ])
+
+    const userActivityNames = userActivities.map((a) => a.name)
 
     const firstMessages = await getFirstMessages(conversations.map((c) => c.id))
 
@@ -195,7 +182,7 @@ export default async function CarloPage({ searchParams }) {
                         trips={trips}
                         tripItems={tripItems}
                         categories={categories}
-                        activities={activities}
+                        activities={userActivities}
                         userActivityNames={userActivityNames}
                         itemTypes={itemTypes}
                     />
