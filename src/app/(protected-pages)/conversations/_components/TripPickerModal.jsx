@@ -96,6 +96,7 @@ export default function TripPickerModal({
         <Dialog
             isOpen={isOpen}
             onClose={handleClose}
+            closable={false}
             width={550}
             aria-labelledby={dialogTitleId}
             aria-describedby={dialogDescId}

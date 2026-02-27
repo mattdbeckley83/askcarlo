@@ -111,6 +111,7 @@ export default function ItemPickerModal({
         <Dialog
             isOpen={isOpen}
             onClose={handleClose}
+            closable={false}
             width={600}
             aria-labelledby={dialogTitleId}
             aria-describedby={dialogDescId}

@@ -56,6 +56,7 @@ export default function ActivityPickerModal({
         <Dialog
             isOpen={isOpen}
             onClose={handleClose}
+            closable={false}
             width={400}
             aria-labelledby={dialogTitleId}
             aria-describedby={dialogDescId}
