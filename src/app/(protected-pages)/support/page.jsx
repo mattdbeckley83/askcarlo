@@ -1,4 +1,3 @@
-import Card from '@/components/ui/Card'
 import { PiCoins, PiChatsCircle, PiLightbulb, PiArrowCounterClockwise, PiInfinity, PiGauge } from 'react-icons/pi'
 
 export const metadata = {
@@ -95,7 +94,7 @@ export default function SupportPage() {
 
             <div className="max-w-3xl flex flex-col gap-4">
                 {faqs.map((faq) => (
-                    <Card key={faq.question}>
+                    <div key={faq.question} className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 md:p-16">
                         <div className="flex gap-4">
                             <div className="flex-shrink-0 mt-0.5">
                                 <div className="p-2 bg-[#fe7f2d]/10 rounded-lg">
@@ -128,10 +127,10 @@ export default function SupportPage() {
                                 )}
                             </div>
                         </div>
-                    </Card>
+                    </div>
                 ))}
 
-                <Card>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 md:p-16">
                     <div className="flex flex-col gap-2">
                         <h2 className="font-semibold text-gray-900 dark:text-gray-100">
                             Still have questions?
@@ -147,7 +146,7 @@ export default function SupportPage() {
                             and I'll get back to you as soon as possible. Thanks!
                         </p>
                     </div>
-                </Card>
+                </div>
             </div>
         </div>
     )
