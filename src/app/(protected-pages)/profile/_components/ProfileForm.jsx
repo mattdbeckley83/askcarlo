@@ -182,6 +182,7 @@ const ProfileForm = ({
                                             onChange={(checked) =>
                                                 handleActivityToggle(activity.id, checked)
                                             }
+                                            checkboxClass="text-[#fe7f2d]"
                                         >
                                             <span className="text-sm font-medium">{activity.name}</span>
                                         </Checkbox>
@@ -210,7 +211,7 @@ const ProfileForm = ({
                                                 onChange={(e) => handleNoteChange(activity.id, e.target.value)}
                                                 placeholder={`Tell Carlo more about your ${activity.name} style... (optional)`}
                                                 rows={2}
-                                                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-[#fe7f2d] focus:border-[#fe7f2d] bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#fe7f2d] focus:border-[#fe7f2d] bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                             />
                                             <div className="flex justify-end mt-1">
                                                 <span className={`text-xs ${note.length > MAX_ACTIVITY_NOTES_LENGTH - 50 ? 'text-amber-500' : 'text-gray-400'}`}>
