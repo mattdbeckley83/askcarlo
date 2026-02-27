@@ -32,7 +32,7 @@ export default function ReferralStatus() {
     const totalEarned = referrals.reduce((sum, r) => sum + (r.referrer_tokens_awarded || 0), 0)
 
     return (
-        <Card className="mt-6">
+        <Card>
             <div className="flex flex-col gap-4">
                 <div>
                     <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">

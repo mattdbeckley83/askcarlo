@@ -36,7 +36,9 @@ export default async function ProfilePage() {
                 selectedActivityIds={result.selectedActivityIds}
                 activityNotes={result.activityNotes}
             />
-            <ReferralStatus />
+            <div className="max-w-2xl mt-6">
+                <ReferralStatus />
+            </div>
         </div>
     )
 }
