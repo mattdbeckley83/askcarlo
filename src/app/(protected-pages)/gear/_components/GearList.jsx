@@ -154,6 +154,7 @@ const GearList = ({ items = [], categories = [], gearTypeId }) => {
                     </div>
                     <Button
                         variant="solid"
+                        className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
                         icon={<PiPlus />}
                         onClick={() => setIsAddModalOpen(true)}
                     >

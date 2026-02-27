@@ -319,6 +319,7 @@ const EditGearModal = ({ isOpen, onClose, item, categories = [], gearTypeId }) =
                             type="submit"
                             variant="solid"
                             size="sm"
+                            className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
                             loading={isPending}
                         >
                             Save Changes

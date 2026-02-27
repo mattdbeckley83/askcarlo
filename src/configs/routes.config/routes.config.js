@@ -65,6 +65,14 @@ export const protectedRoutes = {
             pageContainerType: 'contained',
         },
     },
+    '/categories': {
+        key: 'categories',
+        authority: [],
+        meta: {
+            pageBackgroundType: 'gray',
+            pageContainerType: 'gutterless',
+        },
+    },
 }
 
 export const publicRoutes = {

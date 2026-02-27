@@ -289,6 +289,7 @@ const ImportUploader = ({ gearTypeId, existingCategories }) => {
                                 </button>
                                 <Button
                                     variant="solid"
+                                    className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
                                     onClick={handleImport}
                                     disabled={isPending || validSelectedItems.length === 0}
                                     loading={isPending}

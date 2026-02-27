@@ -151,6 +151,7 @@ const AddItemToTripModal = ({
                 </Button>
                 <Button
                     variant="solid"
+                    className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
                     onClick={handleSubmit}
                     loading={isPending}
                     disabled={selectedItems.size === 0}

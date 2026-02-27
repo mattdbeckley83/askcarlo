@@ -25,6 +25,12 @@
       read-only:focus:dark:bg-gray-700
       ease-in-out;
 
+    &:focus,
+    &:focus-within {
+      --tw-ring-color: #fe7f2d;
+      border-color: #fe7f2d;
+    }
+
     &::placeholder {
       @apply text-gray-400;
     }

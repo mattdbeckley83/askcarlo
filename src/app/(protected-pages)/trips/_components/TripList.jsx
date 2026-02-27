@@ -62,6 +62,7 @@ const TripList = ({ trips = [], activities = [] }) => {
                     <div className="flex items-center gap-3">
                         <Button
                             variant="solid"
+                            className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
                             icon={<PiPlus />}
                             onClick={() => setIsAddModalOpen(true)}
                         >

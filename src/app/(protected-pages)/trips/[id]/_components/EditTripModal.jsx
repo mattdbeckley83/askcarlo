@@ -6,11 +6,15 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import FormItem from '@/components/ui/Form/FormItem'
+import { PiTrash, PiWarning } from 'react-icons/pi'
 import { updateTrip } from '@/server/actions/trips/updateTrip'
+import { deleteTrip } from '@/server/actions/trips/deleteTrip'
 
-const EditTripModal = ({ isOpen, onClose, trip, activities = [] }) => {
+const EditTripModal = ({ isOpen, onClose, trip, activities = [], onDeleteSuccess }) => {
     const [isPending, startTransition] = useTransition()
+    const [isDeleting, startDeleteTransition] = useTransition()
     const [error, setError] = useState(null)
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
     const [showTrailDetails, setShowTrailDetails] = useState(false)
     const [formState, setFormState] = useState({
         name: '',
@@ -96,13 +100,83 @@ const EditTripModal = ({ isOpen, onClose, trip, activities = [] }) => {
 
     const handleClose = () => {
         setError(null)
+        setShowDeleteConfirm(false)
         onClose()
     }
 
+    const handleDeleteClick = () => {
+        setShowDeleteConfirm(true)
+    }
+
+    const handleDeleteCancel = () => {
+        setShowDeleteConfirm(false)
+    }
+
+    const handleDeleteConfirm = () => {
+        startDeleteTransition(async () => {
+            const result = await deleteTrip(trip.id)
+            if (result.error) {
+                setError(result.error)
+                setShowDeleteConfirm(false)
+            } else {
+                handleClose()
+                onDeleteSuccess?.()
+            }
+        })
+    }
+
+    if (showDeleteConfirm) {
+        return (
+            <Dialog isOpen={isOpen} onClose={handleClose} width={400} closable={false}>
+                <div className="flex flex-col items-center text-center gap-4">
+                    <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+                        <PiWarning className="w-6 h-6 text-red-600 dark:text-red-400" />
+                    </div>
+                    <div>
+                        <h4 className="text-lg font-semibold mb-2">Delete Trip</h4>
+                        <p className="text-gray-600 dark:text-gray-400">
+                            Are you sure you want to delete <span className="font-medium text-gray-900 dark:text-gray-100">{trip?.name}</span>? This action cannot be undone.
+                        </p>
+                    </div>
+                    {error && (
+                        <div className="text-red-500 text-sm">{error}</div>
+                    )}
+                    <div className="flex gap-3 w-full">
+                        <Button
+                            variant="plain"
+                            className="flex-1"
+                            onClick={handleDeleteCancel}
+                            disabled={isDeleting}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="solid"
+                            className="flex-1 !bg-red-600 hover:!bg-red-700"
+                            onClick={handleDeleteConfirm}
+                            loading={isDeleting}
+                        >
+                            Delete
+                        </Button>
+                    </div>
+                </div>
+            </Dialog>
+        )
+    }
+
     return (
-        <Dialog isOpen={isOpen} onClose={handleClose} width={500}>
+        <Dialog isOpen={isOpen} onClose={handleClose} width={500} closable={false}>
             <div className="flex flex-col max-h-[80vh]">
-                <h4 className="text-lg font-semibold mb-4 flex-shrink-0">Edit Trip</h4>
+                <div className="flex justify-between items-center mb-4 flex-shrink-0">
+                    <h4 className="text-lg font-semibold">Edit Trip</h4>
+                    <button
+                        type="button"
+                        onClick={handleDeleteClick}
+                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                    >
+                        <PiTrash className="w-5 h-5" />
+                    </button>
+                </div>
                 <form onSubmit={handleSubmit} className="flex flex-col min-h-0 flex-1">
                     <div className="flex flex-col gap-4 overflow-y-auto flex-1 pr-2">
                     <FormItem label="Trip Name" asterisk>
@@ -248,6 +322,7 @@ const EditTripModal = ({ isOpen, onClose, trip, activities = [] }) => {
                             <Button
                                 type="submit"
                                 variant="solid"
+                                className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
                                 loading={isPending}
                             >
                                 Save Changes

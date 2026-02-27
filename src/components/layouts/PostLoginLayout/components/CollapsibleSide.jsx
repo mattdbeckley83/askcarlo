@@ -26,7 +26,7 @@ const CollapsibleSide = ({ children }) => {
                             </>
                         }
                         headerEnd={
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-8">
                                 <TokenBalance />
                                 <UserProfileDropdown hoverable={false} />
                             </div>

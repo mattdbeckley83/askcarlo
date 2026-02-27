@@ -290,6 +290,7 @@ const AddFoodModal = ({ isOpen, onClose, categories = [], foodTypeId }) => {
                                 type="button"
                                 variant="solid"
                                 size="sm"
+                                className="!bg-indigo-600 hover:!bg-indigo-700"
                                 onClick={handleAutoFill}
                                 disabled={isExtracting || !productUrl.trim()}
                                 icon={isExtracting ? <Spinner size={16} /> : <PiMagicWand />}
@@ -433,6 +434,7 @@ const AddFoodModal = ({ isOpen, onClose, categories = [], foodTypeId }) => {
                             type="submit"
                             variant="solid"
                             size="sm"
+                            className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
                             loading={isPending}
                         >
                             Add Food

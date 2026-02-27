@@ -257,6 +257,7 @@ const ProfileForm = ({
             <div className="flex items-center gap-4">
                 <Button
                     variant="solid"
+                    className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
                     onClick={handleSave}
                     disabled={isPending || !hasChanges()}
                     loading={isPending}

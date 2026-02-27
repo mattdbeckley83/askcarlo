@@ -255,6 +255,7 @@ const TripItemList = ({ tripItems, tripId, categoryMap, onAddItem, addItemDisabl
                                 <Button
                                     variant="solid"
                                     size="sm"
+                                    className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
                                     icon={<PiPlus />}
                                     onClick={onAddItem}
                                     disabled={addItemDisabled}

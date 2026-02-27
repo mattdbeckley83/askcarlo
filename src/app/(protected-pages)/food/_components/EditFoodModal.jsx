@@ -335,6 +335,7 @@ const EditFoodModal = ({ isOpen, onClose, item, categories = [], foodTypeId }) =
                             type="submit"
                             variant="solid"
                             size="sm"
+                            className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
                             loading={isPending}
                         >
                             Save Changes

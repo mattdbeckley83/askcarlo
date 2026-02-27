@@ -4,11 +4,10 @@ import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
-import { PiTrash, PiPencil, PiArrowSquareOut, PiShareNetwork, PiCaretUp, PiCaretDown } from 'react-icons/pi'
+import { PiPencil, PiArrowSquareOut, PiShareNetwork, PiCaretUp, PiCaretDown } from 'react-icons/pi'
 import TripItemList from './TripItemList'
 import AddItemToTripModal from './AddItemToTripModal'
 import EditTripModal from './EditTripModal'
-import DeleteTripDialog from './DeleteTripDialog'
 import ShareTripModal from './ShareTripModal'
 import WeightSummary from './WeightSummary'
 import CategoryBreakdown from './CategoryBreakdown'
@@ -40,7 +39,6 @@ const TripDetail = ({
     const router = useRouter()
     const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false)
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const [isShareModalOpen, setIsShareModalOpen] = useState(false)
     const [hoveredCategory, setHoveredCategory] = useState(null)
     const [isAnalyticsVisible, setIsAnalyticsVisible] = useState(true)
@@ -106,14 +104,6 @@ const TripDetail = ({
                             onClick={() => setIsEditModalOpen(true)}
                         >
                             Edit
-                        </Button>
-                        <Button
-                            variant="plain"
-                            icon={<PiTrash />}
-                            className="text-red-500 hover:text-red-600"
-                            onClick={() => setIsDeleteDialogOpen(true)}
-                        >
-                            Delete
                         </Button>
                     </div>
                 </div>
@@ -225,14 +215,7 @@ const TripDetail = ({
                 onClose={() => setIsEditModalOpen(false)}
                 trip={trip}
                 activities={activities}
-            />
-
-            <DeleteTripDialog
-                isOpen={isDeleteDialogOpen}
-                onClose={() => setIsDeleteDialogOpen(false)}
-                tripId={trip.id}
-                tripName={trip.name}
-                onSuccess={handleDeleteSuccess}
+                onDeleteSuccess={handleDeleteSuccess}
             />
 
             <ShareTripModal

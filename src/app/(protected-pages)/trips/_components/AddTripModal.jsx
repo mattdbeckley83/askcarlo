@@ -267,6 +267,7 @@ const AddTripModal = ({ isOpen, onClose, activities = [] }) => {
                             <Button
                                 type="submit"
                                 variant="solid"
+                                className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
                                 loading={isPending}
                             >
                                 Create Trip
