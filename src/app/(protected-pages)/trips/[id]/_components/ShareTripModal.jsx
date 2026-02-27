@@ -7,6 +7,7 @@ import Switcher from '@/components/ui/Switcher'
 import Notification from '@/components/ui/Notification'
 import toast from '@/components/ui/toast'
 import { PiCopy, PiCheck, PiWarning, PiLink } from 'react-icons/pi'
+import Tooltip from '@/components/ui/Tooltip'
 import { getTripShareStatus } from '@/server/actions/trips/getTripShareStatus'
 import { toggleTripShare } from '@/server/actions/trips/toggleTripShare'
 
@@ -116,9 +117,18 @@ const ShareTripModal = ({ isOpen, onClose, tripId, tripName }) => {
                     {/* Share URL Section - only show when active */}
                     {isActive && shareUrl && (
                         <div className="mt-4">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Share link
-                            </label>
+                            <div className="flex items-center gap-1.5 mb-2">
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Share link
+                                </label>
+                                <Tooltip
+                                    title="Anyone with this link can view your trip. The link will always show the current version of your trip."
+                                    placement="top"
+                                    wrapperClass="flex items-center"
+                                >
+                                    <PiWarning className="text-amber-500 dark:text-amber-400 text-base cursor-help" />
+                                </Tooltip>
+                            </div>
                             <div className="flex gap-2">
                                 <input
                                     type="text"
@@ -135,16 +145,6 @@ const ShareTripModal = ({ isOpen, onClose, tripId, tripName }) => {
                                 >
                                     {copied ? 'Copied!' : 'Copy'}
                                 </Button>
-                            </div>
-
-                            {/* Warning text */}
-                            <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-                                <div className="flex gap-2">
-                                    <PiWarning className="text-amber-600 dark:text-amber-400 text-lg flex-shrink-0 mt-0.5" />
-                                    <p className="text-sm text-amber-800 dark:text-amber-200">
-                                        Anyone with this link can view your trip. The link will always show the current version of your trip.
-                                    </p>
-                                </div>
                             </div>
                         </div>
                     )}
