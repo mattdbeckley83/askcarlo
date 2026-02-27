@@ -60,6 +60,7 @@ export default function OnboardingChecklist({ onboardingStatus }) {
                     percent={progressPercent}
                     size="sm"
                     showInfo={false}
+                    strokeColor="bg-indigo-600"
                 />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -75,7 +76,7 @@ export default function OnboardingChecklist({ onboardingStatus }) {
                                     <div
                                         className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
                                             item.completed
-                                                ? 'bg-[#fe7f2d] border-[#fe7f2d]'
+                                                ? 'bg-indigo-600 border-indigo-600'
                                                 : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800'
                                         }`}
                                     >
@@ -100,7 +101,7 @@ export default function OnboardingChecklist({ onboardingStatus }) {
                                         {item.description}
                                     </p>
                                     {!item.completed && (
-                                        <span className="text-xs font-medium text-[#fe7f2d]">
+                                        <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
                                             +{item.reward} tokens
                                         </span>
                                     )}

@@ -5,7 +5,7 @@ export const protectedRoutes = {
         key: 'home',
         authority: [],
         meta: {
-            pageBackgroundType: 'plain',
+            pageBackgroundType: 'gray',
             pageContainerType: 'contained',
         },
     },
