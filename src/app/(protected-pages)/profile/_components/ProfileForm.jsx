@@ -190,7 +190,7 @@ const ProfileForm = ({
                                             <button
                                                 type="button"
                                                 onClick={() => toggleNoteExpanded(activity.id)}
-                                                className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline whitespace-nowrap"
+                                                className="text-xs text-[#fe7f2d] hover:underline whitespace-nowrap"
                                             >
                                                 {isExpanded ? '[- Hide]' : '[+ Add details]'}
                                             </button>
@@ -210,7 +210,7 @@ const ProfileForm = ({
                                                 onChange={(e) => handleNoteChange(activity.id, e.target.value)}
                                                 placeholder={`Tell Carlo more about your ${activity.name} style... (optional)`}
                                                 rows={2}
-                                                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-[#fe7f2d] focus:border-[#fe7f2d] bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                                             />
                                             <div className="flex justify-end mt-1">
                                                 <span className={`text-xs ${note.length > MAX_ACTIVITY_NOTES_LENGTH - 50 ? 'text-amber-500' : 'text-gray-400'}`}>
@@ -242,7 +242,7 @@ const ProfileForm = ({
                             onChange={(e) => handleAiContextChange(e.target.value)}
                             placeholder="Body size, dietary restrictions, location, budget preferences, physical limitations, etc."
                             rows={3}
-                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-[#fe7f2d] focus:border-[#fe7f2d] bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                         />
                         <div className="flex justify-end mt-1">
                             <span className={`text-xs ${aiContext.length > MAX_AI_CONTEXT_LENGTH - 100 ? 'text-amber-500' : 'text-gray-400'}`}>
