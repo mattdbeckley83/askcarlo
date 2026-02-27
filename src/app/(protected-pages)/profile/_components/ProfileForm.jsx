@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import Card from '@/components/ui/Card'
 import Checkbox from '@/components/ui/Checkbox'
 import Button from '@/components/ui/Button'
 import { updateActivities } from '@/server/actions/profile/updateActivities'
@@ -129,7 +130,7 @@ const ProfileForm = ({
     return (
         <div className="flex flex-col gap-6 max-w-2xl">
             {/* Account Information */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 md:p-16">
+            <Card>
                 <div className="flex flex-col gap-4">
                     <h2 className="text-lg font-semibold">Account Information</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -151,10 +152,10 @@ const ProfileForm = ({
                         </div>
                     </div>
                 </div>
-            </div>
+            </Card>
 
             {/* My Activities */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 md:p-16">
+            <Card>
                 <div className="flex flex-col gap-4">
                     <div>
                         <h2 className="text-lg font-semibold">My Activities</h2>
@@ -224,10 +225,10 @@ const ProfileForm = ({
                         })}
                     </div>
                 </div>
-            </div>
+            </Card>
 
             {/* Anything else Carlo should know */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 md:p-16">
+            <Card>
                 <div className="flex flex-col gap-4">
                     <div>
                         <h2 className="text-lg font-semibold">Anything else Carlo should know?</h2>
@@ -251,7 +252,7 @@ const ProfileForm = ({
                         </div>
                     </div>
                 </div>
-            </div>
+            </Card>
 
             {/* Save Button */}
             <div className="flex items-center gap-4">
