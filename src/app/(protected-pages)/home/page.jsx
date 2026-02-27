@@ -28,8 +28,6 @@ export default async function HomePage() {
 
     const userData = await getUserData(userId)
 
-    const firstName = clerkUser?.firstName || userData?.first_name || 'there'
-
     const onboardingStatus = {
         hasAddedGear: userData?.has_added_gear || false,
         hasAddedTrip: userData?.has_added_trip || false,
@@ -42,7 +40,6 @@ export default async function HomePage() {
         <>
             <ReferralActivate />
             <Dashboard
-                firstName={firstName}
                 onboardingStatus={onboardingStatus}
             />
         </>
