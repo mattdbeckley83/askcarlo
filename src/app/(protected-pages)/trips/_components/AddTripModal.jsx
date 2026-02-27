@@ -178,7 +178,7 @@ const AddTripModal = ({ isOpen, onClose, activities = [] }) => {
                         <button
                             type="button"
                             onClick={() => setShowTrailDetails(!showTrailDetails)}
-                            className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
+                            className="text-sm text-[#fe7f2d] hover:underline"
                         >
                             {showTrailDetails ? '[- Hide trail details]' : '[+ Add trail details]'}
                         </button>
