@@ -74,7 +74,7 @@ function Select(props) {
 
                             if (isFocused) {
                                 classes.push(
-                                    'select-control-focused ring-1 ring-primary border-primary bg-transparent',
+                                    'select-control-focused ring-1 ring-[#fe7f2d] border-[#fe7f2d] bg-transparent',
                                 )
                             }
 

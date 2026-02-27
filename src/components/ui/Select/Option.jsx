@@ -12,7 +12,7 @@ const Option = (props) => {
                 !isDisabled &&
                     !isSelected &&
                     'hover:text-gray-800 dark:hover:text-gray-100',
-                isSelected && 'text-primary bg-primary-subtle',
+                isSelected && 'text-[#fe7f2d] bg-[#fe7f2d]/10',
                 isDisabled && 'opacity-50 cursor-not-allowed',
             )}
             {...innerProps}
