@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { PiBackpack, PiMapTrifold, PiChatsCircle } from 'react-icons/pi'
+import Card from '@/components/ui/Card'
 import { getDashboardStats } from '@/server/actions/dashboard/getDashboardStats'
 
 const StatCard = ({ label, value, icon, bgColor }) => (
@@ -28,28 +29,30 @@ export default function DashboardOverview() {
     }, [])
 
     return (
-        <div className="flex flex-col gap-4">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Overview</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <StatCard
-                    label="Total gear items"
-                    value={stats?.totalItems}
-                    bgColor="bg-sky-100"
-                    icon={<PiBackpack className="w-6 h-6 text-white" />}
-                />
-                <StatCard
-                    label="Total trips created"
-                    value={stats?.totalTrips}
-                    bgColor="bg-emerald-100"
-                    icon={<PiMapTrifold className="w-6 h-6 text-white" />}
-                />
-                <StatCard
-                    label="Total Carlo conversations"
-                    value={stats?.totalConversations}
-                    bgColor="bg-purple-100"
-                    icon={<PiChatsCircle className="w-6 h-6 text-white" />}
-                />
+        <Card>
+            <div className="flex flex-col gap-4">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Overview</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <StatCard
+                        label="Total gear items"
+                        value={stats?.totalItems}
+                        bgColor="bg-sky-100"
+                        icon={<PiBackpack className="w-6 h-6 text-white" />}
+                    />
+                    <StatCard
+                        label="Total trips created"
+                        value={stats?.totalTrips}
+                        bgColor="bg-emerald-100"
+                        icon={<PiMapTrifold className="w-6 h-6 text-white" />}
+                    />
+                    <StatCard
+                        label="Total Carlo conversations"
+                        value={stats?.totalConversations}
+                        bgColor="bg-purple-100"
+                        icon={<PiChatsCircle className="w-6 h-6 text-white" />}
+                    />
+                </div>
             </div>
-        </div>
+        </Card>
     )
 }
