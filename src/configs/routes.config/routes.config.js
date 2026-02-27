@@ -86,7 +86,7 @@ export const protectedRoutes = {
         authority: [],
         meta: {
             pageBackgroundType: 'gray',
-            pageContainerType: 'gutterless',
+            pageContainerType: 'contained',
         },
     },
 }
