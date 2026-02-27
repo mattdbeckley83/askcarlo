@@ -99,7 +99,7 @@ const Button = (props) => {
         const btn = {
             bgColor: active ? `` : `dark:primary-mild dark:bg-opacity-20`,
             textColor: ``,
-            hoverColor: active ? '' : `hover:text-primary-mild`,
+            hoverColor: active ? '' : `hover:text-gray-900 dark:hover:text-gray-100`,
             activeColor: `dark:active:primary-mild dark:active:bg-opacity-40`,
         }
         return getBtnColor(btn)
