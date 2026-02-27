@@ -92,7 +92,7 @@ export default function SupportPage() {
                                     {index + 1}.
                                 </div>
                                 <div className="flex flex-col gap-2">
-                                    <h2 className="font-semibold text-gray-900 dark:text-gray-100">
+                                    <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                                         {faq.question}
                                     </h2>
                                     {faq.answer && (
@@ -123,7 +123,7 @@ export default function SupportPage() {
 
                 <Card>
                     <div className="flex flex-col gap-2">
-                        <h2 className="font-semibold text-gray-900 dark:text-gray-100">
+                        <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                             Still have questions?
                         </h2>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
