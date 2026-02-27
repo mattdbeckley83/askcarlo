@@ -283,7 +283,7 @@ export default function ChatInterface({
                                     onClick={() => setUpgradeModalOpen(true)}
                                     className="w-44 min-h-[240px] flex flex-col items-center justify-center gap-2 p-4 bg-gray-100 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors"
                                 >
-                                    <PiLightning className="w-6 h-6 text-amber-500" />
+                                    <PiLightning className="w-6 h-6 text-indigo-500" />
                                     <div className="text-center">
                                         <div className="font-medium text-gray-900 dark:text-white text-sm">Upgrade Gear</div>
                                         <div className="text-xs text-gray-500 dark:text-gray-400">Get replacement recommendations</div>
@@ -293,7 +293,7 @@ export default function ChatInterface({
                                     onClick={() => setTripModalOpen(true)}
                                     className="w-44 min-h-[240px] flex flex-col items-center justify-center gap-2 p-4 bg-gray-100 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors"
                                 >
-                                    <PiMapTrifold className="w-6 h-6 text-green-500" />
+                                    <PiMapTrifold className="w-6 h-6 text-indigo-500" />
                                     <div className="text-center">
                                         <div className="font-medium text-gray-900 dark:text-white text-sm">Trip Planning</div>
                                         <div className="text-xs text-gray-500 dark:text-gray-400">Get advice for your trip</div>
