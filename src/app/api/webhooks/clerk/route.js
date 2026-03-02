@@ -1,6 +1,7 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { supabaseAdmin } from '@/lib/supabase-admin'
+import { getResend } from '@/lib/resend'
 
 export async function POST(req) {
     const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET
@@ -59,6 +60,24 @@ export async function POST(req) {
         }
 
         console.log(`User ${id} created in Supabase`)
+
+        // Send welcome email
+        try {
+            const resend = getResend()
+            await resend.emails.send({
+                from: 'Carlo <matt@askcarlo.ai>',
+                to: [primaryEmail],
+                template_alias: 'welcome-email',
+                data: {
+                    first_name: first_name || 'there',
+                    email: primaryEmail,
+                },
+            })
+            console.log(`Welcome email sent to ${primaryEmail}`)
+        } catch (emailError) {
+            console.error('Error sending welcome email:', emailError)
+            // Don't fail the webhook — user was created successfully
+        }
     }
 
     return new Response('Webhook processed', { status: 200 })
