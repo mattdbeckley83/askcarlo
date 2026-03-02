@@ -64,14 +64,34 @@ export async function POST(req) {
         // Send welcome email
         try {
             const resend = getResend()
+            const name = first_name || 'there'
             await resend.emails.send({
                 from: 'Carlo <matt@askcarlo.ai>',
                 to: [primaryEmail],
-                template_alias: 'welcome-email',
-                data: {
-                    first_name: first_name || 'there',
-                    email: primaryEmail,
-                },
+                subject: 'Welcome to Carlo',
+                html: `
+                    <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:40px 24px;color:#111827;">
+                        <p style="font-size:24px;font-weight:700;margin:0 0 24px;">Welcome to Carlo, ${name}!</p>
+                        <p style="font-size:16px;line-height:1.6;margin:0 0 16px;">
+                            Carlo is your AI-powered backpacking advisor — built to help you plan smarter trips, optimize your pack weight, and get personalized gear recommendations.
+                        </p>
+                        <p style="font-size:16px;line-height:1.6;margin:0 0 32px;">
+                            Here's how to get started:
+                        </p>
+                        <ol style="font-size:16px;line-height:1.8;margin:0 0 32px;padding-left:20px;">
+                            <li>Add your gear to the <strong>Gear Closet</strong></li>
+                            <li>Create your first <strong>Trip</strong></li>
+                            <li>Chat with <strong>Carlo</strong> for personalized advice</li>
+                        </ol>
+                        <a href="https://app.askcarlo.ai" style="display:inline-block;background:#4f46e5;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:15px;font-weight:600;">
+                            Open Carlo
+                        </a>
+                        <p style="font-size:13px;color:#6b7280;margin-top:40px;">
+                            You're receiving this because you signed up at askcarlo.ai.
+                        </p>
+                    </div>
+                `,
+                text: `Welcome to Carlo, ${name}!\n\nCarlo is your AI-powered backpacking advisor — built to help you plan smarter trips, optimize your pack weight, and get personalized gear recommendations.\n\nGet started at https://app.askcarlo.ai`,
             })
             console.log(`Welcome email sent to ${primaryEmail}`)
         } catch (emailError) {
