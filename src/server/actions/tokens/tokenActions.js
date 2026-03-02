@@ -88,11 +88,8 @@ export async function deductTokens(amount, transactionType, description, apiCost
             balance_after: newBalance,
             transaction_type: transactionType,
             description: description,
-            metadata: {
-                ...(apiCostCents != null && { api_cost_cents: apiCostCents }),
-                ...(inputTokens != null && { input_tokens: inputTokens }),
-                ...(outputTokens != null && { output_tokens: outputTokens }),
-            },
+            ...(inputTokens != null && { input_tokens: inputTokens }),
+            ...(outputTokens != null && { output_tokens: outputTokens }),
         })
 
     if (txError) {

@@ -5,15 +5,10 @@ import Card from '@/components/ui/Card'
 import Chart from '@/components/shared/Chart'
 import { getTokenUsageChart } from '@/server/actions/dashboard/getTokenUsageChart'
 
-const TABS = ['All', 'Input', 'Output']
-
-// Input: soft blue, Output: soft indigo (Carlo AI color)
-const INPUT_COLOR = '#93C5FD'   // blue-300
-const OUTPUT_COLOR = '#818CF8'  // indigo-400
+const INDIGO = '#818CF8' // indigo-400
 
 export default function TokenUsageChart() {
     const [data, setData] = useState(null)
-    const [activeTab, setActiveTab] = useState('All')
 
     useEffect(() => {
         getTokenUsageChart().then((result) => {
@@ -21,29 +16,13 @@ export default function TokenUsageChart() {
         })
     }, [])
 
-    const { series, chartColors } = useMemo(() => {
-        if (!data) return { series: [], chartColors: [] }
-
-        if (activeTab === 'Input') {
-            return {
-                series: [{ name: 'Input', data: data.inputSeries }],
-                chartColors: [INPUT_COLOR],
-            }
-        }
-        if (activeTab === 'Output') {
-            return {
-                series: [{ name: 'Output', data: data.outputSeries }],
-                chartColors: [OUTPUT_COLOR],
-            }
-        }
-        return {
-            series: [
-                { name: 'Input', data: data.inputSeries },
-                { name: 'Output', data: data.outputSeries },
-            ],
-            chartColors: [INPUT_COLOR, OUTPUT_COLOR],
-        }
-    }, [data, activeTab])
+    const series = useMemo(() => {
+        if (!data) return []
+        return [
+            { name: 'Carlo Chat', data: data.chatSeries },
+            { name: 'Smart Fill', data: data.smartFillSeries },
+        ]
+    }, [data])
 
     const customOptions = useMemo(() => ({
         chart: {
@@ -51,11 +30,11 @@ export default function TokenUsageChart() {
             toolbar: { show: false },
             zoom: { enabled: false },
         },
-        colors: chartColors,
+        colors: [INDIGO, INDIGO],
         plotOptions: {
             bar: {
-                columnWidth: '45%',
-                borderRadius: 3,
+                columnWidth: '70%',
+                borderRadius: 4,
                 borderRadiusApplication: 'end',
             },
         },
@@ -67,7 +46,6 @@ export default function TokenUsageChart() {
         },
         xaxis: {
             categories: data?.dates || [],
-            tickAmount: 6,
             labels: {
                 style: { fontSize: '11px', colors: '#9ca3af' },
             },
@@ -81,19 +59,12 @@ export default function TokenUsageChart() {
             },
         },
         tooltip: {
+            x: { show: false },
             y: {
                 formatter: (val) => `${val.toLocaleString()} tokens`,
             },
         },
-        legend: {
-            show: activeTab === 'All',
-            position: 'top',
-            horizontalAlign: 'right',
-            fontSize: '12px',
-            markers: { size: 6, shape: 'circle' },
-            itemMargin: { horizontal: 12 },
-            fontFamily: 'inherit',
-        },
+        legend: { show: false },
         fill: { opacity: 1 },
         dataLabels: { enabled: false },
         stroke: {
@@ -101,44 +72,33 @@ export default function TokenUsageChart() {
             width: 2,
             colors: ['transparent'],
         },
-    }), [data, chartColors, activeTab])
+    }), [data])
+
+    const hasData = data && (data.chatSeries.some((v) => v > 0) || data.smartFillSeries.some((v) => v > 0))
 
     return (
         <div className="w-3/4">
             <Card>
                 <div className="flex flex-col gap-4">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-sm font-bold text-gray-900 dark:text-white">
-                            Token Usage
-                        </h2>
-                        <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-700 rounded-full p-1">
-                            {TABS.map((tab) => (
-                                <button
-                                    key={tab}
-                                    onClick={() => setActiveTab(tab)}
-                                    className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${
-                                        activeTab === tab
-                                            ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm'
-                                            : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-                                    }`}
-                                >
-                                    {tab}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                    <h2 className="text-sm font-bold text-gray-900 dark:text-white">
+                        Token Usage
+                    </h2>
 
-                    {data ? (
+                    {!data ? (
+                        <div className="h-[330px] flex items-center justify-center">
+                            <span className="text-sm text-gray-400">Loading...</span>
+                        </div>
+                    ) : !hasData ? (
+                        <div className="h-[330px] flex items-center justify-center">
+                            <span className="text-sm text-gray-400">No usage data yet. Send a message to Carlo to get started.</span>
+                        </div>
+                    ) : (
                         <Chart
                             type="bar"
                             series={series}
                             customOptions={customOptions}
-                            height={220}
+                            height={330}
                         />
-                    ) : (
-                        <div className="h-[220px] flex items-center justify-center">
-                            <span className="text-sm text-gray-400">Loading...</span>
-                        </div>
                     )}
                 </div>
             </Card>
