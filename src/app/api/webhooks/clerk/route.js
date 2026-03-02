@@ -71,13 +71,13 @@ export async function POST(req) {
                 subject: 'Welcome to Carlo',
                 html: `
                     <div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:40px 24px;color:#111827;">
-                        <p style="font-size:16px;line-height:1.6;margin:0 0 16px;">Howdy!</p>
+                        <p style="font-size:16px;line-height:1.6;margin:0 0 16px;">Hi ${name},</p>
                         <p style="font-size:16px;line-height:1.6;margin:0 0 16px;">
-                            My name is Matt and I'm one of the creators of Carlo, your new digital basecamp for backcountry adventures. We built this platform to help outdoor enthusiasts of any skill/experience level make more confident decisions around trip planning, gear, nutrition and everything in between. I hope these tools help you get into the wilderness more often and confidently plan out some epic adventures.
+                            My name is Matt and I'm one of the creators of Carlo, your new digital basecamp for backcountry adventures. We built this platform to help outdoor enthusiasts of any skill/experience level make more confident decisions around trip planning, gear, nutrition and everything in between. We hope these tools help you get into the wilderness more often and confidently plan out some epic adventures.
                         </p>
                         <p style="font-size:16px;line-height:1.6;margin:0 0 16px;">Here is how to get started:</p>
                         <ol style="font-size:16px;line-height:1.8;margin:0 0 32px;padding-left:20px;">
-                            <li>Complete your user profile so Carlo knows your adventure preferences.</li>
+                            <li>Complete your user <strong>profile</strong> so Carlo knows your adventure preferences.</li>
                             <li>Add your gear to the <strong>Gear Closet</strong>.</li>
                             <li>Create your first <strong>Trip</strong>.</li>
                             <li>Start a conversation with <strong>Carlo</strong> for personalized advice.</li>
@@ -92,7 +92,7 @@ export async function POST(req) {
                         </p>
                     </div>
                 `,
-                text: `Howdy!\n\nMy name is Matt and I'm one of the creators of Carlo, your new digital basecamp for backcountry adventures. We built this platform to help outdoor enthusiasts of any skill/experience level make more confident decisions around trip planning, gear, nutrition and everything in between. I hope these tools help you get into the wilderness more often and confidently plan out some epic adventures.\n\nHere is how to get started:\n\n1. Complete your user profile so Carlo knows your adventure preferences.\n2. Add your gear to the Gear Closet.\n3. Create your first Trip.\n4. Start a conversation with Carlo for personalized advice.\n\nWe'd love to hear from you and make sure Carlo is giving you great advice. Hit "Reply" and let me know if there is anything you need. I read and reply to every email.\n\nCheers,\nMatt`,
+                text: `Hi ${name},\n\nMy name is Matt and I'm one of the creators of Carlo, your new digital basecamp for backcountry adventures. We built this platform to help outdoor enthusiasts of any skill/experience level make more confident decisions around trip planning, gear, nutrition and everything in between. We hope these tools help you get into the wilderness more often and confidently plan out some epic adventures.\n\nHere is how to get started:\n\n1. Complete your user profile so Carlo knows your adventure preferences.\n2. Add your gear to the Gear Closet.\n3. Create your first Trip.\n4. Start a conversation with Carlo for personalized advice.\n\nWe'd love to hear from you and make sure Carlo is giving you great advice. Hit "Reply" and let me know if there is anything you need. I read and reply to every email.\n\nCheers,\nMatt`,
             })
             console.log(`Welcome email sent to ${primaryEmail}`)
         } catch (emailError) {
