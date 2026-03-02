@@ -66,7 +66,7 @@ export async function POST(req) {
             const resend = getResend()
             const name = first_name || 'there'
             await resend.emails.send({
-                from: 'Carlo <matt@askcarlo.ai>',
+                from: 'Matt <matt@askcarlo.ai>',
                 to: [primaryEmail],
                 subject: 'Welcome to Carlo',
                 html: `
