@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { PiShoppingCartSimple } from 'react-icons/pi'
+import { PiShoppingCartSimple, PiSparkle } from 'react-icons/pi'
 import { useTokenBalance } from '@/lib/contexts/TokenBalanceContext'
 import { createCheckoutSession } from '@/server/actions/stripe/createCheckoutSession'
 import { TOKEN_PACKAGES } from '@/lib/tokenPackages'
@@ -46,10 +46,8 @@ const TokenBalance = () => {
                            hover:bg-indigo-700 hover:border-indigo-700
                            transition-all duration-200 ${isAnimating === 'spend' ? 'animate-token-spend' : ''} ${isAnimating === 'grant' ? 'animate-token-grant' : ''}`}
             >
-                <img
-                    src="/img/logo/carlo.png"
-                    alt="tokens"
-                    className={`w-[18px] h-[18px] brightness-0 invert transition-[filter] duration-300 ${isAnimating === 'spend' ? 'drop-shadow-[0_0_6px_rgba(239,68,68,0.8)]' : ''} ${isAnimating === 'grant' ? 'drop-shadow-[0_0_8px_rgba(34,197,94,0.9)]' : ''}`}
+                <PiSparkle
+                    className={`w-[18px] h-[18px] text-white transition-[filter] duration-300 ${isAnimating === 'spend' ? 'drop-shadow-[0_0_6px_rgba(239,68,68,0.8)]' : ''} ${isAnimating === 'grant' ? 'drop-shadow-[0_0_8px_rgba(34,197,94,0.9)]' : ''}`}
                 />
                 <span className="font-semibold text-white">
                     {balance.toLocaleString()}
