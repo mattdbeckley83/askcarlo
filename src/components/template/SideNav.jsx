@@ -10,6 +10,7 @@ import appConfig from '@/configs/app.config'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import CarloWordmark from '@/components/ui/CarloWordmark'
+import SideNavOnboardingProgress from './SideNavOnboardingProgress'
 
 import {
     SIDE_NAV_WIDTH,
@@ -91,6 +92,9 @@ const SideNav = ({
                         />
                     </ScrollBar>
                 </div>
+
+                {/* Onboarding progress */}
+                <SideNavOnboardingProgress />
 
             </div>
         </div>

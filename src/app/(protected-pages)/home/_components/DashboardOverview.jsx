@@ -37,19 +37,19 @@ export default function DashboardOverview() {
                     </h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <StatCard
-                            label="Total gear items"
+                            label="Gear items"
                             value={stats?.totalItems}
                             bgColor="bg-sky-100"
                             icon={<img src="/img/logo/backpack.png" alt="Gear" className="w-4 h-4 invert" />}
                         />
                         <StatCard
-                            label="Total trips created"
+                            label="Trips created"
                             value={stats?.totalTrips}
                             bgColor="bg-emerald-100"
                             icon={<img src="/img/logo/trips.png" alt="Trips" className="w-4 h-4 invert" />}
                         />
                         <StatCard
-                            label="Total Carlo conversations"
+                            label="Carlo conversations"
                             value={stats?.totalConversations}
                             bgColor="bg-purple-100"
                             icon={<PiSparkle className="w-4 h-4 text-white" />}

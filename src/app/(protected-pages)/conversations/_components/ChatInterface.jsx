@@ -138,9 +138,14 @@ export default function ChatInterface({
                         duration={6000}
                         closable
                     >
-                        <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
-                            +{result.tokensAwarded} tokens earned
-                        </span>
+                        <div className="flex flex-col gap-1.5">
+                            <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                                +{result.tokensAwarded} tokens earned
+                            </span>
+                            <a href="/home" className="text-xs font-medium text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
+                                Continue setup →
+                            </a>
+                        </div>
                     </Notification>
                 )
             }
@@ -242,9 +247,14 @@ export default function ChatInterface({
                         duration={6000}
                         closable
                     >
-                        <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
-                            +{result.tokensAwarded} tokens earned
-                        </span>
+                        <div className="flex flex-col gap-1.5">
+                            <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+                                +{result.tokensAwarded} tokens earned
+                            </span>
+                            <a href="/home" className="text-xs font-medium text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200">
+                                Continue setup →
+                            </a>
+                        </div>
                     </Notification>
                 )
             }
