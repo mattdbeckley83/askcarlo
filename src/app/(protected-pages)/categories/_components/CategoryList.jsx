@@ -62,11 +62,14 @@ const CategoryList = ({ categories }) => {
                 </div>
 
                 {filteredCategories.length === 0 ? (
-                    <p className="text-sm text-gray-500 dark:text-gray-400 py-4">
-                        {searchQuery
-                            ? 'No categories match your search.'
-                            : 'No categories yet. Categories are created automatically when you add gear or food items, or you can create one here.'}
-                    </p>
+                    <div className="flex flex-col items-center gap-2 text-gray-500 py-8">
+                        <p className="text-lg font-medium">
+                            {searchQuery ? 'No categories match your search' : 'No categories yet'}
+                        </p>
+                        {!searchQuery && (
+                            <p className="text-sm">Categories are created automatically when you add gear or food items, or you can create one here</p>
+                        )}
+                    </div>
                 ) : (
                     <Table>
                         <THead>
