@@ -267,17 +267,8 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                     </div>
 
                     <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                            Before exporting, use Lighterpack&apos;s <strong>Settings</strong> to hide any fields Carlo doesn&apos;t import:
-                        </p>
-                        <ul className="list-disc list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                            <li>Images</li>
-                            <li>Price</li>
-                            <li>List description</li>
-                            <li>Worn &amp; Consumable flags</li>
-                        </ul>
-                        <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
-                            Worn and consumable are trip-level settings in Carlo. You&apos;ll set them when you add gear to a trip. Carlo separates your gear closet from your trip packing list, so you only configure those flags when they actually matter.
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Note that images and prices are not yet supported in Carlo. Also, the worn and consumable flags from Lighterpack are trip-level settings in Carlo. You&apos;ll set them when you add gear to a trip. Carlo separates your gear closet from your trip packing list, so you only configure those flags when they actually matter.
                         </p>
                     </div>
                 </div>
