@@ -434,7 +434,7 @@ const AddGearModal = ({ isOpen, onClose, categories = [], gearTypeId }) => {
                         </Button>
                     </div>
 
-                    <div className="pt-2 border-t border-gray-100 dark:border-gray-700 text-center text-sm text-gray-400 dark:text-gray-500">
+                    <div className="pt-2 border-t border-gray-100 dark:border-gray-700 text-right text-sm text-gray-400 dark:text-gray-500">
                         Have a Lighterpack list?{' '}
                         <Link
                             href="/import"
