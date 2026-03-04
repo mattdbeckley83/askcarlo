@@ -42,7 +42,7 @@ export async function POST(req) {
             const tokensToAdd = parseInt(session.metadata?.tokensToAdd || '0', 10)
 
             if (!userId || !tokensToAdd) {
-                console.error('[stripe-webhook] Missing userId or tokensToAdd in session metadata', session.metadata)
+                console.error('[stripe-webhook] Missing userId or tokensToAdd in session metadata')
                 return new Response('Missing metadata', { status: 400 })
             }
 
