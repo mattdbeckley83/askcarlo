@@ -6,6 +6,7 @@ import Table from '@/components/ui/Table'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
+import Link from 'next/link'
 import { PiMagnifyingGlass, PiPlus, PiCaretUp, PiCaretDown, PiCaretUpDown } from 'react-icons/pi'
 import AddGearModal from './AddGearModal'
 import EditGearModal from './EditGearModal'
@@ -208,6 +209,12 @@ const GearList = ({ items = [], categories = [], gearTypeId }) => {
                                                 <>
                                                     <p className="text-lg font-medium">No gear yet</p>
                                                     <p className="text-sm">Add your first gear item to get started</p>
+                                                    <p className="text-sm mt-1">
+                                                        <span className="font-medium text-[#fe7f2d]">Coming from Lighterpack?</span>{' '}
+                                                        <Link href="/import" className="text-[#fe7f2d] hover:underline font-medium">
+                                                            Import your gear list
+                                                        </Link>
+                                                    </p>
                                                 </>
                                             ) : (
                                                 <>

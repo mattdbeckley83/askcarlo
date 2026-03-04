@@ -119,8 +119,10 @@ export async function importLighterpackCSV(items, gearTypeId) {
                     ? categoryMap[item.category.toLowerCase()] || null
                     : null,
                 name: item.name,
+                brand: item.brand?.trim() || null,
                 weight: item.weight ?? null,
                 weight_unit: item.unit || 'oz',
+                description: item.description?.trim() || null,
             }))
 
             const { data: inserted, error: insertError } = await supabaseAdmin

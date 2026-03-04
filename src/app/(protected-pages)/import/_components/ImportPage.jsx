@@ -1,13 +1,15 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Papa from 'papaparse'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Alert from '@/components/ui/Alert'
 import Table from '@/components/ui/Table'
-import { PiUploadSimple, PiX } from 'react-icons/pi'
+import Input from '@/components/ui/Input'
+import Select from '@/components/ui/Select'
+import { PiUploadSimple, PiX, PiTrash } from 'react-icons/pi'
 import { validateLighterpackCSV } from '@/server/actions/import/validateLighterpackCSV'
 import { importLighterpackCSV } from '@/server/actions/import/importLighterpackCSV'
 
@@ -16,16 +18,23 @@ const { Tr, Th, Td, THead, TBody } = Table
 const BATCH_SIZE = 10
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
+const unitOptions = [
+    { value: 'oz', label: 'oz' },
+    { value: 'lb', label: 'lb' },
+    { value: 'g', label: 'g' },
+    { value: 'kg', label: 'kg' },
+]
+
 export default function ImportPage({ gearTypeId, existingCategories }) {
     const router = useRouter()
     const fileInputRef = useRef(null)
 
-    const [stage, setStage] = useState('upload') // upload | preview | importing | success
+    const [stage, setStage] = useState('upload') // upload | draft | importing | success
     const [file, setFile] = useState(null)
     const [parseError, setParseError] = useState(null)
 
-    // Preview data
-    const [validationResult, setValidationResult] = useState(null)
+    // Editable draft rows
+    const [draftRows, setDraftRows] = useState([])
 
     // Importing progress
     const [progress, setProgress] = useState({ current: 0, total: 0, currentName: '' })
@@ -36,11 +45,42 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
     // Network/import error
     const [importError, setImportError] = useState(null)
 
+    // Compute new categories live from draft rows
+    const existingCategoryNames = useMemo(
+        () => new Set(existingCategories.map((c) => c.name.toLowerCase())),
+        [existingCategories]
+    )
+
+    const newCategories = useMemo(() => {
+        return [
+            ...new Set(
+                draftRows
+                    .filter((r) => r.category.trim())
+                    .map((r) => r.category.trim())
+                    .filter((cat) => !existingCategoryNames.has(cat.toLowerCase()))
+            ),
+        ]
+    }, [draftRows, existingCategoryNames])
+
+    // ── Draft row helpers ────────────────────────────────────────────────────────
+
+    const updateRow = (id, field, value) => {
+        setDraftRows((prev) =>
+            prev.map((row) => (row.id === id ? { ...row, [field]: value } : row))
+        )
+    }
+
+    const deleteRow = (id) => {
+        setDraftRows((prev) => prev.filter((row) => row.id !== id))
+    }
+
+    // ── File handling ────────────────────────────────────────────────────────────
+
     const handleFileSelect = (selectedFile) => {
         if (!selectedFile) return
 
         setParseError(null)
-        setValidationResult(null)
+        setDraftRows([])
 
         if (!selectedFile.name.endsWith('.csv')) {
             setParseError('Please upload a .csv file.')
@@ -75,13 +115,26 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                 }
 
                 if (result.totalItems === 0) {
-                    setParseError('No valid items found in CSV. Make sure rows have Item Name, weight, and unit.')
+                    setParseError(
+                        'No valid items found in CSV. Make sure rows have Item Name, weight, and unit.'
+                    )
                     setFile(null)
                     return
                 }
 
-                setValidationResult(result)
-                setStage('preview')
+                // Initialize editable draft rows with all fields
+                setDraftRows(
+                    result.validRows.map((row, i) => ({
+                        id: i,
+                        name: row.name,
+                        brand: row.brand || '',
+                        category: row.category || '',
+                        weight: row.weight !== null && row.weight !== undefined ? String(row.weight) : '',
+                        unit: row.unit || 'oz',
+                        description: row.description || '',
+                    }))
+                )
+                setStage('draft')
             },
             error: (err) => {
                 setParseError(`Failed to read file: ${err.message}`)
@@ -105,7 +158,7 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
     const handleClear = () => {
         setFile(null)
         setParseError(null)
-        setValidationResult(null)
+        setDraftRows([])
         if (fileInputRef.current) fileInputRef.current.value = ''
     }
 
@@ -122,9 +175,13 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
         setStage('upload')
     }
 
+    // ── Import ───────────────────────────────────────────────────────────────────
+
     const handleImport = async () => {
-        const rows = validationResult.validRows
+        const rows = draftRows.filter((r) => r.name.trim())
         const total = rows.length
+        if (total === 0) return
+
         setProgress({ current: 0, total, currentName: rows[0]?.name ?? '' })
         setStage('importing')
         setImportError(null)
@@ -133,35 +190,38 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
         let allCategoriesCreated = 0
         let allSkipped = 0
         let allErrors = 0
-        let firstBatch = true
 
         for (let i = 0; i < rows.length; i += BATCH_SIZE) {
             const batch = rows.slice(i, i + BATCH_SIZE)
-            const nextItem = rows[i + BATCH_SIZE]
 
             setProgress({
-                current: Math.min(i + BATCH_SIZE, total),
+                current: i + batch.length,
                 total,
                 currentName: batch[0]?.name ?? '',
             })
 
+            // Normalize batch rows to the shape importLighterpackCSV expects
+            const normalizedBatch = batch.map((r) => ({
+                name: r.name.trim(),
+                brand: r.brand.trim(),
+                category: r.category.trim(),
+                weight: r.weight !== '' ? parseFloat(r.weight) : null,
+                unit: r.unit || 'oz',
+                description: r.description.trim(),
+            }))
+
             try {
-                const result = await importLighterpackCSV(batch, gearTypeId)
+                const result = await importLighterpackCSV(normalizedBatch, gearTypeId)
 
                 if (!result.success) {
-                    // Fatal error — stop and show error
                     setImportError(result.error || 'Import failed. Please try again.')
                     return
                 }
 
                 allItemsCreated += result.itemsCreated
+                allCategoriesCreated += result.categoriesCreated
                 allSkipped += result.skipped
                 allErrors += result.errors
-
-                if (firstBatch) {
-                    allCategoriesCreated = result.categoriesCreated
-                    firstBatch = false
-                }
             } catch (err) {
                 console.error('Batch error:', err)
                 allErrors += batch.length
@@ -177,25 +237,33 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
         setStage('success')
     }
 
-    // ── Upload stage ────────────────────────────────────────────────────────────
+    // ── Upload stage ─────────────────────────────────────────────────────────────
 
     if (stage === 'upload') {
         return (
             <div className="flex flex-col gap-6">
-                {/* Instructions */}
                 <Card>
                     <h2 className="text-lg font-semibold mb-3">
                         How to export from Lighterpack
                     </h2>
                     <ol className="list-decimal list-inside space-y-2 text-gray-600 dark:text-gray-400">
-                        <li>Go to your list on <a href="https://lighterpack.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-900 dark:hover:text-gray-200">lighterpack.com</a></li>
+                        <li>
+                            Go to your list on{' '}
+                            <a
+                                href="https://lighterpack.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="underline hover:text-gray-900 dark:hover:text-gray-200"
+                            >
+                                lighterpack.com
+                            </a>
+                        </li>
                         <li>Click the menu icon (three dots) in the top right</li>
                         <li>Select &quot;Export CSV&quot;</li>
                         <li>Upload the downloaded file below</li>
                     </ol>
                 </Card>
 
-                {/* Drop zone */}
                 <Card>
                     <h2 className="text-lg font-semibold mb-4">Upload CSV file</h2>
                     <div
@@ -223,7 +291,10 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                         <div className="mt-3 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                             <span className="font-medium">{file.name}</span>
                             <button
-                                onClick={(e) => { e.stopPropagation(); handleClear() }}
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleClear()
+                                }}
                                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
                             >
                                 <PiX className="w-4 h-4" />
@@ -241,17 +312,16 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
         )
     }
 
-    // ── Preview stage ───────────────────────────────────────────────────────────
+    // ── Draft stage (editable table) ─────────────────────────────────────────────
 
-    if (stage === 'preview') {
-        const { totalItems, preview, newCategories, validRows } = validationResult
-        const truncated = totalItems > 10 ? totalItems - 10 : 0
+    if (stage === 'draft') {
+        const validCount = draftRows.filter((r) => r.name.trim()).length
 
         return (
             <div className="flex flex-col gap-6">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                     <h2 className="text-xl font-semibold">
-                        {totalItems} item{totalItems !== 1 ? 's' : ''} found
+                        {draftRows.length} item{draftRows.length !== 1 ? 's' : ''} ready to review
                     </h2>
                     <div className="flex gap-3">
                         <Button variant="default" onClick={handleCancel}>
@@ -261,8 +331,9 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                             variant="solid"
                             className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
                             onClick={handleImport}
+                            disabled={validCount === 0}
                         >
-                            Import {totalItems} item{totalItems !== 1 ? 's' : ''}
+                            Import {validCount} item{validCount !== 1 ? 's' : ''}
                         </Button>
                     </div>
                 </div>
@@ -275,7 +346,7 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                     </Alert>
                 )}
 
-                {totalItems > 500 && (
+                {draftRows.length > 500 && (
                     <Alert type="warning" showIcon>
                         Large import — this may take a moment.
                     </Alert>
@@ -286,35 +357,90 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                         <Table>
                             <THead>
                                 <Tr>
-                                    <Th>Item Name</Th>
-                                    <Th>Category</Th>
-                                    <Th>Weight</Th>
-                                    <Th>Unit</Th>
+                                    <Th className="min-w-[200px]">Name *</Th>
+                                    <Th className="min-w-[140px]">Brand</Th>
+                                    <Th className="min-w-[150px]">Category</Th>
+                                    <Th className="min-w-[90px]">Weight</Th>
+                                    <Th className="min-w-[80px]">Unit</Th>
+                                    <Th className="min-w-[220px]">Description</Th>
+                                    <Th className="w-10" />
                                 </Tr>
                             </THead>
                             <TBody>
-                                {preview.map((row, i) => (
-                                    <Tr key={i}>
-                                        <Td>{row.name}</Td>
-                                        <Td>{row.category || <span className="text-gray-400">—</span>}</Td>
-                                        <Td>{row.weight}</Td>
-                                        <Td>{row.unit}</Td>
+                                {draftRows.map((row) => (
+                                    <Tr key={row.id}>
+                                        <Td>
+                                            <Input
+                                                size="sm"
+                                                value={row.name}
+                                                onChange={(e) => updateRow(row.id, 'name', e.target.value)}
+                                                placeholder="Item name"
+                                                invalid={!row.name.trim()}
+                                            />
+                                        </Td>
+                                        <Td>
+                                            <Input
+                                                size="sm"
+                                                value={row.brand}
+                                                onChange={(e) => updateRow(row.id, 'brand', e.target.value)}
+                                                placeholder="Brand"
+                                            />
+                                        </Td>
+                                        <Td>
+                                            <Input
+                                                size="sm"
+                                                value={row.category}
+                                                onChange={(e) => updateRow(row.id, 'category', e.target.value)}
+                                                placeholder="Category"
+                                            />
+                                        </Td>
+                                        <Td>
+                                            <Input
+                                                size="sm"
+                                                type="number"
+                                                step="0.01"
+                                                min="0"
+                                                value={row.weight}
+                                                onChange={(e) => updateRow(row.id, 'weight', e.target.value)}
+                                                placeholder="0"
+                                            />
+                                        </Td>
+                                        <Td>
+                                            <Select
+                                                size="sm"
+                                                options={unitOptions}
+                                                value={unitOptions.find((o) => o.value === row.unit) || unitOptions[0]}
+                                                onChange={(opt) => updateRow(row.id, 'unit', opt?.value || 'oz')}
+                                                isSearchable={false}
+                                            />
+                                        </Td>
+                                        <Td>
+                                            <Input
+                                                size="sm"
+                                                value={row.description}
+                                                onChange={(e) => updateRow(row.id, 'description', e.target.value)}
+                                                placeholder="Notes..."
+                                            />
+                                        </Td>
+                                        <Td>
+                                            <button
+                                                onClick={() => deleteRow(row.id)}
+                                                className="text-gray-400 hover:text-red-500 transition-colors"
+                                            >
+                                                <PiTrash className="w-4 h-4" />
+                                            </button>
+                                        </Td>
                                     </Tr>
                                 ))}
                             </TBody>
                         </Table>
                     </div>
-                    {truncated > 0 && (
-                        <p className="mt-3 text-sm text-gray-500">
-                            ...and {truncated} more item{truncated !== 1 ? 's' : ''}
-                        </p>
-                    )}
                 </Card>
             </div>
         )
     }
 
-    // ── Importing stage ─────────────────────────────────────────────────────────
+    // ── Importing stage ──────────────────────────────────────────────────────────
 
     if (stage === 'importing') {
         const percent =
@@ -353,7 +479,7 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
         )
     }
 
-    // ── Success stage ───────────────────────────────────────────────────────────
+    // ── Success stage ────────────────────────────────────────────────────────────
 
     if (stage === 'success' && importResult) {
         return (
@@ -382,7 +508,10 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                         <Alert type="info" showIcon>
                             {importResult.skipped} duplicate item
                             {importResult.skipped !== 1 ? 's were' : ' was'} skipped because
-                            {importResult.skipped !== 1 ? ' they already exist' : ' it already exists'} in your gear list.
+                            {importResult.skipped !== 1
+                                ? ' they already exist'
+                                : ' it already exists'}{' '}
+                            in your gear list.
                         </Alert>
                     )}
 

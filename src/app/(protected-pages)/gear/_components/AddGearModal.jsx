@@ -8,6 +8,7 @@ import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Alert from '@/components/ui/Alert'
 import Spinner from '@/components/ui/Spinner'
+import Link from 'next/link'
 import { PiSparkle, PiLink } from 'react-icons/pi'
 import { addItem } from '@/server/actions/items/addItem'
 import { extractFromUrl } from '@/server/actions/items/extractFromUrl'
@@ -431,6 +432,17 @@ const AddGearModal = ({ isOpen, onClose, categories = [], gearTypeId }) => {
                         >
                             Add Gear
                         </Button>
+                    </div>
+
+                    <div className="pt-2 border-t border-gray-100 dark:border-gray-700 text-center text-sm text-gray-400 dark:text-gray-500">
+                        Have a Lighterpack list?{' '}
+                        <Link
+                            href="/import"
+                            onClick={handleClose}
+                            className="text-[#fe7f2d] hover:underline font-medium"
+                        >
+                            Import in bulk
+                        </Link>
                     </div>
                 </div>
             </form>

@@ -82,16 +82,6 @@ const navigationConfig = [
             },
         ],
     },
-    {
-        key: 'import',
-        path: '/import',
-        title: 'Import from Lighterpack',
-        translateKey: 'nav.import',
-        icon: 'import',
-        type: NAV_ITEM_TYPE_ITEM,
-        authority: [],
-        subMenu: [],
-    },
 ]
 
 export default navigationConfig

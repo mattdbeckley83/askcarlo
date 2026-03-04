@@ -65,9 +65,11 @@ export async function validateLighterpackCSV(rows, existingCategories = []) {
 
         validRows.push({
             name,
+            brand: row['brand']?.trim() || '',
             category: row['Category']?.trim() || '',
             weight: parseFloat(weight),
             unit,
+            description: row['desc']?.trim() || '',
         })
     }
 
