@@ -62,7 +62,7 @@ const clerkAppearance = {
 export default function SignInPage() {
     return (
         <div
-            className="min-h-screen w-full bg-cover bg-center bg-fixed bg-no-repeat flex flex-col items-center justify-center px-4 py-8"
+            className="min-h-screen w-full bg-gray-900 bg-cover bg-center bg-fixed bg-no-repeat flex flex-col items-center justify-center px-4 py-8"
             style={{ backgroundImage: "url('/img/marketing-background.jpeg')" }}
         >
             {/* Logo */}
