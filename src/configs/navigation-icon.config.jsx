@@ -1,4 +1,4 @@
-import { PiUserCircleDuotone, PiSparkle } from 'react-icons/pi'
+import { PiUserCircleDuotone, PiSparkle, PiUploadSimple } from 'react-icons/pi'
 
 const NavIcon = ({ src, alt, className = '' }) => (
     <img
@@ -15,6 +15,7 @@ const navigationIcon = {
     categories: <NavIcon src="/img/logo/categories.png" alt="Categories" className="opacity-60" />,
     trips: <NavIcon src="/img/logo/trips.png" alt="My Trips" />,
     carlo: <PiSparkle className="w-7 h-7" />,
+    import: <PiUploadSimple className="w-7 h-7" />,
     profile: <PiUserCircleDuotone />,
 }
 
