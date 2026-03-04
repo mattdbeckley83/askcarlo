@@ -362,9 +362,8 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                                 <Th className="min-w-[150px]">Category</Th>
                                 <Th className="min-w-[200px]">Item Name *</Th>
                                 <Th className="min-w-[140px]">Brand</Th>
-                                <Th>Description</Th>
-                                <Th className="min-w-[30px]">Weight</Th>
-                                <Th className="min-w-[75px]">Unit</Th>
+                                <Th className="w-20">Weight</Th>
+                                <Th className="w-20">Unit</Th>
                                 <Th className="w-10" />
                             </Tr>
                         </THead>
@@ -405,16 +404,6 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                                     <Td>
                                         <Input
                                             size="sm"
-                                            value={row.description}
-                                            onChange={(e) =>
-                                                updateRow(row.id, 'description', e.target.value)
-                                            }
-                                            placeholder="Notes..."
-                                        />
-                                    </Td>
-                                    <Td>
-                                        <Input
-                                            size="sm"
                                             type="number"
                                             step="0.01"
                                             min="0"
@@ -423,22 +412,24 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                                                 updateRow(row.id, 'weight', e.target.value)
                                             }
                                             placeholder="0"
-                                            className="!w-14"
+                                            className="!w-20"
                                         />
                                     </Td>
                                     <Td>
-                                        <Select
-                                            size="sm"
-                                            options={unitOptions}
-                                            value={
-                                                unitOptions.find((o) => o.value === row.unit) ||
-                                                unitOptions[0]
-                                            }
-                                            onChange={(opt) =>
-                                                updateRow(row.id, 'unit', opt?.value || 'oz')
-                                            }
-                                            isSearchable={false}
-                                        />
+                                        <div className="w-20">
+                                            <Select
+                                                size="sm"
+                                                options={unitOptions}
+                                                value={
+                                                    unitOptions.find((o) => o.value === row.unit) ||
+                                                    unitOptions[0]
+                                                }
+                                                onChange={(opt) =>
+                                                    updateRow(row.id, 'unit', opt?.value || 'oz')
+                                                }
+                                                isSearchable={false}
+                                            />
+                                        </div>
                                     </Td>
                                     <Td>
                                         <button
