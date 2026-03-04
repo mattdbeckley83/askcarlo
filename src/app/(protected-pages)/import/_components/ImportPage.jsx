@@ -249,26 +249,46 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                     </h1>
                 </div>
 
-                <div className="mb-4">
-                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                        How to export from Lighterpack
-                    </p>
-                    <ol className="list-decimal list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
-                        <li>
-                            Go to your list on{' '}
-                            <a
-                                href="https://lighterpack.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="underline hover:text-gray-900 dark:hover:text-gray-200"
-                            >
-                                lighterpack.com
-                            </a>
-                        </li>
-                        <li>Click the menu icon (three dots) in the top right</li>
-                        <li>Select &quot;Export CSV&quot;</li>
-                        <li>Upload the downloaded file below</li>
-                    </ol>
+                <div className="mb-4 flex flex-col gap-4">
+                    <div>
+                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                            How to export from Lighterpack
+                        </p>
+                        <ol className="list-decimal list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                            <li>
+                                Open your list on{' '}
+                                <a
+                                    href="https://lighterpack.com"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="underline hover:text-gray-900 dark:hover:text-gray-200"
+                                >
+                                    lighterpack.com
+                                </a>
+                            </li>
+                            <li>Click the <strong>share icon</strong> at the top of the page</li>
+                            <li>Select <strong>&quot;Export to CSV&quot;</strong></li>
+                            <li>Upload the downloaded file below</li>
+                        </ol>
+                    </div>
+
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
+                            Tip: clean up your export first
+                        </p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                            Before exporting, use Lighterpack&apos;s <strong>Settings</strong> to hide any fields Carlo doesn&apos;t import — this keeps the CSV tidy and avoids confusion:
+                        </p>
+                        <ul className="list-disc list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
+                            <li>Images</li>
+                            <li>Price</li>
+                            <li>List description</li>
+                            <li>Worn &amp; Consumable flags</li>
+                        </ul>
+                        <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
+                            Worn and consumable are trip-level settings in Carlo — you&apos;ll set them when you add gear to a trip. Unlike Lighterpack, Carlo separates your gear closet from your trip packing list, so you only configure those flags when they actually matter.
+                        </p>
+                    </div>
                 </div>
 
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
