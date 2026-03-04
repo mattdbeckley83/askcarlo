@@ -243,12 +243,6 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
     if (stage === 'upload') {
         return (
             <Card>
-                <div className="flex items-center gap-4 mb-4">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">
-                        Import from Lighterpack
-                    </h1>
-                </div>
-
                 <div className="mb-4 flex flex-col gap-4">
                     <div>
                         <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -342,11 +336,7 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
 
         return (
             <Card>
-                <div className="flex items-center gap-4 mb-4">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">
-                        Import from Lighterpack
-                    </h1>
-                    <div className="flex-1" />
+                <div className="flex justify-end gap-3 mb-4">
                     <Button variant="default" onClick={handleCancel}>
                         Cancel
                     </Button>
@@ -485,11 +475,6 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
 
         return (
             <Card>
-                <div className="flex items-center gap-4 mb-4">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">
-                        Import from Lighterpack
-                    </h1>
-                </div>
                 <div className="flex flex-col gap-4 py-4">
                     <p className="text-sm text-gray-500">
                         Importing item {progress.current} of {progress.total}
@@ -523,11 +508,6 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
     if (stage === 'success' && importResult) {
         return (
             <Card>
-                <div className="flex items-center gap-4 mb-4">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">
-                        Import from Lighterpack
-                    </h1>
-                </div>
                 <div className="flex flex-col gap-4">
                     <h2 className="text-xl font-semibold text-green-600 dark:text-green-400">
                         Successfully imported {importResult.itemsCreated} item
