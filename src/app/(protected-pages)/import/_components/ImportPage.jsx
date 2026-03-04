@@ -273,11 +273,8 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                     </div>
 
                     <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
-                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">
-                            Tip: clean up your export first
-                        </p>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                            Before exporting, use Lighterpack&apos;s <strong>Settings</strong> to hide any fields Carlo doesn&apos;t import — this keeps the CSV tidy and avoids confusion:
+                            Before exporting, use Lighterpack&apos;s <strong>Settings</strong> to hide any fields Carlo doesn&apos;t import:
                         </p>
                         <ul className="list-disc list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
                             <li>Images</li>
@@ -286,7 +283,7 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                             <li>Worn &amp; Consumable flags</li>
                         </ul>
                         <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">
-                            Worn and consumable are trip-level settings in Carlo — you&apos;ll set them when you add gear to a trip. Unlike Lighterpack, Carlo separates your gear closet from your trip packing list, so you only configure those flags when they actually matter.
+                            Worn and consumable are trip-level settings in Carlo. You&apos;ll set them when you add gear to a trip. Carlo separates your gear closet from your trip packing list, so you only configure those flags when they actually matter.
                         </p>
                     </div>
                 </div>
