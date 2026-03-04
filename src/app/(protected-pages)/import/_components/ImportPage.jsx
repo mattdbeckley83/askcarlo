@@ -362,9 +362,9 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                                 <Th className="min-w-[150px]">Category</Th>
                                 <Th className="min-w-[200px]">Item Name *</Th>
                                 <Th className="min-w-[140px]">Brand</Th>
-                                <Th className="w-full">Description</Th>
-                                <Th className="min-w-[97px]">Weight</Th>
-                                <Th className="min-w-[97px]">Unit</Th>
+                                <Th>Description</Th>
+                                <Th className="min-w-[121px]">Weight</Th>
+                                <Th className="min-w-[121px]">Unit</Th>
                                 <Th className="w-10" />
                             </Tr>
                         </THead>
