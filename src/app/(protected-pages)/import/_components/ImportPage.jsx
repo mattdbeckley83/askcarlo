@@ -423,6 +423,7 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                                                 updateRow(row.id, 'weight', e.target.value)
                                             }
                                             placeholder="0"
+                                            className="!w-14"
                                         />
                                     </Td>
                                     <Td>
