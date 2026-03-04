@@ -27,9 +27,6 @@ export default async function ImportPageRoute() {
 
     return (
         <div className="px-4 sm:px-6 md:px-8 pt-4 sm:pt-6 pb-4 sm:pb-6">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-                Import from Lighterpack
-            </h1>
             <ImportPage
                 gearTypeId={gearTypeId}
                 existingCategories={existingCategories}
