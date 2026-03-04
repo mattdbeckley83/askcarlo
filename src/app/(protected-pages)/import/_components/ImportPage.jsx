@@ -122,14 +122,16 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                     return
                 }
 
-                // Initialize editable draft rows with all fields
                 setDraftRows(
                     result.validRows.map((row, i) => ({
                         id: i,
                         name: row.name,
                         brand: row.brand || '',
                         category: row.category || '',
-                        weight: row.weight !== null && row.weight !== undefined ? String(row.weight) : '',
+                        weight:
+                            row.weight !== null && row.weight !== undefined
+                                ? String(row.weight)
+                                : '',
                         unit: row.unit || 'oz',
                         description: row.description || '',
                     }))
@@ -200,7 +202,6 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                 currentName: batch[0]?.name ?? '',
             })
 
-            // Normalize batch rows to the shape importLighterpackCSV expects
             const normalizedBatch = batch.map((r) => ({
                 name: r.name.trim(),
                 brand: r.brand.trim(),
@@ -241,12 +242,18 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
 
     if (stage === 'upload') {
         return (
-            <div className="flex flex-col gap-6">
-                <Card>
-                    <h2 className="text-lg font-semibold mb-3">
+            <Card>
+                <div className="flex items-center gap-4 mb-4">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                        Import from Lighterpack
+                    </h1>
+                </div>
+
+                <div className="mb-4">
+                    <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                         How to export from Lighterpack
-                    </h2>
-                    <ol className="list-decimal list-inside space-y-2 text-gray-600 dark:text-gray-400">
+                    </p>
+                    <ol className="list-decimal list-inside space-y-1 text-sm text-gray-600 dark:text-gray-400">
                         <li>
                             Go to your list on{' '}
                             <a
@@ -262,10 +269,9 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                         <li>Select &quot;Export CSV&quot;</li>
                         <li>Upload the downloaded file below</li>
                     </ol>
-                </Card>
+                </div>
 
-                <Card>
-                    <h2 className="text-lg font-semibold mb-4">Upload CSV file</h2>
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
                     <div
                         onDrop={handleDrop}
                         onDragOver={handleDragOver}
@@ -307,8 +313,8 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                             {parseError}
                         </Alert>
                     )}
-                </Card>
-            </div>
+                </div>
+            </Card>
         )
     }
 
@@ -318,28 +324,27 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
         const validCount = draftRows.filter((r) => r.name.trim()).length
 
         return (
-            <div className="flex flex-col gap-6">
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                    <h2 className="text-xl font-semibold">
-                        {draftRows.length} item{draftRows.length !== 1 ? 's' : ''} ready to review
-                    </h2>
-                    <div className="flex gap-3">
-                        <Button variant="default" onClick={handleCancel}>
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="solid"
-                            className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
-                            onClick={handleImport}
-                            disabled={validCount === 0}
-                        >
-                            Import {validCount} item{validCount !== 1 ? 's' : ''}
-                        </Button>
-                    </div>
+            <Card>
+                <div className="flex items-center gap-4 mb-4">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                        Import from Lighterpack
+                    </h1>
+                    <div className="flex-1" />
+                    <Button variant="default" onClick={handleCancel}>
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="solid"
+                        className="!bg-[#fe7f2d] hover:!bg-[#e86f1d]"
+                        onClick={handleImport}
+                        disabled={validCount === 0}
+                    >
+                        Import {validCount} item{validCount !== 1 ? 's' : ''}
+                    </Button>
                 </div>
 
                 {newCategories.length > 0 && (
-                    <Alert type="info" showIcon>
+                    <Alert className="mb-4" type="info" showIcon>
                         {newCategories.length} new{' '}
                         {newCategories.length === 1 ? 'category' : 'categories'} will be
                         created: {newCategories.join(', ')}
@@ -347,96 +352,109 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
                 )}
 
                 {draftRows.length > 500 && (
-                    <Alert type="warning" showIcon>
+                    <Alert className="mb-4" type="warning" showIcon>
                         Large import — this may take a moment.
                     </Alert>
                 )}
 
-                <Card>
-                    <div className="overflow-x-auto">
-                        <Table>
-                            <THead>
-                                <Tr>
-                                    <Th className="min-w-[200px]">Name *</Th>
-                                    <Th className="min-w-[140px]">Brand</Th>
-                                    <Th className="min-w-[150px]">Category</Th>
-                                    <Th className="min-w-[90px]">Weight</Th>
-                                    <Th className="min-w-[80px]">Unit</Th>
-                                    <Th className="min-w-[220px]">Description</Th>
-                                    <Th className="w-10" />
+                <div className="overflow-x-auto">
+                    <Table overflow={false}>
+                        <THead className="border-b border-gray-200 dark:border-gray-700">
+                            <Tr>
+                                <Th className="min-w-[150px]">Category</Th>
+                                <Th className="min-w-[200px]">Item Name *</Th>
+                                <Th className="min-w-[140px]">Brand</Th>
+                                <Th className="min-w-[90px]">Weight</Th>
+                                <Th className="min-w-[80px]">Unit</Th>
+                                <Th className="min-w-[220px]">Description</Th>
+                                <Th className="w-10" />
+                            </Tr>
+                        </THead>
+                        <TBody>
+                            {draftRows.map((row) => (
+                                <Tr key={row.id}>
+                                    <Td>
+                                        <Input
+                                            size="sm"
+                                            value={row.category}
+                                            onChange={(e) =>
+                                                updateRow(row.id, 'category', e.target.value)
+                                            }
+                                            placeholder="Category"
+                                        />
+                                    </Td>
+                                    <Td>
+                                        <Input
+                                            size="sm"
+                                            value={row.name}
+                                            onChange={(e) =>
+                                                updateRow(row.id, 'name', e.target.value)
+                                            }
+                                            placeholder="Item name"
+                                            invalid={!row.name.trim()}
+                                        />
+                                    </Td>
+                                    <Td>
+                                        <Input
+                                            size="sm"
+                                            value={row.brand}
+                                            onChange={(e) =>
+                                                updateRow(row.id, 'brand', e.target.value)
+                                            }
+                                            placeholder="Brand"
+                                        />
+                                    </Td>
+                                    <Td>
+                                        <Input
+                                            size="sm"
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            value={row.weight}
+                                            onChange={(e) =>
+                                                updateRow(row.id, 'weight', e.target.value)
+                                            }
+                                            placeholder="0"
+                                        />
+                                    </Td>
+                                    <Td>
+                                        <Select
+                                            size="sm"
+                                            options={unitOptions}
+                                            value={
+                                                unitOptions.find((o) => o.value === row.unit) ||
+                                                unitOptions[0]
+                                            }
+                                            onChange={(opt) =>
+                                                updateRow(row.id, 'unit', opt?.value || 'oz')
+                                            }
+                                            isSearchable={false}
+                                        />
+                                    </Td>
+                                    <Td>
+                                        <Input
+                                            size="sm"
+                                            value={row.description}
+                                            onChange={(e) =>
+                                                updateRow(row.id, 'description', e.target.value)
+                                            }
+                                            placeholder="Notes..."
+                                        />
+                                    </Td>
+                                    <Td>
+                                        <button
+                                            onClick={() => deleteRow(row.id)}
+                                            className="text-gray-400 hover:text-red-500 transition-colors"
+                                        >
+                                            <PiTrash className="w-4 h-4" />
+                                        </button>
+                                    </Td>
                                 </Tr>
-                            </THead>
-                            <TBody>
-                                {draftRows.map((row) => (
-                                    <Tr key={row.id}>
-                                        <Td>
-                                            <Input
-                                                size="sm"
-                                                value={row.name}
-                                                onChange={(e) => updateRow(row.id, 'name', e.target.value)}
-                                                placeholder="Item name"
-                                                invalid={!row.name.trim()}
-                                            />
-                                        </Td>
-                                        <Td>
-                                            <Input
-                                                size="sm"
-                                                value={row.brand}
-                                                onChange={(e) => updateRow(row.id, 'brand', e.target.value)}
-                                                placeholder="Brand"
-                                            />
-                                        </Td>
-                                        <Td>
-                                            <Input
-                                                size="sm"
-                                                value={row.category}
-                                                onChange={(e) => updateRow(row.id, 'category', e.target.value)}
-                                                placeholder="Category"
-                                            />
-                                        </Td>
-                                        <Td>
-                                            <Input
-                                                size="sm"
-                                                type="number"
-                                                step="0.01"
-                                                min="0"
-                                                value={row.weight}
-                                                onChange={(e) => updateRow(row.id, 'weight', e.target.value)}
-                                                placeholder="0"
-                                            />
-                                        </Td>
-                                        <Td>
-                                            <Select
-                                                size="sm"
-                                                options={unitOptions}
-                                                value={unitOptions.find((o) => o.value === row.unit) || unitOptions[0]}
-                                                onChange={(opt) => updateRow(row.id, 'unit', opt?.value || 'oz')}
-                                                isSearchable={false}
-                                            />
-                                        </Td>
-                                        <Td>
-                                            <Input
-                                                size="sm"
-                                                value={row.description}
-                                                onChange={(e) => updateRow(row.id, 'description', e.target.value)}
-                                                placeholder="Notes..."
-                                            />
-                                        </Td>
-                                        <Td>
-                                            <button
-                                                onClick={() => deleteRow(row.id)}
-                                                className="text-gray-400 hover:text-red-500 transition-colors"
-                                            >
-                                                <PiTrash className="w-4 h-4" />
-                                            </button>
-                                        </Td>
-                                    </Tr>
-                                ))}
-                            </TBody>
-                        </Table>
-                    </div>
-                </Card>
-            </div>
+                            ))}
+                        </TBody>
+                    </Table>
+                </div>
+            </Card>
         )
     }
 
@@ -450,8 +468,12 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
 
         return (
             <Card>
+                <div className="flex items-center gap-4 mb-4">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                        Import from Lighterpack
+                    </h1>
+                </div>
                 <div className="flex flex-col gap-4 py-4">
-                    <h2 className="text-lg font-semibold">Importing...</h2>
                     <p className="text-sm text-gray-500">
                         Importing item {progress.current} of {progress.total}
                         {progress.currentName ? `: ${progress.currentName}` : ''}
@@ -484,7 +506,12 @@ export default function ImportPage({ gearTypeId, existingCategories }) {
     if (stage === 'success' && importResult) {
         return (
             <Card>
-                <div className="flex flex-col gap-4 py-4">
+                <div className="flex items-center gap-4 mb-4">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                        Import from Lighterpack
+                    </h1>
+                </div>
+                <div className="flex flex-col gap-4">
                     <h2 className="text-xl font-semibold text-green-600 dark:text-green-400">
                         Successfully imported {importResult.itemsCreated} item
                         {importResult.itemsCreated !== 1 ? 's' : ''}

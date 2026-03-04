@@ -26,13 +26,7 @@ export default async function ImportPageRoute() {
     const existingCategories = categories ?? []
 
     return (
-        <div>
-            <div className="mb-6">
-                <h1 className="text-2xl font-bold">Import from Lighterpack</h1>
-                <p className="text-gray-500 mt-1">
-                    Bulk-import your gear list from a Lighterpack CSV export
-                </p>
-            </div>
+        <div className="px-4 sm:px-6 md:px-8 pt-4 sm:pt-6 pb-4 sm:pb-6">
             <ImportPage
                 gearTypeId={gearTypeId}
                 existingCategories={existingCategories}

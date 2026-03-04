@@ -29,8 +29,8 @@ export const protectedRoutes = {
         key: 'import',
         authority: [],
         meta: {
-            pageBackgroundType: 'plain',
-            pageContainerType: 'contained',
+            pageBackgroundType: 'gray',
+            pageContainerType: 'gutterless',
         },
     },
     '/trips': {
