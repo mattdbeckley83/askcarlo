@@ -1,5 +1,4 @@
 import createNextIntlPlugin from 'next-intl/plugin';
-import { withSentryConfig } from '@sentry/nextjs';
 
 const withNextIntl = createNextIntlPlugin();
 
@@ -33,7 +32,7 @@ const securityHeaders = [
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: blob: https://img.clerk.com https://*.clerk.com https://hjgtrlosyxursmzfkliz.supabase.co",
             "font-src 'self' data:",
-            "connect-src 'self' https://hjgtrlosyxursmzfkliz.supabase.co wss://hjgtrlosyxursmzfkliz.supabase.co https://*.clerk.accounts.dev https://clerk.askcarlo.ai https://accounts.askcarlo.ai https://api.stripe.com https://accounts.google.com https://o4510378637393920.ingest.us.sentry.io",
+            "connect-src 'self' https://hjgtrlosyxursmzfkliz.supabase.co wss://hjgtrlosyxursmzfkliz.supabase.co https://*.clerk.accounts.dev https://clerk.askcarlo.ai https://accounts.askcarlo.ai https://api.stripe.com https://accounts.google.com",
             "frame-src https://js.stripe.com https://hooks.stripe.com https://challenges.cloudflare.com",
             "object-src 'none'",
             "base-uri 'self'",
@@ -54,10 +53,4 @@ const nextConfig = {
     },
 }
 
-export default withSentryConfig(withNextIntl(nextConfig), {
-    org: 'askcarlo-app',
-    project: 'askcarlo',
-    silent: !process.env.CI,
-    widenClientFileUpload: true,
-    hideSourceMaps: true,
-});
+export default withNextIntl(nextConfig);
