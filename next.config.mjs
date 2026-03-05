@@ -60,10 +60,4 @@ export default withSentryConfig(withNextIntl(nextConfig), {
     silent: !process.env.CI,
     widenClientFileUpload: true,
     hideSourceMaps: true,
-    webpack: {
-        treeshake: {
-            removeDebugLogging: true,
-        },
-        automaticVercelMonitors: true,
-    },
 });
