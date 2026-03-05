@@ -55,11 +55,15 @@ const nextConfig = {
 }
 
 export default withSentryConfig(withNextIntl(nextConfig), {
-    org: 'askcarlo',
+    org: 'askcarlo-app',
     project: 'askcarlo',
     silent: !process.env.CI,
     widenClientFileUpload: true,
     hideSourceMaps: true,
-    disableLogger: true,
-    automaticVercelMonitors: true,
+    webpack: {
+        treeshake: {
+            removeDebugLogging: true,
+        },
+        automaticVercelMonitors: true,
+    },
 });
