@@ -56,7 +56,7 @@ const nextConfig = {
 
 export default withSentryConfig(withNextIntl(nextConfig), {
     org: 'askcarlo',
-    project: 'javascript-nextjs',
+    project: 'askcarlo',
     silent: !process.env.CI,
     widenClientFileUpload: true,
     hideSourceMaps: true,
