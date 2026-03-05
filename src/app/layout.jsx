@@ -1,5 +1,5 @@
-import '../../sentry.client.config'
 import { ClerkProvider } from '@clerk/nextjs'
+import SentryProvider from '@/components/SentryProvider'
 import ThemeProvider from '@/components/template/Theme/ThemeProvider'
 import pageMetaConfig from '@/configs/page-meta.config'
 import NavigationProvider from '@/components/template/Navigation/NavigationProvider'
@@ -23,6 +23,7 @@ export default async function RootLayout({ children }) {
                 suppressHydrationWarning
             >
                 <body suppressHydrationWarning>
+                    <SentryProvider />
                     <ThemeProvider theme={theme}>
                         <NavigationProvider navigationTree={navigationTree}>
                             {children}
