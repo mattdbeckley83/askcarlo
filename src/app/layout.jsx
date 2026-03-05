@@ -1,3 +1,4 @@
+import '../../sentry.client.config'
 import { ClerkProvider } from '@clerk/nextjs'
 import ThemeProvider from '@/components/template/Theme/ThemeProvider'
 import pageMetaConfig from '@/configs/page-meta.config'
