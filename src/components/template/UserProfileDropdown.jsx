@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect } from 'react'
 import Avatar from '@/components/ui/Avatar'
 import Dropdown from '@/components/ui/Dropdown'
 import withHeaderItem from '@/utils/hoc/withHeaderItem'
@@ -23,15 +24,18 @@ const dropdownItemList = [
 const _UserDropdown = () => {
     const { session, isLoaded } = useCurrentSession()
     const { signOut } = useClerk()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     const handleSignOut = async () => {
         await signOut({ redirectUrl: '/sign-in' })
     }
 
-    // Always render icon on server/initial load to prevent hydration mismatch
-    // Only use image after client has loaded
     const avatarProps = {
-        ...(isLoaded && session?.user?.image
+        ...(mounted && isLoaded && session?.user?.image
             ? { src: session?.user?.image }
             : { icon: <PiUserDuotone /> }),
     }
@@ -52,10 +56,10 @@ const _UserDropdown = () => {
                     <Avatar {...avatarProps} />
                     <div>
                         <div className="font-bold text-gray-900 dark:text-gray-100">
-                            {isLoaded ? (session?.user?.name || 'Anonymous') : '\u00A0'}
+                            {mounted && isLoaded ? (session?.user?.name || 'Anonymous') : '\u00A0'}
                         </div>
                         <div className="text-xs">
-                            {isLoaded ? (session?.user?.email || 'No email available') : '\u00A0'}
+                            {mounted && isLoaded ? (session?.user?.email || 'No email available') : '\u00A0'}
                         </div>
                     </div>
                 </div>
