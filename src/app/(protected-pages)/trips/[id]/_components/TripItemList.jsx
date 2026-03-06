@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button'
 import { PiTrash, PiSneaker, PiForkKnife, PiCaretUp, PiCaretDown, PiCaretUpDown, PiPlus } from 'react-icons/pi'
 import { updateTripItem } from '@/server/actions/trips/updateTripItem'
 import { removeItemFromTrip } from '@/server/actions/trips/removeItemFromTrip'
+import { toggleItemPacked } from '@/server/actions/trips/toggleItemPacked'
 import { convertToGrams, formatWeightForDisplay } from '@/lib/utils/weightCalculations'
 
 const { Tr, Th, Td, THead, TBody } = Table
@@ -62,6 +63,12 @@ const TripItemRow = ({ tripItem, tripId, categoryMap }) => {
         })
     }
 
+    const handleTogglePacked = () => {
+        startTransition(async () => {
+            await toggleItemPacked(tripItem.id, tripId)
+        })
+    }
+
     const handleQuantityChange = (e) => {
         const value = parseInt(e.target.value, 10)
         if (!isNaN(value) && value >= 1) {
@@ -78,17 +85,29 @@ const TripItemRow = ({ tripItem, tripId, categoryMap }) => {
     }
 
     const category = categoryMap[item?.category_id]
+    const isPacked = tripItem.packed
 
     return (
         <Tr className={`group ${isPending ? 'opacity-50' : ''}`}>
+            <Td className="w-[40px]">
+                <input
+                    type="checkbox"
+                    checked={isPacked}
+                    onChange={handleTogglePacked}
+                    disabled={isPending}
+                    className="w-4 h-4 rounded border-gray-300 text-orange-500 cursor-pointer accent-[#fe7f2d]"
+                />
+            </Td>
             <Td>
                 <CategoryBadge name={category?.name} color={category?.color} />
             </Td>
             <Td>
-                <span className="font-medium">{item?.name || '—'}</span>
+                <span className={`font-medium ${isPacked ? 'line-through text-gray-400 dark:text-gray-500' : ''}`}>
+                    {item?.name || '—'}
+                </span>
             </Td>
             <Td>
-                <span className="text-gray-600 dark:text-gray-400">
+                <span className={`text-gray-600 dark:text-gray-400 ${isPacked ? 'line-through text-gray-400 dark:text-gray-500' : ''}`}>
                     {item?.brand || '—'}
                 </span>
             </Td>
@@ -107,7 +126,6 @@ const TripItemRow = ({ tripItem, tripId, categoryMap }) => {
             </Td>
             <Td>
                 <div className="flex items-center justify-end gap-1">
-                    {/* Worn toggle button */}
                     <button
                         onClick={() => handleToggle('is_worn', tripItem.is_worn)}
                         disabled={isPending}
@@ -120,7 +138,6 @@ const TripItemRow = ({ tripItem, tripId, categoryMap }) => {
                     >
                         <PiSneaker size={18} />
                     </button>
-                    {/* Consumable toggle button */}
                     <button
                         onClick={() => handleToggle('is_consumable', tripItem.is_consumable)}
                         disabled={isPending}
@@ -133,7 +150,6 @@ const TripItemRow = ({ tripItem, tripId, categoryMap }) => {
                     >
                         <PiForkKnife size={18} />
                     </button>
-                    {/* Remove button */}
                     <button
                         onClick={handleRemove}
                         disabled={isPending}
@@ -196,11 +212,20 @@ const TripItemList = ({ tripItems, tripId, categoryMap, onAddItem, addItemDisabl
         })
     }, [tripItems, sort, categoryMap])
 
+    const packedCount = useMemo(() => tripItems.filter((i) => i.packed).length, [tripItems])
+    const totalCount = tripItems.length
+
     return (
         <div className="rounded-lg">
+            {totalCount > 0 && (
+                <div className="mb-3 text-sm text-gray-500 dark:text-gray-400">
+                    Packed: {packedCount}/{totalCount} items
+                </div>
+            )}
             <Table overflow={false} compact className="[&>thead]:border-0 [&>tbody]:border-t-0">
                 <THead className="border-b border-gray-200 dark:border-gray-700">
                     <Tr>
+                        <Th className="w-[40px]" />
                         <Th className="w-[140px]">
                             <SortableHeader
                                 label="Category"
@@ -269,7 +294,7 @@ const TripItemList = ({ tripItems, tripId, categoryMap, onAddItem, addItemDisabl
                 <TBody>
                     {tripItems.length === 0 ? (
                         <Tr>
-                            <Td colSpan={6} className="text-center py-8">
+                            <Td colSpan={7} className="text-center py-8">
                                 <div className="text-gray-500">
                                     <p className="text-lg font-medium">No items in this trip</p>
                                     <p className="text-sm">Add items from your inventory to get started</p>
