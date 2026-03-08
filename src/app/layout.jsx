@@ -16,7 +16,7 @@ export default async function RootLayout({ children }) {
     const theme = await getTheme()
 
     return (
-        <ClerkProvider>
+        <ClerkProvider telemetry={false}>
             <html
                 className={theme.mode === 'dark' ? 'dark' : 'light'}
                 dir={theme.direction}
