@@ -4,6 +4,7 @@ import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 
 export async function getTokenUsageChart() {
+    try {
     const { userId } = await auth()
     if (!userId) return { error: 'Unauthorized' }
 
@@ -52,4 +53,8 @@ export async function getTokenUsageChart() {
     const smartFillSeries = dates.map((d) => dateMap[d].smartFill)
 
     return { success: true, dates, chatSeries, smartFillSeries }
+    } catch (err) {
+        console.error('getTokenUsageChart error:', err)
+        return { error: 'Failed to fetch chart data' }
+    }
 }
