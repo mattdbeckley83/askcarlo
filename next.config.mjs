@@ -29,7 +29,7 @@ const securityHeaders = [
         value: [
             "default-src 'self'",
             // 'unsafe-inline' required: Next.js hydration + ThemeProvider inline script
-            "script-src 'self' 'unsafe-inline' https://js.stripe.com https://*.clerk.accounts.dev https://clerk.askcarlo.ai https://challenges.cloudflare.com",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://*.clerk.accounts.dev https://clerk.askcarlo.ai https://challenges.cloudflare.com",
             "style-src 'self' 'unsafe-inline'",
             "img-src 'self' data: blob: https://img.clerk.com https://*.clerk.com https://hjgtrlosyxursmzfkliz.supabase.co",
             "font-src 'self' data:",
