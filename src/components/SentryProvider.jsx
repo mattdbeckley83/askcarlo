@@ -11,6 +11,14 @@ if (typeof window !== 'undefined') {
         replaysSessionSampleRate: 0.1,
         replaysOnErrorSampleRate: 1.0,
         integrations: [Sentry.replayIntegration()],
+        ignoreErrors: [
+            // Transient network failures — not application bugs
+            'TypeError: Failed to fetch',
+            'TypeError: NetworkError when attempting to fetch resource',
+            'TypeError: Load failed',
+            // Clerk telemetry blocked by ad blockers
+            /clerk-telemetry\.com/,
+        ],
     })
 }
 
