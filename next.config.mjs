@@ -35,7 +35,7 @@ const securityHeaders = [
             "font-src 'self' data: https://fonts.gstatic.com",
             "worker-src 'self' blob:",
             "connect-src 'self' https://hjgtrlosyxursmzfkliz.supabase.co wss://hjgtrlosyxursmzfkliz.supabase.co https://*.clerk.accounts.dev https://clerk.askcarlo.ai https://accounts.askcarlo.ai https://api.stripe.com https://accounts.google.com https://o4510378637393920.ingest.us.sentry.io",
-            "frame-src https://js.stripe.com https://hooks.stripe.com https://challenges.cloudflare.com",
+            "frame-src https://js.stripe.com https://hooks.stripe.com https://challenges.cloudflare.com https://vercel.live",
             "object-src 'none'",
             "base-uri 'self'",
             "form-action 'self' https://checkout.stripe.com",
