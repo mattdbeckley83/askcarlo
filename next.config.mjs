@@ -48,8 +48,16 @@ const nextConfig = {
     async headers() {
         return [
             {
-                source: '/(.*)',
-                headers: securityHeaders,
+                // Prevent browsers from caching HTML pages so stale CSS/JS chunk
+                // references never occur after a new deployment.
+                source: '/((?!_next/static|_next/image|favicon.ico).*)',
+                headers: [
+                    {
+                        key: 'Cache-Control',
+                        value: 'public, max-age=0, must-revalidate',
+                    },
+                    ...securityHeaders,
+                ],
             },
         ]
     },
