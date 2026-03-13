@@ -52,7 +52,6 @@ export async function POST(req) {
                 email: primaryEmail,
                 first_name: first_name || null,
                 last_name: last_name || null,
-                token_balance: 200,
             })
 
         if (error) {
