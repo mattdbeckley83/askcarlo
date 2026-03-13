@@ -210,9 +210,6 @@ export default function ChatInterface({
         }
 
         const newConversationId = createResult.conversation.id
-        startTransition(() => {
-            router.push(`/conversations?id=${newConversationId}`)
-        })
 
         // Add user message to UI immediately
         const userMessage = {
@@ -223,7 +220,9 @@ export default function ChatInterface({
         }
         setMessages([userMessage])
 
-        // Send the template prompt with updated context
+        // Send the template prompt BEFORE navigating. If we push the route first,
+        // the resulting conversationId prop change triggers loadConversation, which
+        // races with sendMessage and wipes the optimistic message / hides any errors.
         const result = await sendMessage(newConversationId, prompt, templateContext)
 
         if (result.success) {
@@ -234,6 +233,12 @@ export default function ChatInterface({
                 created_at: new Date().toISOString(),
             }
             setMessages((prev) => [...prev, assistantMessage])
+
+            // Navigate now that messages are saved — loadConversation will find
+            // them in the DB and the UI stays consistent.
+            startTransition(() => {
+                router.push(`/conversations?id=${newConversationId}`)
+            })
             router.refresh()
 
             // Update token balance in header
@@ -258,6 +263,11 @@ export default function ChatInterface({
                     </Notification>
                 )
             }
+        } else if (result.error === 'insufficient_tokens') {
+            // Clear optimistic message and show the purchase banner
+            setMessages([])
+            setInsufficientTokens(true)
+            // Don't navigate — the conversation has no messages in the DB
         } else {
             const errorMessage = {
                 id: `temp-${Date.now()}-error`,
@@ -267,6 +277,10 @@ export default function ChatInterface({
                 isError: true,
             }
             setMessages((prev) => [...prev, errorMessage])
+            // Navigate so the URL reflects the (empty) conversation
+            startTransition(() => {
+                router.push(`/conversations?id=${newConversationId}`)
+            })
         }
 
         setIsLoading(false)
