@@ -99,8 +99,8 @@ export async function POST(req) {
                     text: `Hi ${name},\n\nMy name is Matt and I'm one of the creators of Carlo, your new digital basecamp for backcountry adventures. We built this platform to help outdoor enthusiasts of any skill/experience level make more confident decisions around trip planning, gear, nutrition and everything in between. We hope these tools help you get into the wilderness more often and confidently plan out some epic adventures.\n\nHere is how to get started:\n\n1. Complete your user profile so Carlo knows your adventure preferences.\n2. Add your gear to the Gear Closet.\n3. Create your first Trip.\n4. Start a conversation with Carlo for personalized advice.\n\nWe'd love to hear from you and make sure Carlo is giving you great advice. Hit "Reply" and let me know if there is anything you need. I read and reply to every email.\n\nCheers,\nMatt`,
                 }),
                 resend.emails.send({
-                    from: 'Carlo <notifications@askcarlo.ai>',
-                    to: ['matt@askcarlo.ai'],
+                    from: 'matt@askcarlo.ai',
+                    to: ['mattdbeckley@gmail.com'],
                     subject: `New signup: ${fullName}`,
                     html: `
                         <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#111827;">

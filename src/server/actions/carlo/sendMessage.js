@@ -5,6 +5,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 import { revalidatePath } from 'next/cache'
 import Anthropic from '@anthropic-ai/sdk'
 import { hasSufficientTokens, deductTokens, calculateTokensFromCost } from '../tokens/tokenActions'
+import { getResend } from '@/lib/resend'
 
 const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
@@ -522,7 +523,7 @@ export async function sendMessage(conversationId, userMessage, context = {}) {
         // Update milestone flag if this is user's first Carlo chat
         const { data: user } = await supabaseAdmin
             .from('users')
-            .select('has_used_carlo_chat')
+            .select('has_used_carlo_chat, onboarding_completed, email, first_name, last_name')
             .eq('id', userId)
             .single()
 
@@ -538,15 +539,41 @@ export async function sendMessage(conversationId, userMessage, context = {}) {
                 })
                 .eq('id', userId)
 
-            // Re-fetch balance — the BEFORE UPDATE trigger added 50 tokens
+            // Re-fetch balance + onboarding status — the BEFORE UPDATE trigger added 50 tokens
             const { data: refreshed } = await supabaseAdmin
                 .from('users')
-                .select('token_balance')
+                .select('token_balance, onboarding_completed')
                 .eq('id', userId)
                 .single()
 
             if (refreshed) finalBalance = refreshed.token_balance
             tokensAwarded = 50
+
+            if (!user.onboarding_completed && refreshed?.onboarding_completed) {
+                try {
+                    const resend = getResend()
+                    const name = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Unknown'
+                    const time = new Date().toLocaleString('en-US', { timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'short' })
+                    await resend.emails.send({
+                        from: 'matt@askcarlo.ai',
+                        to: ['mattdbeckley@gmail.com'],
+                        subject: `Onboarding complete: ${name}`,
+                        html: `
+                            <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#111827;">
+                                <p style="font-size:18px;font-weight:600;margin:0 0 16px;">Onboarding complete 🎉</p>
+                                <table style="font-size:14px;line-height:1.8;border-collapse:collapse;width:100%;">
+                                    <tr><td style="color:#6b7280;padding-right:16px;">Name</td><td>${name}</td></tr>
+                                    <tr><td style="color:#6b7280;padding-right:16px;">Email</td><td>${user.email}</td></tr>
+                                    <tr><td style="color:#6b7280;padding-right:16px;">Time</td><td>${time} ET</td></tr>
+                                </table>
+                            </div>
+                        `,
+                        text: `Onboarding complete\n\nName: ${name}\nEmail: ${user.email}\nTime: ${time} ET`,
+                    })
+                } catch (notifyError) {
+                    console.error('Error sending onboarding notification:', notifyError)
+                }
+            }
         }
 
         revalidatePath('/conversations')

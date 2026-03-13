@@ -4,6 +4,7 @@ import { auth } from '@clerk/nextjs/server'
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { revalidatePath } from 'next/cache'
 import { getCategoryColor } from '@/lib/constants/colors'
+import { getResend } from '@/lib/resend'
 
 export async function addItem(formData) {
     const { userId } = await auth()
@@ -92,7 +93,7 @@ export async function addItem(formData) {
     // Update milestone flag if this is user's first gear item
     const { data: user } = await supabaseAdmin
         .from('users')
-        .select('has_added_gear')
+        .select('has_added_gear, onboarding_completed, email, first_name, last_name')
         .eq('id', userId)
         .single()
 
@@ -106,6 +107,40 @@ export async function addItem(formData) {
             })
             .eq('id', userId)
         tokensAwarded = 25
+
+        if (!user.onboarding_completed) {
+            const { data: refreshed } = await supabaseAdmin
+                .from('users')
+                .select('onboarding_completed')
+                .eq('id', userId)
+                .single()
+
+            if (refreshed?.onboarding_completed) {
+                try {
+                    const resend = getResend()
+                    const name = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Unknown'
+                    const time = new Date().toLocaleString('en-US', { timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'short' })
+                    await resend.emails.send({
+                        from: 'matt@askcarlo.ai',
+                        to: ['mattdbeckley@gmail.com'],
+                        subject: `Onboarding complete: ${name}`,
+                        html: `
+                            <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#111827;">
+                                <p style="font-size:18px;font-weight:600;margin:0 0 16px;">Onboarding complete 🎉</p>
+                                <table style="font-size:14px;line-height:1.8;border-collapse:collapse;width:100%;">
+                                    <tr><td style="color:#6b7280;padding-right:16px;">Name</td><td>${name}</td></tr>
+                                    <tr><td style="color:#6b7280;padding-right:16px;">Email</td><td>${user.email}</td></tr>
+                                    <tr><td style="color:#6b7280;padding-right:16px;">Time</td><td>${time} ET</td></tr>
+                                </table>
+                            </div>
+                        `,
+                        text: `Onboarding complete\n\nName: ${name}\nEmail: ${user.email}\nTime: ${time} ET`,
+                    })
+                } catch (notifyError) {
+                    console.error('Error sending onboarding notification:', notifyError)
+                }
+            }
+        }
     }
 
     revalidatePath('/gear')

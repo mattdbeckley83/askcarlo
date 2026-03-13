@@ -1,6 +1,7 @@
 import { headers } from 'next/headers'
 import { getStripe } from '@/lib/stripe'
 import { supabaseAdmin } from '@/lib/supabase-admin'
+import { getResend } from '@/lib/resend'
 
 export async function POST(req) {
     const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET
@@ -90,6 +91,43 @@ export async function POST(req) {
             }
 
             console.log(`[stripe-webhook] Success: credited ${tokensToAdd} tokens to user ${userId}. New balance: ${newBalance}`)
+
+            // Notify Matt of the token purchase
+            try {
+                const { data: buyer } = await supabaseAdmin
+                    .from('users')
+                    .select('email, first_name, last_name')
+                    .eq('id', userId)
+                    .single()
+
+                const resend = getResend()
+                const name = [buyer?.first_name, buyer?.last_name].filter(Boolean).join(' ') || 'Unknown'
+                const email = buyer?.email || userId
+                const dollars = session.amount_total ? `$${(session.amount_total / 100).toFixed(2)}` : 'unknown'
+                const purchaseTime = new Date().toLocaleString('en-US', { timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'short' })
+
+                await resend.emails.send({
+                    from: 'matt@askcarlo.ai',
+                    to: ['mattdbeckley@gmail.com'],
+                    subject: `Token purchase: ${tokensToAdd} tokens — ${name}`,
+                    html: `
+                        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#111827;">
+                            <p style="font-size:18px;font-weight:600;margin:0 0 16px;">Token purchase</p>
+                            <table style="font-size:14px;line-height:1.8;border-collapse:collapse;width:100%;">
+                                <tr><td style="color:#6b7280;padding-right:16px;">Name</td><td>${name}</td></tr>
+                                <tr><td style="color:#6b7280;padding-right:16px;">Email</td><td>${email}</td></tr>
+                                <tr><td style="color:#6b7280;padding-right:16px;">Tokens</td><td>${tokensToAdd}</td></tr>
+                                <tr><td style="color:#6b7280;padding-right:16px;">Amount</td><td>${dollars}</td></tr>
+                                <tr><td style="color:#6b7280;padding-right:16px;">Time</td><td>${purchaseTime} ET</td></tr>
+                                <tr><td style="color:#6b7280;padding-right:16px;">Session</td><td style="font-family:monospace;font-size:12px;">${session.id}</td></tr>
+                            </table>
+                        </div>
+                    `,
+                    text: `Token purchase\n\nName: ${name}\nEmail: ${email}\nTokens: ${tokensToAdd}\nAmount: ${dollars}\nTime: ${purchaseTime} ET\nSession: ${session.id}`,
+                })
+            } catch (notifyError) {
+                console.error('[stripe-webhook] Error sending purchase notification:', notifyError)
+            }
         } else {
             console.log(`[stripe-webhook] Unhandled event type: ${event.type}`)
         }
